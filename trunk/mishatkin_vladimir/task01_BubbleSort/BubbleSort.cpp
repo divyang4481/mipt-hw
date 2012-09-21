@@ -7,22 +7,19 @@ using namespace std;
 
 void BubbleSort(int* a, int size) {
     bool swapped = true;
-    int* pBuffer = (int*) malloc(1 * sizeof(int));
-    assert(pBuffer != NULL);
     for (int i = 0; i < size && swapped; ++i) {
         swapped = false;
         for (int j = 0; j < size - 1 - i; ++j)
             if (a[j] > a[j + 1]) {
-                *pBuffer = a[j];
-                a[j] = a[j + 1];
-                a[j + 1] = *pBuffer;
+                swap(a[j], a[j + 1]);
                 swapped = true;
             }
     }
-    free(pBuffer);
 }
 
 int main() {
+    freopen("input.txt", "r", stdin);
+    freopen("output.txt", "w", stdout);
     int N;
     scanf("%d\n", &N);
     int* a = new int[N];
@@ -36,5 +33,6 @@ int main() {
         printf("%d", a[i]);
     }
     printf("\n");
+    delete a;
     return 0;
 }
