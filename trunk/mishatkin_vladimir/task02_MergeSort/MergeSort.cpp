@@ -46,7 +46,7 @@ void MergeSort(int *a, int size) {
 int main() {
     int N;
     scanf("%d\n", &N);
-    int* a = new int[N];
+    int* a = (int*) malloc((size_t) N * sizeof(int));
     for (int i = 0; i < N; ++i)
         scanf("%d", &a[i]);
 
@@ -57,5 +57,6 @@ int main() {
         printf("%d", a[i]);
     }
     printf("\n");
+    free(a);
     return 0;
 }
