@@ -1,7 +1,7 @@
 #include <iostream>
 
 using namespace std;
-const int count=100;
+const int COUNT = 100;
 
 void swap(int* a, int* b){
 	int t;
@@ -11,9 +11,9 @@ void swap(int* a, int* b){
 }
 
 int main(){
-	freopen("in.txt", "rt", stdin);
-	freopen("out.txt", "wt", stdout);
-	int a[count], n, m, mi, t;
+	//freopen("in.txt", "rt", stdin);
+	//freopen("out.txt", "wt", stdout);
+	int a[COUNT], n, m, mi, t;
 	cin >> n;
 	for (int i=0; i<n; i++) cin >> a[i];
 	for (int i=0; i<n-1; i++){
