@@ -1,7 +1,5 @@
-//Таташина Анна, 296
 //Bubble Sort
 
-#include "stdafx.h"
 #include <stdio.h>
 #define NMax 1000
 
