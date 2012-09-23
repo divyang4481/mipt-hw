@@ -1,7 +1,5 @@
-//Таташина Анна, 296
 //Merge Sort
 
-#include "stdafx.h"
 #include <cstdio>
 #define NMax 1000
 
