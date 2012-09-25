@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import random
+import sys
 
 def main():
     for _ in xrange(0, 100):
