@@ -18,8 +18,6 @@ void BubbleSort(int* a, int size) {
 }
 
 int main() {
-    freopen("input.txt", "r", stdin);
-    freopen("output.txt", "w", stdout);
     int N;
     scanf("%d\n", &N);
     int* a = new int[N];
