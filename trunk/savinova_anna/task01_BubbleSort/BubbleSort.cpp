@@ -1,9 +1,6 @@
 //
 
 #include "cstdio"
-#i
-
-#include "cstdio"
 #include "stdafx.h"
 
 int BubbleSort(int l, int r, int* a)
@@ -26,7 +23,7 @@ int BubbleSort(int l, int r, int* a)
 int main()
 {
     int N=0;
-    scanf("%d",&N);
+    scanf("%d\n",&N);
     int* Ar=new int[N];
     for (int i=0; i<N; ++i)
         scanf("%d",Ar+i);
