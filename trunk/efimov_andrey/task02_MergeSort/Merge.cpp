@@ -20,6 +20,7 @@ void merge(int* arr, int l, int r)
         temp[t++] = arr[i2++];
     for ( int i = l; i <= r; i++ )
         arr[i] = temp[i-l];
+	delete[] temp;
 }
 
 void merge_sort(int* arr, int l, int r)
@@ -45,4 +46,5 @@ int main()
 	merge_sort(ar, 0, n-1);
 	for (int i=0; i<n; i++)
 		cout << ar[i] << " ";
+	delete[] ar;
 }
