@@ -1,6 +1,5 @@
 //Merge Sort
 
-#include "stdafx.h"
 #include <cstdio>
 #include <cstdlib>
  
@@ -49,7 +48,9 @@ int main()
  
         for (int i = 0; i < N; i++)
             printf("%d ", *(array+i));
- 
+		
+		delete[] array;
+
         return 0;
 }
  
