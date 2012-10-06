@@ -7,7 +7,7 @@ int BubbleSort(int l, int r, int* a)
 {
     for (int i=r-1;i>l;--i)
     {
-        for (int j=0; j<i; ++j)
+        for (int j=l; j<i; ++j)
         {
             if (a[j]>a[j+1])
             {
@@ -29,7 +29,8 @@ int main()
         scanf("%d",Ar+i);
     BubbleSort(1,N,Ar);
     for (int i=0; i<N; ++i)
-        printf("%d ",Ar[i]);    
+        printf("%d ",Ar[i]);  
+    delete[] Ar;
     return 0;
 }
 
