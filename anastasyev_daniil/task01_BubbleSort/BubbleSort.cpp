@@ -26,5 +26,6 @@ int main()
     for (int i=0; i<n; ++i) scanf("%d",(a+i));
     sort(a,n);
     for (int i=0; i<n; ++i) printf("%d ",*(a+i));
+	delete [] a;
     return 0;
 }
