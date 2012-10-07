@@ -35,6 +35,6 @@ int main()
     for (int i = 0; i < n; ++i)
         printf("%d ", a[i]);
 
-    free(a);
+    delete[] a;
     return 0;
 }

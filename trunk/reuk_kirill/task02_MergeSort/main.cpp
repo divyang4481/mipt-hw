@@ -5,12 +5,12 @@ using namespace std;
 
 int n;
 
-void MergeSort(int x, int y)
+void MergeSort(int x, int y, int *a, int *b)
 {
     int i;
     if ((y - x) > 1) {
-    merge(x, (x + y) / 2);
-    merge((x + y)/2 + 1, y);
+    MergeSort(x, (x + y) / 2, a, b);
+    MergeSort((x + y)/2 + 1, y, a, b);
     }
 
     int l = x, r = ((x + y) / 2 + 1), count = x;
@@ -61,12 +61,15 @@ int main()
         scanf("%d", &(a[i]));
     }
 
-    merge(0, n - 1);
+    MergeSort(0, n - 1, a, b);
 
     for (int i = 0; i < n; ++i)
     {
         printf("%d ", a[i]);
     }
+
+    delete[] a;
+    delete[] b;
 
 
     return 0;
