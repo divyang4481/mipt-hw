@@ -1,9 +1,9 @@
 #include<iostream>
 using namespace std;
+int *c;
 void merge(int *a,int b,int e)
 {
 	int m=(e+b)/2;
-	int *c=new int[e-b+1];
 	int k=b;
 	int k1=m+1;
 	for(int i=0;i<e-b+1;++i)if(k>>m){c[i]=a[k1];++k1;}
@@ -12,7 +12,6 @@ void merge(int *a,int b,int e)
 	}
 	}
 	for(int i=0;i<e-b+1;++i)a[b+i]=c[i];
-	delete[] c;
 }
 void mergesort(int *a,int b,int e)
 { 
@@ -30,9 +29,11 @@ int main()
 	int n;
 	cin>>n;
 	int *a=new int[n];
+	c=new int[n];
 	for(int i=0;i<n;++i)cin>>a[i];
 	mergesort(a,0,n-1);
 	for(int i=0;i<n;++i)cout<<a[i]<<" ";
 	delete[] a;
+	delete[] c;
 	return 0;
 }
