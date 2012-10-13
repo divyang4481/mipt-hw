@@ -1,8 +1,7 @@
 // MergeSort.cpp: определяет точку входа для консольного приложения.
 //
 
-#include "stdafx.h"
-#include "cstdio"
+#include <cstdio>
 void Merge(int* a, int l, int q, int r)
 {
     if ((r-l)>1)

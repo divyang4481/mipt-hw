@@ -1,7 +1,6 @@
 // QuickSort.cpp: определяет точку входа для консольного приложения.
 //
 
-#include "stdafx.h"
 #include "cstdio"
 
 int QuickSort(int* a, int b, int f)
