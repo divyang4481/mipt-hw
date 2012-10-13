@@ -1,13 +1,15 @@
 //Insert Sort
 
+#include <iostream>
 #include <cstdio>
 #include <cstdlib>
+using namespace std;
 
 
 void InsertSort(int left, int right, int *a) {
 	int buf;
 	int j;
-	for (int i = 1; i < right; i++) {
+	for (int i = left; i < right; i++) {
 		buf = a[i];
 		for (j = i - 1; ((j >= 0) && (a[j] > buf)); j--) {
 			a[j + 1] = a[j];
