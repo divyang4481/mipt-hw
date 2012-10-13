@@ -1,7 +1,4 @@
-//
-
-#include "cstdio"
-#include "stdafx.h"
+#include <cstdio>
 
 int BubbleSort(int l, int r, int* a)
 {
