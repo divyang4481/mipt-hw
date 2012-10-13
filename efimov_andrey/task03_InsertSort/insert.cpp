@@ -15,8 +15,8 @@ void insertSort (int* a, int n){
 }
 
 int main(){
-	freopen ("in.txt", "rt", stdin);
-	freopen ("ou.txt", "wt", stdout);
+	//freopen ("in.txt", "rt", stdin);
+	//freopen ("ou.txt", "wt", stdout);
 	int n;
 	cin >> n;
 	int* a = new int[n];
