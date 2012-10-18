@@ -61,6 +61,7 @@ void RadixSort(int *a, int N) {
 
 		q *= 10;
 	} 
+	free(b);
 }
 
 
