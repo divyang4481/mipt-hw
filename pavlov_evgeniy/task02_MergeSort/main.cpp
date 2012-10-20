@@ -20,17 +20,21 @@ void mergesort(int *a,int b,int e,int *c)
 		merge(a,b,e,c,b,(e+b)/2,(e+b)/2+1);
 
 }
-int main()
+void msort(int *a,int n)
 {
 	int *c;
+	c=new int[n];
+    mergesort(a,0,n-1,c);
+	delete[] c;
+}
+int main()
+{
 	int n;
 	cin>>n;
 	int *a=new int[n];
-	c=new int[n];
 	for(int i=0;i<n;++i)cin>>a[i];
-	mergesort(a,0,n-1,c);
+	msort(a,n);	
 	for(int i=0;i<n;++i)cout<<a[i]<<" ";
 	delete[] a;
-	delete[] c;
 	return 0;
 }
