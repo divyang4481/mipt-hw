@@ -11,7 +11,7 @@ using namespace std;
 const int base = 10;
 typedef vector < vector <int> > table_t;
 
-void RadixSort(int* a, int size) {
+void RadixSortHelper(int* a, int size) {
     int pow = 1;
     int maxElement = *max_element(a, a + size);
     while (maxElement > 0) {
@@ -26,6 +26,27 @@ void RadixSort(int* a, int size) {
         pow *= base;
         maxElement /= base;
     }
+}
+
+void RadixSort(int *a, int size) {
+    int *positive = (int*) malloc(size * sizeof(int));
+    int *negative = (int*) malloc(size * sizeof(int));
+    int posCount = 0;
+    int negCount = 0;
+    for (int i = 0; i < size; ++i)
+        if (a[i] >= 0)
+            positive[posCount++] = a[i];
+        else
+            negative[negCount++] = a[i];
+    RadixSortHelper(positive, posCount);
+    RadixSortHelper(negative, negCount);
+    for (int i = 0; i < negCount; ++i)
+        a[i] = negative[negCount - 1 - i];
+    for (int i = 0; i < posCount; ++i)
+        a[i + negCount] = positive[i];
+
+    free(negative);
+    free(positive);
 }
 
 int main() {
