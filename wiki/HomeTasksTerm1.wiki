@@ -115,3 +115,17 @@ char** split(const char *str, const char *delim);
 {{{
 void delete_string_array(char **str);
 }}}
+
+== Задание 9. Простое число ==
+
+Deadline: 2012.10.29
+
+Напишите программу, проверяющую, является ли введенное число n простым.
+
+*Input:*
+
+На stdin подается целое число n (1 <= n <= 1e9).
+
+*Output:*
+
+На stdout строка YES, если число простое. NO - в противном случае.
