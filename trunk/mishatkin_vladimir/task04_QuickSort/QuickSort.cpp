@@ -5,7 +5,7 @@
 
 using namespace std;
 
-int partition(int a[], int n) {
+void QuickSort(int a[], int n) {
     int left = 1, right = n;
     int x = a[0];
 
@@ -25,14 +25,9 @@ int partition(int a[], int n) {
     }
 
     if (n > 1) {
-        partition(a, left);
-        partition(a + right, n - right);
+        QuickSort(a, left);
+        QuickSort(a + right, n - right);
     }
-    return left;
-}
-
-void QuickSort(int* a, int n) {
-    partition(a, n);
 }
 
 int main() {
