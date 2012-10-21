@@ -5,6 +5,7 @@ using namespace std;
 struct THeap{
 	private:
 		int* buf;
+		int size;
 		int Parent(int ix){
 			return (ix-1)/2;
 		}
@@ -19,7 +20,9 @@ struct THeap{
 				Hippefy(i);
 		}
 	public:
-		int size;
+		void DecSize(){
+			size--;
+		}
 		void Hippefy (int ix){
 			int max=ix, l=lc(ix), r=rc(ix);
 			if ((l<size)&&(buf[ix]<buf[l]))
@@ -72,9 +75,9 @@ void swap(int* a, int* b){
 
 void HeapSort(int* a, int n){
 	THeap h(a,n);
-	for (int i=h.size; i>0; i--){
+	for (int i=h.GetSize(); i>0; i--){
 				swap(a[0], a[i-1]);
-				h.size--;
+				h.DecSize();
 				h.Hippefy(0);
 			};
 }
