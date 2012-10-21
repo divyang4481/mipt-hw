@@ -77,12 +77,13 @@ public:
 
 int main()
 {
-    const int N=10;
-    int A[N];
-    for (int i=0; i<N; ++i) A[i]=rand()%100;
-	for (int i=0; i<N; ++i) printf("%d ",A[i]);
+    int n;
+    scanf("%d",&n);
+    int *A=new int [n];
+    for (int i=0; i<n; ++i) A[i]=rand()%100;
+	for (int i=0; i<n; ++i) printf("%d ",A[i]);
 	printf("\n");
-    THeap h(A,N);
+    THeap h(A,n);
 	h.HeapSort();
 	h.Print();
     return 0;
