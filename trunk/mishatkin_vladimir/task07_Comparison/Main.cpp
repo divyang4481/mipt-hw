@@ -72,7 +72,6 @@ int main() {
    
     int *toSort = (int*) malloc((size_t) N * sizeof(int));
     assert(toSort != NULL);
-    copyArray(a, N, toSort);
 
     int size = (int) sorts.size();
     for (int testCase = 0; testCase < size-1; ++testCase) {
