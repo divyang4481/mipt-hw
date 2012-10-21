@@ -83,15 +83,13 @@ void HeapSort(int* a, int n){
 }
 
 int main(){
-	freopen("in.txt", "rt", stdin);
-	freopen("out.txt", "wt", stdout);
-	const int C=10;
-	int A[C];
-	for (int i=0; i<C; ++i)
-		//A[i]=rand()%100;
+	int n;
+	cin >> n;
+	int* A = new int[n];
+	for (int i=0; i<n; ++i)
 		cin >> A[i];
-	HeapSort(A, C);
-	for (int i=0; i<C; i++)
+	HeapSort(A, n);
+	for (int i=0; i<n; i++)
 		cout << A[i] << " ";
 	return 0;
 }
