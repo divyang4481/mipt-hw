@@ -11,13 +11,20 @@ using namespace std;
 const int base = 10;
 typedef vector < vector <int> > table_t;
 
-void RadixSortHelper(int* a, int size) {
+void RadixSortHelper(int *a, int size) {
+    if (size <= 0)
+        return;
     int pow = 1;
     int maxElement = *max_element(a, a + size);
-    while (maxElement > 0) {
+    int sign = 1;
+    if (a[0] < 0) {
+        maxElement = *min_element(a, a + size);
+        sign = -1;
+    }
+    while (sign * maxElement > 0) {
         table_t table (base);
         for (int i = 0; i < size; ++i)
-            table[a[i] / pow % base].push_back(a[i]);
+            table[abs(a[i]) / pow % base].push_back(a[i]);
 
         int current_size = 0;
         for (int row = 0; row < base; ++row)
