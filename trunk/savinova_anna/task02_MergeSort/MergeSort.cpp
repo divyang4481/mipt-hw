@@ -2,6 +2,8 @@
 //
 
 #include <cstdio>
+#include <stdio.h>
+#include "stdafx.h"
 void Merge(int* a, int l, int q, int r)
 {
     if ((r-l)>1)
@@ -55,6 +57,7 @@ void MergeSort(int* a, int l, int r)
 
 int main()
 {
+    FILE *fp = fopen("x.txt", "rb");
     int N=0;
     scanf("%d\n",&N);
     int* A=new int [N+2];
@@ -63,6 +66,7 @@ int main()
     MergeSort(A,0,N-1);
     for (int i=0; i<N; ++i)
         printf("%d ",A[i]);
-    delete[] A;
+    delete[] A;    
+    fclose(fp);
     return 0;
 }
