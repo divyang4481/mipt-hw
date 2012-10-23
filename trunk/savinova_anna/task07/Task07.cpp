@@ -8,8 +8,10 @@
 using namespace std;
 
 
-int BubbleSort(int* a, int r)
+double BubbleSort(int* a, int r)
 {
+    time_t start,end;
+    time (&start);
     for (int i=0 ; i<r; ++i)
     {
         for (int j=r-2; j>=i; --j)
@@ -22,11 +24,14 @@ int BubbleSort(int* a, int r)
             }
         }
     }
-    return 0;
+    time (&end);
+    return difftime(end, start);
 }
 
-int QuickSort(int* a, int b, int f)
+double QuickSort(int* a, int b, int f)
 {
+    time_t start,end;
+    time (&start);
     if (b<f)
     {
         int l=b, r=f;
@@ -49,11 +54,12 @@ int QuickSort(int* a, int b, int f)
         }
         QuickSort(a,b,r);
         QuickSort(a,l,f);
-        return 0;
+        time (&end);
+        return difftime(end, start);
     }
 }
 
-int InsertSort(int* a, int l, int r)
+double InsertSort(int* a, int l, int r)
 {
     for (int j=l+1; j<r; ++j)
     {
@@ -65,7 +71,8 @@ int InsertSort(int* a, int l, int r)
         }
         a[i+1]=key;
     }
-    return 0;
+    time (&end);
+    return difftime(end, start);
 }
 
 bool Cor(int* a, int la)
@@ -88,14 +95,12 @@ int main()
         A[i]=rand();//%(2*RAND_MAX) + (-RAND_MAX);
         B[i]=A[i];
     }
-    for (int i=0; i<N; ++i)
-        cout<<A[i]<<" ";
-    cout<<endl;
-    int t = BubbleSort(B, N);
-    /*for (int i=0; i<N; ++i)
-        cout<<B[i]<<" ";
-    cout<<endl;*/
-    cout<<"BubbleSort "<<((float)t)/CLOCKS_PER_SEC;
+    time_t start,end;
+    time (&start);
+    /*double t = */BubbleSort(B, N);
+    time (&end);
+    double t=difftime(end, start);
+    cout<<"BubbleSort "<<t<< "sdf";
     if (Cor(B,N))
         cout<<" true"<<endl;
     else cout<<" false"<<endl;
@@ -104,10 +109,8 @@ int main()
         B[i]=A[i];
     }
     t = QuickSort(B, 0, N-1);
-    /*for (int i=0; i<N; ++i)
-        cout<<B[i]<<" ";
-    cout<<endl;*/
-    cout<<"QuickSort "<<((float)t)/CLOCKS_PER_SEC;
+    cout<<endl;
+    cout<<"QuickSort "<<t;
     if (Cor(B,N))
         cout<<" true"<<endl;
     else cout<<" false"<<endl;
@@ -116,10 +119,7 @@ int main()
         B[i]=A[i];
     }
     t = InsertSort(B, 0, N);
-    /*for (int i=0; i<N; ++i
-        cout<<B[i]<<" ";
-    cout<<endl;*/
-    cout<<"InsertSort "<<((float)t)/CLOCKS_PER_SEC;
+    cout<<"InsertSort "<<t;
     if (Cor(B,N))
         cout<<" true"<<endl;
     else cout<<" false"<<endl;

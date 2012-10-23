@@ -58,8 +58,14 @@ int CountingSort(int** a, int la, int** &b, int k)
     }
     return 0;
 }
-int RadixSort(int* a, int d, int la)
+int RadixSort(int* a, int la)
 {
+    int d=0;
+    int max=A[1];
+    for (int i=0; i<N; ++i)
+        if (A[i]>max)
+            max=A[i];
+    for (int i=1; i<max; i*=10, ++d);
     int** m=CreateMatr(d,la);
     int** n=CreateMatr(d,la);
     for (int i=0; i<la; ++i)
@@ -92,7 +98,7 @@ int main()
         if (A[i]>MAX)
             MAX=A[i];
     for (int i=1; i<MAX; i*=10, ++D);
-    RadixSort(A,D,N);
+    RadixSort(A,N);
     for (int i=0; i<N; ++i)
         cout<<A[i]<<" ";
     delete[] A;
