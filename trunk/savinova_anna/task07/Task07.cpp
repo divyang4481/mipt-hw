@@ -1,7 +1,5 @@
 // Task07.cpp: определяет точку входа для консольного приложения.
 //
-
-#include "stdafx.h"
 #include <time.h>
 #include <math.h>
 #include <iostream>
@@ -11,7 +9,7 @@ using namespace std;
 class THeap {
 private:
     int* Buf;
-    int Size; //размер массива
+    int Size;
     
     int Parent(int idx) {
         return((idx - 1) / 2);
@@ -177,6 +175,15 @@ int** CopyMatr(int** a, int w, int h)
     return b;
 }
 
+void DeleteMatr(int** buf, int w, int h)
+{
+    for (int i=0; i<h; ++i)
+    {
+        delete[] *(buf+i);
+    }
+    delete[] buf;
+}
+
 int CountingSort(int** a, int la, int** &b, int k)
 {
     int c[10];
@@ -218,6 +225,8 @@ int RadixSort(int* a, int la)
     for (int i=0; i<la; ++i)
         for (int j=0, k=1; j<d; ++j, k*=10)
             a[i]+=m[i][j]*k;
+    DeleteMatr(m,d,la);
+    DeleteMatr(n,d,la);
     return 0;
 }
 
@@ -249,13 +258,13 @@ int main()
     int* B=new int[N];
     for (int i=0; i<N; ++i)
     {
-        A[i]=rand();//%(2*RAND_MAX) + (-RAND_MAX);
+        A[i]=rand();
         B[i]=A[i];
     }
     int t=clock();
     BubbleSort(B, N);
     int t1 = clock()-t;
-    cout<<"BubbleSort "<<(double)t1/CLOCKS_PER_SEC<< " ";
+    cout<<"BubbleSort "<<double(t1*1000)/CLOCKS_PER_SEC<< " ";
     if (Cor(B,N))
         cout<<" true"<<endl;
     else cout<<" false"<<endl;
@@ -266,7 +275,7 @@ int main()
     t=clock();
     InsertSort(B, 0, N);
     t1=clock()-t;
-    cout<<"InsertSort "<<(double)t1/CLOCKS_PER_SEC<< " ";
+    cout<<"InsertSort "<<double(t1*1000)/CLOCKS_PER_SEC<< " ";
     if (Cor(B,N))
         cout<<" true"<<endl;
     else cout<<" false"<<endl;
@@ -277,7 +286,7 @@ int main()
     t=clock();
     QuickSort(B, 0, N-1);
     t1 = clock()-t;
-    cout<<"QuickSort "<<(double)t1/CLOCKS_PER_SEC<<" ";
+    cout<<"QuickSort "<<double(t1*1000)/CLOCKS_PER_SEC<<" ";
     if (Cor(B,N))
         cout<<" true"<<endl;
     else cout<<" false"<<endl;
@@ -288,7 +297,7 @@ int main()
     t=clock();
     RadixSort(B, N);
     t1 = clock()-t;
-    cout<<"RadixSort "<<(double)t1/CLOCKS_PER_SEC<<" ";
+    cout<<"RadixSort "<<double(t1*1000)/CLOCKS_PER_SEC<<" ";
     if (Cor(B,N))
         cout<<" true"<<endl;
     else cout<<" false"<<endl;
@@ -299,7 +308,7 @@ int main()
     t=clock();
     qsort((void*)B,N,sizeof(int),Compare);
     t1 = clock()-t;
-    cout<<"qsort "<<(double)t1/CLOCKS_PER_SEC<<" ";
+    cout<<"qsort "<<double(t1*1000)/CLOCKS_PER_SEC<<" ";
     if (Cor(B,N))
         cout<<" true"<<endl;
     else cout<<" false"<<endl;
@@ -310,7 +319,7 @@ int main()
     t=clock();
     HeapSort(B,N);
     t1 = clock()-t;
-    cout<<"HeapSort "<<(double)t1/CLOCKS_PER_SEC<<" ";
+    cout<<"HeapSort "<<double(t1*1000)/CLOCKS_PER_SEC<<" ";
     if (Cor(B,N))
         cout<<" true"<<endl;
     else cout<<" false"<<endl;
