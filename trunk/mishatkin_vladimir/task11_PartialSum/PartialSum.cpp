@@ -3,6 +3,7 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
+#include <cmath>
 
 using namespace std;
 
@@ -26,7 +27,7 @@ T getDecSum(int n) {
 
 int main() {
     int n;
-    scanf("%d\n", &n);
+    scanf("%d", &n);
 //  printf("%.20f\n", Pi * Pi / 6);
     printf("%.20f\n%.20f\n", getIncSum<float>(n), getDecSum<float>(n));
     printf("%.20lf\n%.20lf\n", getIncSum<double>(n), getDecSum<double>(n));
