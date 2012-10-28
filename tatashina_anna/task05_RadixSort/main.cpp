@@ -21,19 +21,14 @@ int findD(int *a, int N) {
                 max /= 10;
         }
 
-
         return D;
 }
-
-
-
-
-        
+     
 
 void RadixSort(int *a, int N) {
         int D;
         D = findD(a, N);
-		int *b = (int*) malloc(N*sizeof(int));      
+                int *b = (int*) malloc(N*sizeof(int));      
         int c[10];
         int q = 1;
 
@@ -61,16 +56,7 @@ void RadixSort(int *a, int N) {
         } 
 }
 
-
- 
-int main()
-{
-    int N, D;
- 
-    scanf("%d", &N);
-    int *a = (int*) malloc(N*sizeof(int));
-    for (int i = 0; i < N; i++)
-        scanf("%d", &(a[i]));
+void AllRadix(int *a, int N) {
 	int *b = (int*) malloc(N*sizeof(int));
 	int *c = (int*) malloc(N*sizeof(int));
 	int n1 = 0, n2 = 0;
@@ -86,13 +72,25 @@ int main()
 	for(int i = 0; i < n1; i++)
 		a[n2 + i] = b[i];
     
-	for (int i = 0; i < N; i++)
-       printf("%d ", a[i]);
-    free(a);
-    free(b);
+	free(b);
     free(c);
+}
+ 
+ 
+int main()
+{
+    int N;
+ 
+    scanf("%d", &N);
+    int *a = (int*) malloc(N*sizeof(int));
+    for (int i = 0; i < N; i++)
+        scanf("%d", &(a[i]));
 
+	AllRadix(a, N);
 
+	for (int i = 0; i < N; i++)
+    printf("%d ", a[i]);
+    free(a);
 
     return 0;
 }
