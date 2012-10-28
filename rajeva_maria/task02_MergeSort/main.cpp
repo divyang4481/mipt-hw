@@ -1,8 +1,6 @@
 // MERGE.cpp: определяет точку входа для консольного приложения.
 //
 #include <cstdio>
-#include "stdafx.h"
-
 
 void ArrayInTwo(int *a, int n, int *a1, int *a2)
 {
