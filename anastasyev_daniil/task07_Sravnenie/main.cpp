@@ -1,5 +1,7 @@
 #include <iostream>
 #include <time.h>
+#include <cstdio>
+#include <cstdlib>
 using namespace std;
 
 void BubbleSort(int *a, int N)
