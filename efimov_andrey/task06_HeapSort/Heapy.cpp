@@ -57,6 +57,7 @@ struct THeap{
 			int r=buf[0];
 			swap(buf[0], buf[size--]);
 			Hippefy(0);
+			return r;
 		}
 		int GetSize(){
 			return size;
