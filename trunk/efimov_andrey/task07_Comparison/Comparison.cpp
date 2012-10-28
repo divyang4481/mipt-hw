@@ -53,6 +53,7 @@ struct THeap{
 			int r=buf[0];
 			swap(buf[0], buf[size--]);
 			Hippefy(0);
+			return r;
 		}
 		int GetSize(){
 			return size;
@@ -132,6 +133,26 @@ int  partition  (int* a, int l, int r){
 	return r;
 }
 
+void splitnegs(int* a, int s){
+	int p, n;
+	int* w = new int[s];
+	n=0;
+	p=s-1;
+	for (int i=s-1; i>=0; i--){
+		if (a[i]>=0){ 
+			w[p]=a[i];
+			p--;
+		}
+		else{
+			w[n]=a[i];
+			n++;
+		}
+	}
+	for (int i=0; i<s; i++)
+		a[i]=w[i];
+	delete[] w;
+}
+
 void merge      (int* a, int l, int r, int* temp)
 {
     int m = (l+r)/2;
@@ -170,18 +191,6 @@ void quicksort0 (int* a, int l, int r){
     }
 }
 
-/*void BubbleSort (int* a, int n){  
-	for (int i=1; i<=n; i++){
-        for (int j=0; j<n-i; j++){
-            if (*(a+j)>*(a+j+1)){
-                swap((a+j),(a+j+1));
-            };
-        };
-    };
-}*/
-
-
-
 void MergeSort  (int* a, int n)
 {
 	int* buff = new int[n];
@@ -209,24 +218,26 @@ void QuickSort  (int* a, int n){
 
 void RadixSort  (int* a, int n){
 	int bs[10];
-	int i, m=a[0], e=1;
+	int i, m=abs(a[0]), e=1;
 	for (i=1; i<n; i++)
-		if (a[i]>m)
-			m=a[i];
+		if (abs(a[i])>m)
+			m=abs(a[i]);
 	int* b = new int[n];
 	while (m/e>0){
 		for (i=0; i<10; i++) 
 			bs[i]=0;
 		for (i=0; i<n; i++) 
-			bs[(a[i]/e)%10]++;
+			bs[(abs(a[i])/e)%10]++;
 		for (i=1; i<10; i++) 
 			bs[i]+=bs[i-1];
 		for (i = n-1; i >= 0; i--)
-			b[--bs[a[i] / e%10]] = a[i];
+			b[--bs[abs(a[i]) / e%10]] = a[i];
 		for (i=0; i<n; i++)
 			a[i]=b[i];
 		e*=10;
 	}
+	delete[] b;
+	splitnegs (a, n);
 }
 
 void HeapSort   (int* a, int n){
@@ -272,7 +283,7 @@ int main(){
 		a[i]=rand();
 		b[i]=a[i];
 	}
-	for (int i=1; i<2; i++){
+	for (int i=1; i<7; i++){
 		ct=clock();
 		Sort(a,n,i);
 		t=clock()-ct;
