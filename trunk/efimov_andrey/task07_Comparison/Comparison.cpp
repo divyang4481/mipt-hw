@@ -273,8 +273,8 @@ void Sort(int* a, int n, int i){
 }
 
 int main(){
-	freopen("in.txt", "rt", stdin);
-	freopen("out.txt", "wt", stdout);
+	//freopen("in.txt", "rt", stdin);
+	//freopen("out.txt", "wt", stdout);
 	int n, ct, t;
 	cin >> n;
 	int* a = new int[n];
