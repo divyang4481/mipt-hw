@@ -13,9 +13,10 @@ if (n-1<m)m=n-1;
 	for(int i=m;i>=0;--i)Heap(a,i,n);
 }
 void Heapsort(int *a,int n)
-{
-	for(int i=n-1;i>0;--i){
-		Heapstruct(a,i+1);swap(a[0],a[i]);}
+{Heapstruct(a,n);
+    swap(a[0],a[n-1]);
+	for(int i=n-2;i>0;--i){
+		Heap(a,0,i+1);swap(a[0],a[i]);}
 }
 int main()
 { int *a,n;
