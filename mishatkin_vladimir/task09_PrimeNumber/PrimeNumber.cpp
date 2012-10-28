@@ -3,7 +3,7 @@
 #include <assert.h>
 #include <stdlib.h>
 #include <iostream>
-#include <cstdlib>
+#include <cstdio>
 
 using namespace std;
 
