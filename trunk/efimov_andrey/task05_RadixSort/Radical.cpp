@@ -46,8 +46,6 @@ void SplitNegs(int* a, int s){
 }
 
 int main(){
-	freopen("in.txt", "rt", stdin);
-	freopen("out.txt", "wt", stdout);
 	int n;
 	cin >> n;
 	int* a = new int[n];
