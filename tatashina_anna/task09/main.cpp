@@ -23,13 +23,13 @@ bool SimpleNumber(int n) {
 
 int main()
 {
-    unsigned N = 0;
+    unsigned N;
     cin >> N;
 
 	if (SimpleNumber(N))
 		cout << "YES";
 	else
 		cout << "NO";
-    cin >> N;
+
 	return 0;
 }
