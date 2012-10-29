@@ -3,10 +3,15 @@
 
 #include "stdafx.h"
 #include "time.h"
+#include <queue>
 #include <iostream>
 
 using namespace std;
 
+int Compare (const void * a, const void * b)
+{
+  return ( *(int*)a - *(int*)b );
+}
 
 int main()
 {
@@ -27,5 +32,7 @@ int main()
     }
     int t1 = clock() - t;
     cout << sum << " " << (float)t1/CLOCKS_PER_SEC;
+    priority_queue (Compare()) pq;
+    cout << 
     return 0;
 }
