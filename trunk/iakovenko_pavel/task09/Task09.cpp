@@ -1,4 +1,5 @@
 #include <iostream>
+#include <math.h>
 using namespace std;
 
 int main()
@@ -7,7 +8,7 @@ int main()
 	if (n%2==0)
 		flag=0;
 	else
-    for(i=3;i<n;i+=2){
+    for(i=3;i< sqrt((double)n);i+=2){
         if(n%i==0){
             flag=0;goto next;
         }
