@@ -1,18 +1,24 @@
 #include <iostream>
+using namespace std;
 
 int main()
 {int n,i,flag;flag=1;
-    scanf_s("%d", &n);
-    for(i=2;i<n;i++){
+    cin >> n;
+	if (n%2==0)
+		flag=0;
+	else
+    for(i=3;i<n;i+=2){
         if(n%i==0){
             flag=0;goto next;
         }
     }
     next:
     if(flag)
-        printf_s("YES");
-    else 
-        printf_s("NO");
+        cout << "YES" << endl;
+	else
+        cout << "NO" << endl;
+		system ("pause");
 	return 0;
 }
+
 
