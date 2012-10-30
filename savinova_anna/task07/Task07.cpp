@@ -1,6 +1,5 @@
 // Task07.cpp: определяет точку входа для консольного приложения.
 //
-#include "StdAfx.h"
 #include <time.h>
 #include <math.h>
 #include <iostream>
