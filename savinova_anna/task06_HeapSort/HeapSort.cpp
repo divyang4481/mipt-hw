@@ -102,10 +102,11 @@ int HeapSort(int* a, int len) {
 }
 
 int main() {
-    const int N = 10;
-    int A[N];
+    int N = 0;
+    cin >> N;
+    int* A = new int[N];
     for (int i = 0 ; i < N; ++i)
-        A[i] = rand()%100;
+        cin >> A[i];
     HeapSort(A, N);
     for (int i = 0; i < N; ++i)
         cout << A[i] << ' ';
