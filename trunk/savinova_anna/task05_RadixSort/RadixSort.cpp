@@ -1,6 +1,3 @@
-// RadixSort.cpp: определяет точку входа для консольного приложения.
-//
-
 #include <iostream>
 
 using namespace std;
@@ -59,28 +56,28 @@ int CountingSort(int** a, int la, int** &b, int k)
 }
 int RadixSort(int* a, int la)
 {
-    int d=0;
-    int max=A[1];
-    for (int i=0; i<N; ++i)
-        if (A[i]>max)
-            max=A[i];
-    for (int i=1; i<max; i*=10, ++d);
-    int** m=CreateMatr(d,la);
-    int** n=CreateMatr(d,la);
-    for (int i=0; i<la; ++i)
-        for (int j=0; j<d; ++j)
+    int d = 0;
+    int max = a[0];
+    for (int i = 0; i < la; ++i)
+        if (a[i] > max)
+            max = a[i];
+    for (int i = 1; i < max; i *= 10, ++d);
+    int** m = CreateMatr(d, la);
+    int** n = CreateMatr(d, la);
+    for (int i = 0; i < la; ++i)
+        for (int j = 0; j < d; ++j)
         {
-            m[i][j]=a[i]%10;
-            a[i]/=10;
+            m[i][j] = a[i] % 10;
+            a[i] /= 10;
         }
-    for (int i=0; i<d; ++i)
+    for (int i = 0; i < d; ++i)
     {
-        CountingSort(m,la,n,i);
-        m=CopyMatr(n,d,la);
+        CountingSort(m, la, n, i);
+        m = CopyMatr(n, d, la);
     }
-    for (int i=0; i<la; ++i)
-        for (int j=0, k=1; j<d; ++j, k*=10)
-            a[i]+=m[i][j]*k;
+    for (int i = 0; i < la; ++i)
+        for (int j = 0, k = 1; j <d ; ++j, k *= 10)
+            a[i] += m[i][j] * k;
     return 0;
 }
 
@@ -92,11 +89,6 @@ int main()
     int D=0;
     for (int i=0; i<N; ++i)
         cin>>A[i];
-    int MAX=A[1];
-    for (int i=0; i<N; ++i)
-        if (A[i]>MAX)
-            MAX=A[i];
-    for (int i=1; i<MAX; i*=10, ++D);
     RadixSort(A,N);
     for (int i=0; i<N; ++i)
         cout<<A[i]<<" ";
