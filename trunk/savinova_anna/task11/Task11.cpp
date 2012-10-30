@@ -7,7 +7,7 @@ int main()
     scanf("%d", &N);
     float* F = new float[N+1];
     for (int i = 1; i <= N; ++i)
-        F[i] = 1 / (i * i);
+        F[i] = 1 / (float)(i * i);
     float SUMF1 = 0;
     for (int i = 1; i <= N; ++i)
         SUMF1 += F[i];
@@ -19,19 +19,19 @@ int main()
     delete[] F;
     double* D = new double[N+1];
     for (int i = 1; i <= N; ++i)
-        D[i] = 1 / (i * i);
+        D[i] = 1 / (double)(i * i);
     double SUMD1 = 0;
     for (int i = 1; i <= N; ++i)
         SUMD1 += D[i];
-    printf("%.7f\n", SUMD1);
+    printf("%.20f\n", SUMD1);
     double SUMD2 = 0;
     for (int i = N; i >= 1; --i)
         SUMD2 += D[i];
-    printf("%.7f\n", SUMD2);
+    printf("%.20f\n", SUMD2);
     delete[] D;
     long double* LD = new long double[N+1];
     for (int i = 1; i <= N; ++i)
-        LD[i] = 1 / (i * i);
+        LD[i] = 1 / (long double)(i * i);
     double SUMLD1 = 0;
     for (int i = 1; i <= N; ++i)
         SUMLD1 += LD[i];
@@ -43,4 +43,3 @@ int main()
     delete[] LD;
     return 0;
 }
-
