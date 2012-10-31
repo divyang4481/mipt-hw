@@ -257,7 +257,12 @@ TNode* ExtractFirst(); // извлекает из списка первый уз
 
 void Delete(TNode* node); // удаляет из списка узел node
 
-TNode* Extract(TNode* node); // извлекает из спика узел node и возвращает указатель на него;
+void Delete(TNode* from, TNode *to); // удаляет из списка все элемента от from до to
+
+TNode* Extract(TNode* node); // извлекает из списка узел node и возвращает указатель на него;
 // за владение узла отвечает вызвавший метод клиентский код
+
+TList Extract(TNode* from, TNode* to); // извлекает из списка интервал элментов от from до to.
+// возвращает объект TList, содержащий этот интервал
 
 }}}
