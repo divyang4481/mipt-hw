@@ -23,7 +23,7 @@ public:
 		size = 0;
 		first = NULL;
 		last = NULL;
-		TNode*& node = other.FirstNode();
+		TNode* node = other.FirstNode();
 		while (node != NULL) {
 			PushBack(node->value);
 			node = node->next;
