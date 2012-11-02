@@ -5,16 +5,14 @@
 
 using namespace std;
 
-class TNode
-{
+class TNode {
 public: 
 	int value;
 	TNode* prev;
 	TNode* next;
 };
 
-class TList
-{
+class TList {
 public:
 	TList(){ // конструктор по умолчанию - создает пустой список
 		size = 0;
@@ -30,8 +28,6 @@ public:
 			PushBack(node->value);
 			node = node->next;
 		}
-		
-
 	}
 
 	TList& operator=(const TList &other){ // оператор копирующего присваивания
@@ -46,40 +42,34 @@ public:
 	~TList() { // деструктор (удаляет все элементы, которыми владеет список)
 		Delete(first, last);
 	}
+
 	bool IsEmpty() const{ // возвращает true, если список пустой
 		return (first == NULL);
 	}
+
 	int First(){ // возвращает ссылку на первый элемент списка 
 	// (если список пустой - undefined behaviour)
 		if (first != NULL)
 			return first->value;
-		else
-		{}
 	}
-
 	int Last(){ // возвращает ссылку на последний элемент списка
 	//(если список пустой - undefined behaviour)
 		if (last != NULL)
 			return last->value;
-		else
-		{}	
-	
 	}
+
 	TNode* FirstNode() { // возвращает указатель на начальную ноду списка
 		return first;
 	
 	}
-
 	const TNode* FirstNode() const { // возвращает указатель на начальную ноду списка
 		return first;
 	
 	}
-
+	
 	TNode* LastNode() { // возвращает указатель на конечную ноду списка
 		return last;
 	}
-
-
 	const TNode* LastNode() const { // возвращает указатель на конечную ноду списка
 		return last;
 	}
@@ -136,11 +126,14 @@ public:
 		size++;
 
 	}
-	void Insert(TNode* where, int val); // вставляет перед узлом where узел со значением val
+	
+	void Insert(TNode* where, int val){ // вставляет перед узлом where узел со значением val
 
-	void Insert(TNode* where, TNode* node); // вставляет перед узлом where узел node.
+	}
+	void Insert(TNode* where, TNode* node) { // вставляет перед узлом where узел node.
 	// Узел при этом переходит во владение объекта-списка
-
+			
+	}
 	void Insert(TNode* where, TList &other); // вставляет перед узлом where все элементы списка other (за O(1)).
 	// При этом список other становится пустым и все его элементы переходят во владение
 	// текущего объекта-списка (чей метод вызван)
