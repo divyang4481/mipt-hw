@@ -1,6 +1,8 @@
 #include <iostream>
 #include <cstdio>
 #include <cstdlib>
+#include <crtdbg.h>
+
 using namespace std;
 
 class TNode
@@ -23,7 +25,7 @@ public:
 		size = 0;
 		first = NULL;
 		last = NULL;
-		TNode* node = other.FirstNode();
+		const TNode* node = other.FirstNode();
 		while (node != NULL) {
 			PushBack(node->value);
 			node = node->next;
@@ -32,10 +34,13 @@ public:
 
 	}
 
-	TList& operator=(const TList &other); // оператор копирующего присваивания
-
-	//~TList(); // деструктор (удаляет все элементы, которыми владеет список)
-
+	TList& operator=(const TList &other){ // оператор копирующего присваивания
+	
+	
+	}
+	~TList() { // деструктор (удаляет все элементы, которыми владеет список)
+		Delete(first, last);
+	}
 	bool IsEmpty() const{ // возвращает true, если список пустой
 		return (first == NULL);
 	}
@@ -59,9 +64,21 @@ public:
 		return first;
 	
 	}
+
+	const TNode* FirstNode() const { // возвращает указатель на начальную ноду списка
+		return first;
+	
+	}
+
 	TNode* LastNode() { // возвращает указатель на конечную ноду списка
 		return last;
 	}
+
+
+	const TNode* LastNode() const { // возвращает указатель на конечную ноду списка
+		return last;
+	}
+
 	void PushBack(int val){// вставляет в конец списка элемент со значением val
 		TNode* node = new TNode;
 		node->value = val;
@@ -86,7 +103,7 @@ public:
 		last = node;
 		size++;
 	}
-	void PushFront(int val) // вставляет в начало спика элемент со значением val
+	void PushFront(int val) // вставляет в начало спиcка элемент со значением val
 	{
 		TNode* node = new TNode;
 		node->value = val;
@@ -123,21 +140,56 @@ public:
 	// При этом список other становится пустым и все его элементы переходят во владение
 	// текущего объекта-списка (чей метод вызван)
 
-	int PopLast(); // извлекает из списка последний элемента, освобождает память,
+	int PopLast() { // извлекает из списка последний элемента, освобождает память,
 	// выделенную под него, и возвращает значение элемента
-
+		TNode* node = LastNode(); 
+		TNode* n;
+		n->value = node->value;
+		n->next = node->next;
+		n->prev = node->prev;
+		Delete(node);
+		return(n->value);
+	}
 	int PopFirst(); // извлекает из списка первый элемент, освобождает память,
 	// выделенную под него, и возвращает значение элемента
 
-	TNode* ExtractLast(); // извлекает из списка последний узел и возвращает указатель на него;
+	TNode* ExtractLast() { // извлекает из списка последний узел и возвращает указатель на него;
 	// за владение узла отвечает вызвавший метод клиентский код
-
+	
+	
+	}
 	TNode* ExtractFirst(); // извлекает из списка первый узел и возвращает указатель на него;
 	// за владение узла отвечает вызвавший метод клиентский код
 
-	void Delete(TNode* node); // удаляет из списка узел node
+	void Delete(TNode* node) {// удаляет из списка узел node
+		if (first == last)
+		{ first = NULL;
+			last = NULL;
+		}
+		else if (node == first) {
+			(node->next)->prev = NULL;
+			first = node->next;
+		}
+		else if (node == last) {
+			(node->prev)->next = NULL;
+			last = node->prev;
+		}
+		else {		
+			(node->next)->prev = node->prev;
+			(node->prev)->next = node->next;
+		}
+		delete node;
+		size--;
+		}
 
-	void Delete(TNode* from, TNode *to); // удаляет из списка все элемента от from до to
+	void Delete(TNode* from, TNode *to) { // удаляет из списка все элемента от from до to
+		TNode* node = from;
+		while (node != to) {
+			node = node->next;
+			Delete(node->prev);
+		}	
+		Delete(to);
+	}
 
 	TNode* Extract(TNode* node); // извлекает из списка узел node и возвращает указатель на него;
 	// за владение узла отвечает вызвавший метод клиентский код
@@ -152,12 +204,19 @@ private:
 
 int main()
 {
-	TList List;
-	int n, a;
-	cin >> n;
-	for(int i = 0; i< n; i++) {
-		cin >> a;
-		List.PushBack(a);
+	{
+		TList List1;
+		int n, a;
+		cin >> n;
+		for(int i = 0; i< n; i++) {
+			cin >> a;
+			List1.PushFront(a);
+		}
+		TList List2(List1);
+		List2.PushBack(5);
 	}
-    return 0;
+	
+	//List2.Delete(List2.FirstNode()->next, List2.LastNode()->prev);
+	//_CrtDumpMemoryLeaks();
+	return 0;
 }
