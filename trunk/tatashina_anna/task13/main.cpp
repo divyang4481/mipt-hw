@@ -35,7 +35,12 @@ public:
 	}
 
 	TList& operator=(const TList &other){ // оператор копирующего присваивания
-	
+		Delete(first, last);
+		const TNode* node = other.FirstNode();
+		while (node != NULL) {
+			PushBack(node->value);
+			node = node->next;
+		}
 	
 	}
 	~TList() { // деструктор (удаляет все элементы, которыми владеет список)
@@ -143,24 +148,39 @@ public:
 	int PopLast() { // извлекает из списка последний элемента, освобождает память,
 	// выделенную под него, и возвращает значение элемента
 		TNode* node = LastNode(); 
+		int n = LastNode()->value;
+		Delete(node);
+		return(n);
+	}
+	int PopFirst() { // извлекает из списка первый элемент, освобождает память,
+		TNode* node = FirstNode(); 
+		int n = FirstNode()->value;
+		Delete(node);
+		return(n);
+	}// выделенную под него, и возвращает значение элемента
+
+	TNode* ExtractLast() { // извлекает из списка последний узел и возвращает указатель на него;
+	// за владение узла отвечает вызвавший метод клиентский код
+		TNode* node = LastNode(); 
 		TNode* n;
 		n->value = node->value;
 		n->next = node->next;
 		n->prev = node->prev;
 		Delete(node);
-		return(n->value);
-	}
-	int PopFirst(); // извлекает из списка первый элемент, освобождает память,
-	// выделенную под него, и возвращает значение элемента
-
-	TNode* ExtractLast() { // извлекает из списка последний узел и возвращает указатель на него;
-	// за владение узла отвечает вызвавший метод клиентский код
-	
+		return(n);
 	
 	}
-	TNode* ExtractFirst(); // извлекает из списка первый узел и возвращает указатель на него;
+	TNode* ExtractFirst() { // извлекает из списка первый узел и возвращает указатель на него;
 	// за владение узла отвечает вызвавший метод клиентский код
-
+		TNode* node = FirstNode(); 
+		TNode* n;
+		n->value = node->value;
+		n->next = node->next;
+		n->prev = node->prev;
+		Delete(node);
+		return n;
+	
+	}
 	void Delete(TNode* node) {// удаляет из списка узел node
 		if (first == last)
 		{ first = NULL;
