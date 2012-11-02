@@ -214,14 +214,16 @@ TList& operator=(const TList &other); // оператор копирующего
 
 bool IsEmpty() const; // возвращает true, если список пустой
 
-int First(); // возвращает ссылку на первый элемент списка 
+int First() const; // возвращает ссылку на первый элемент списка 
 // (если список пустой - undefined behaviour)
 
-int Last(); // возвращает ссылку на последний элемент списка
+int Last() const; // возвращает ссылку на последний элемент списка
 //(если список пустой - undefined behaviour)
 
+const TNode* FirstNode() const;
 TNode* FirstNode(); // возвращает указатель на начальную ноду списка
 
+const TNode* LastNode() const;
 TNode* LastNode(); // возвращает указатель на конечную ноду списка
 
 void PushBack(int val); // вставляет в конец списка элемент со значением val
