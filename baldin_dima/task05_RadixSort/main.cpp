@@ -8,8 +8,7 @@ int kolb(int a)
     int q=1,b=0;
     while (a!=0)
     {
-        a=a/q;
-        q=q*2;
+        a=a/2;
         ++b;
     }
     return b;
