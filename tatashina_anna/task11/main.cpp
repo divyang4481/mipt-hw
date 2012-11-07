@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <stdlib.h>
 #include <math.h>
@@ -8,40 +7,40 @@
 using namespace std;
 
 void SumRow(int n) {
-	float sumF = 0;
-	double sumD = 0;
-	long double sumLD = 0;
-	
-	for (int i = 1; i <= n; ++i) {
-		sumF += 1.0/(i*i);
-	}
-	cout << sumF << "\n";
-	sumF = 0;
-	for (int i = n; i > 0; --i) {
-		sumF += 1.0/(i*i);
-	}
-	cout << sumF << "\n";
+        float sumF = 0;
+        double sumD = 0;
+        long double sumLD = 0;
+        
+        for (int i = 1; i <= n; ++i) {
+                sumF += (float)1/((float)i*(float)i);
+        }
+        cout << sumF << "\n";
+        sumF = 0;
+        for (int i = n; i > 0; --i) {
+                sumF += (float)1/((float)i*(float)i);
+        }
+        cout << sumF << "\n";
 
-	for (int i = 1; i <= n; ++i) {
-		sumD += 1.0/(i*i);
-	}
-	cout << sumD << "\n";
-	sumD = 0;
-	for (int i = n; i > 0; --i) {
-		sumD += 1.0/(i*i);
-	}
-	cout << sumD << "\n";
+        for (int i = 1; i <= n; ++i) {
+                sumD += 1.0/((double)i*(double)i);
+        }
+        cout << sumD << "\n";
+        sumD = 0;
+        for (int i = n; i > 0; --i) {
+                sumD += 1.0/((double)i*(double)i);
+        }
+        cout << sumD << "\n";
 
 
-	for (int i = 1; i <= n; ++i) {
-		sumLD += 1.0/(i*i);
-	}
-	cout << sumLD << "\n";
-	sumLD = 0;
-	for (int i = n; i > 0; --i) {
-		sumLD += 1.0/(i*i);
-	}
-	cout << sumLD << "\n";
+        for (int i = 1; i <= n; ++i) {
+                sumLD += 1.0/((long double)i*(long double)i);
+        }
+        cout << sumLD << "\n";
+        sumLD = 0;
+        for (int i = n; i > 0; --i) {
+                sumLD += 1.0/((long double)i*(long double)i);
+        }
+        cout << sumLD << "\n";
 
 
 }
@@ -49,10 +48,10 @@ void SumRow(int n) {
 int main()
 {
     cout << fixed << setprecision(15);
-	int n;
+        int n;
     cin >> n;
 
-	SumRow(n);
+        SumRow(n);
 
-	return 0;
+        return 0;
 }
