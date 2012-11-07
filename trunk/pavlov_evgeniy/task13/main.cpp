@@ -7,14 +7,28 @@ struct list
 };
 class TList
 {   
-    private:
+   
     public:
+    //private;
 	list *first,*last;
-	public:
+    public:
 	TList()
 	{
 		first=NULL;
 		last=NULL;
+	};
+	TList(const TList& other)
+	{
+		first=NULL;
+		last=NULL;
+		list *dop;
+		dop=other.first;
+		while(dop!=other.last)
+		{
+			PushBack(dop->x);
+			dop=dop->next;
+		}
+		PushBack(dop->x);
 	};
 	void operator=(const TList& other)
 	{ 
@@ -188,26 +202,36 @@ class TList
 	};
 	void show()
 	{
-		list *k;
-		k=first;
+		list *k=first;
+		if (first!=NULL)
+		{
 		while(k!=last)
 		{cout<<k->x<<' ';k=k->next;}
 		cout<<k->x<<'\n';
+		}
 	}
 	list* ExtractLast()
 	{
 		list *k=last;
+		if(first!=last)
+		{
 		last=last->prev;
 		last->next=NULL;
 		k->prev=NULL;
+		}
+		else first=last=NULL;
 		return k;
 	};
 	list* ExtractFirst()
 	{
 		list *k=first;
-		first=first->next;
-		first->prev=NULL;
-		k->next=NULL;
+		if(first!=last)
+		{
+			first=first->next;
+		    first->prev=NULL;
+		    k->next=NULL;
+		}
+		else first=last=NULL;
 		return k;
 	};
 	void Delete(list* node)
@@ -221,30 +245,70 @@ class TList
 		while(from!=to)
 		{
 			from=from->next;
-			delete from->prev;
+			Delete(from->prev);
 		}
-		delete from;
+		Delete(from);
 	};
 	list* Extract(list* node)
 	{
 		list *k=node;
-		if(node->prev!=NULL)node->prev->next=node->next;
-		if(node->next!=NULL)node->next->prev=node->prev;
+		if(node->prev!=NULL)node->prev->next=node->next;else first=node->next;
+		if(node->next!=NULL)node->next->prev=node->prev;else last=node->prev;
 		node=NULL;
 		return k;
 	};
 	TList Extract(list* from, list* to)
 	{
 		TList k;
-		if(from->prev!=NULL)from->prev->next=to->next;
-		if(to->next!=NULL)to->next->prev=from->prev;
+		if(from->prev!=NULL)from->prev->next=to->next;else first=to->next;
+		if(to->next!=NULL)to->next->prev=from->prev;else last=from->prev;
 		while(from!=to)
 		{
-			k.PushBack(from);
+			k.PushBack(from->x);
 			from=from->next;
+			delete from->prev;
 		}
 		k.PushBack(from);
 		from=to=NULL;
 		return k;
 	};
 };
+int main()
+{
+	TList a,b,c;
+	for(int i=0;i<10;++i)a.PushBack(i);
+	a.show();
+	b=a.Extract(a.first->next->next,a.last->prev);
+	a.show();
+	b.show();
+	list *k;
+	k=b.Extract(b.first);
+	b.show();
+	a.PushFront(k);
+	a.show();
+	b.Delete(b.first->next,b.last->prev);
+	b.show();
+	while(a.first)
+	{
+	k=a.ExtractFirst();
+	b.PushBack(k);
+	}
+	a.show();
+	b.show();
+	int kk;
+	kk=b.PopFirst();
+	cout<<kk<<'\n';
+	b.show();
+	c=b;
+	for(int i=0;i<kk;++i)a.PushFront(kk);
+	a.show();
+	k=b.last;
+	b.Insert(k,c);
+	b.show();
+	b.Insert(k,a.ExtractFirst());
+	b.Insert(k,100);
+	b.show();
+	a.show();
+	c.show();
+	return 0;
+}
