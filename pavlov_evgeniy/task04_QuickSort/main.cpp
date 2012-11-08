@@ -1,9 +1,5 @@
 #include<iostream>
 using namespace std;
-void swap(int *a,int m,int n)
-{
-	int k=a[m];a[m]=a[n];a[n]=k;
-}
 void quicksort(int *a,int b,int e)
 {
 	int m=a[(b+e)/2];
@@ -12,7 +8,7 @@ void quicksort(int *a,int b,int e)
 	{
 		while(a[b1]<m)++b1;
 		while(a[e1]>m)--e1;
-		if(e1>=b1){swap(a,e1,b1);++b1;--e1;}
+		if(e1>=b1){swap(a[e1],a[b1]);++b1;--e1;}
 	}
 	while(e1>b1);
 	if(e1>b)quicksort(a,b,e1);
