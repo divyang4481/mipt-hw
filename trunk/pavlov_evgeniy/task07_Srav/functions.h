@@ -1,0 +1,10 @@
+void BubbleSort(int*,int);
+void merge(int*,int,int,int*,int,int,int);
+void mergesort(int*,int,int,int*);
+void msort(int*,int);
+void insertsort(int*,int);
+void quicksort(int*,int,int);
+void radixs(int*,int);
+void Heap(int*,int,int);
+void Heapstruct(int*,int);
+void Heapsort(int*,int);
