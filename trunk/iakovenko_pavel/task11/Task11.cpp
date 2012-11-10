@@ -13,8 +13,8 @@ int main(){
 	}
 	for (int i=n-1; i>=0; --i)
 	sumf2+=numb[i];
-	printf("%.16f\n", sumf1);//float у меня выдает 16 значащих знаков после запятой
-	printf("%.16f\n", sumf2);
+	printf("%.7f\n", sumf1);//float у меня выдает 16 значащих знаков после запятой
+	printf("%.7f\n", sumf2);
 	free(numb);
 
 	double sumd1=0.0, sumd2=0.0;
@@ -25,8 +25,8 @@ int main(){
 	}
 	for (int i=n-1; i>=0; --i)
 	sumd2+=numb1[i];
-	printf("%.16f\n", sumd1);
-	printf("%.16f\n", sumd2);
+	printf("%.15f\n", sumd1);
+	printf("%.15f\n", sumd2);
 	free(numb1);
 
 	long double sumld1=0.0, sumld2=0.0;
@@ -37,8 +37,8 @@ int main(){
 	}
 	for (int i=n-1; i>=0; --i)
 	sumld2+=numb2[i];
-	printf("%.16lf\n", sumld1);
-	printf("%.16lf\n", sumld2);
+	printf("%.31lf\n", sumld1);
+	printf("%.31lf\n", sumld2);
 	free(numb2);
 	system ("pause");
 	return 0;
