@@ -7,7 +7,7 @@ int main()
     scanf("%d",&n);
     for (int i=0; i<=n; ++i)
     {
-        printf("%d\n",c);
+        printf("%llu\n",c);
         c=c*(n-i)/(i+1);
     }
     return 0;
