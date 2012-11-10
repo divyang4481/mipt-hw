@@ -1,4 +1,5 @@
-#include <stdio.h>
+#include <iostream>
+using namespace std;
 
 bool Prime(long n)
 {
@@ -11,8 +12,8 @@ bool Prime(long n)
 int main()
 {
     long n;
-    scanf("%d",&n);
-    if (Prime(n)) printf("YES");
+    cin >> n;
+    if (Prime(n)) cout << "YES";
     else printf("NO");
     return 0;
 }
