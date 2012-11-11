@@ -1,14 +1,5 @@
-# include <stdio.h>
-
-void swap(int &a, int &b)
-{
-	if (a>b)
-	{
-		int t=a;
-		a=b;
-		b=t;
-	}
-}
+# include <iostream>
+using namespace std;
 
 int Min(int *a, int &i, int &j)
 {
@@ -55,7 +46,7 @@ void MergeSort(int *a, int l, int r, int *c)
 	else 
 	{if (r-l==1)
 	{
-		swap(a[l],a[r]);
+		if (a[l]<a[r]) swap(a[l],a[r]);
 	}
 	else 
 	{
@@ -67,16 +58,20 @@ void MergeSort(int *a, int l, int r, int *c)
 	}
 }
 
+void MERGESORT(int *a, int n)
+{
+    int *c= new int[n];
+    MergeSort(a,0,n-1,c);
+}
+
 int main()
 {
 	int n;
 	scanf("%d",&n);
 	int *a = new int[n];
-	int *c = new int[n];
 	for (int i=0; i<n; ++i) scanf("%d",(a+i));
-	MergeSort(a,0,n-1,c);
+	MERGESORT(a,n);
 	for (int i=0; i<n; ++i) printf("%d ",*(a+i));
 	delete [] a;
-	delete [] c;
 	return 0;
 }
