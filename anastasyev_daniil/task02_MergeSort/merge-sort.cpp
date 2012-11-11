@@ -1,16 +1,6 @@
 # include <iostream>
 using namespace std;
 
-void swap(int &a, int &b)
-{
-	if (a>b)
-	{
-		int t=a;
-		a=b;
-		b=t;
-	}
-}
-
 int Min(int *a, int &i, int &j)
 {
 	int t;
