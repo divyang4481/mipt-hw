@@ -23,11 +23,11 @@ int main(){
 		sdr+=cd;
 		slr+=cl;
 	}
-	cout << sfr << endl;
-	cout << sff << endl;
-	cout << sdr << endl;
-	cout << sdf << endl;
-	cout << slr << endl;
-	cout << slf << endl;
+	cout << setprecision(7) << sfr << endl;
+	cout << setprecision(7) << sff << endl;
+	cout << setprecision(16) << sdr << endl;
+	cout << setprecision(16) << sdf << endl;
+	cout << setprecision(16) << slr << endl;
+	cout << setprecision(16) << slf << endl;
 	return 0;
 }
