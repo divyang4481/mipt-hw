@@ -1,6 +1,16 @@
 # include <iostream>
 using namespace std;
 
+void swap(int &a, int &b)
+{
+	if (a>b)
+	{
+		int t=a;
+		a=b;
+		b=t;
+	}
+}
+
 int Min(int *a, int &i, int &j)
 {
 	int t;
@@ -46,7 +56,7 @@ void MergeSort(int *a, int l, int r, int *c)
 	else 
 	{if (r-l==1)
 	{
-		if (a[l]<a[r]) swap(a[l],a[r]);
+		if (a[l]>a[r]) swap(a[l],a[r]);
 	}
 	else 
 	{
