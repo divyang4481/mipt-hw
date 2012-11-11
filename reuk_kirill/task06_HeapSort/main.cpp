@@ -2,6 +2,7 @@
 #include <stdio.h>
 
 using namespace std;
+int n;
 
 void heapify(int *a, int num, int size)
 {
@@ -27,10 +28,11 @@ void heapify(int *a, int num, int size)
 
 int main()
 {
-    int n;
-    int a[10000], res[10000];
 
     scanf("%d", &n);
+    int* a = new int[n];
+    int* res = new int[n];
+
     for (int i = 1; i<=n; ++i)
     {
         scanf("%d", &a[i]);
@@ -54,5 +56,7 @@ int main()
         printf("%d ", res[i]);
     }
 
+    delete[] a;
+    delete[] res;
     return 0;
 }
