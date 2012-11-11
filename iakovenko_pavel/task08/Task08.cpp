@@ -6,15 +6,14 @@ const int maxn=10000;
 
 char** split(const char *str, const char *delim);
 void delete_string_array(char **str);
-int chet(const char *str, const char *delim, int i); //определяет, есть ли последовательность символов в расщепляемой строке, которая равна расщепителю
+bool chet(const char *str, const char *delim, int i);
 
 int main(){ 
-	extern int length;
-	char *str = (char*) malloc(maxn * sizeof(char));
-    char *delim = (char*) malloc(maxn * sizeof(char));
+	char *str = new char [maxn];
+    char *delim = new char [maxn];
 	cin >>str;
 	cin >>delim;
-	length=(int)strlen(str);
+	length=strlen(str);
 	char **result = new char* [length];
     for(int i=0; i<length; i++)
 		result[i] = new char [length+1];
@@ -22,12 +21,13 @@ int main(){
 	for(int i=0; i<=nString; i++)
 		cout << result[i]<< endl;
 	delete_string_array(result);
+	delete [] str;
+	delete [] delim;
 	system("pause");
 	return 0;
 }
 
 char** split(const char *str, const char *delim){
-	extern int length,nString;
 	int n2=strlen(delim);
 	char **ptr = new char* [length];
     for(int i=0; i<length; i++)
@@ -51,19 +51,19 @@ char** split(const char *str, const char *delim){
 	return ptr;
 }
 
-int chet(const char *str, const char *delim, int i){
+bool chet(const char *str, const char *delim, int i){
 	int n2=strlen(delim);
 	if(str[i]==delim[0]){
 		for(int j=1;j<n2; j++)
 			if(str[i+j]!=delim[j])
-				return 1;
-		return 0;
+				return true;
+		return false;
 	}
-	return 1;
+	return true;
 }
 
 void delete_string_array(char **str){
 	for (int i=0; i<nString; i++)
-		free(str[i]);
-	free(str);
-	}
+		delete [] str[i];
+	delete [] str;
+}
