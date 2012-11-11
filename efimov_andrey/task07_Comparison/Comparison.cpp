@@ -288,7 +288,7 @@ int main(){
 		Sort(a,n,i);
 		t=clock()-ct;
 		name(i);
-		cout << " " << t << " ";
+		cout << " " << ((float)t)/CLOCKS_PER_SEC) << " sec ";
 		state(corr(a,n));
 		cout << endl;
 		for (int j=0; j<n; j++){
