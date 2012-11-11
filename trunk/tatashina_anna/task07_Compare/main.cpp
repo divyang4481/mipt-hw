@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <stdlib.h>
 #include <math.h>
@@ -13,15 +12,18 @@ bool check(int n, int *a)
 {
     for (int i = 1; i < n; ++i) 
         if (a[i] < a[i - 1]) 
-			return(false);
+                        return(false);
     return(true);
 }
 
 void Random(int n, int *a) {
-	for(int i = 0; i < n; ++i)
-		a[i] = rand();
+        for(int i = 0; i < n; ++i)
+                a[i] = rand();
 }
-
+int compare (const void * a, const void * b)
+{
+  return ( *(int*)a - *(int*)b );
+}
 void Bubble_sort(int N, int *a) {
         for (int i = 0; i < N; ++i)
                 for (int j = 0; j < N - 1; ++j)
@@ -141,6 +143,29 @@ void RadixSort(int *a, int N) {
                 q *= 10;
         } 
 }
+void AllRadix(int *a, int N) {
+        int *b = (int*) malloc(N*sizeof(int));
+        int *c = (int*) malloc(N*sizeof(int));
+        int n1 = 0, n2 = 0;
+        for(int i = 0; i < N; i++)
+                if (a[i] > 0)
+                        b[n1++] = a[i];
+                else
+                        c[n2++] = -a[i];
+        RadixSort(b, n1);
+        RadixSort(c, n2);
+        for(int i = 0; i < n2; i++)
+                a[i] = -c[n2 - i - 1];
+        for(int i = 0; i < n1; i++)
+                a[n2 + i] = b[i];
+    
+        free(b);
+		free(c);
+}
+void copy(int*a, int*b, int n) {
+	for(int i = 0; i < n; ++i)
+		a[i] = b[i];
+}
 
 class THeap {
         private:
@@ -204,7 +229,6 @@ class THeap {
                 void DecSize() {
                         Size--;
                 }
-
                 void HeapSort(int* a, int n) {
                         for (int i = GetSize(); i > 0; i--) {
                                 swap(a[0], a[i - 1]);
@@ -212,127 +236,104 @@ class THeap {
                                 Heapify(0);
                         }
                 }
+
 };
 
 int main()
 {
-	srand (time (NULL));
-	int n;
-	cin >> n;
-	cout << fixed << setprecision(15);
-	int *a = (int*) malloc(n*sizeof(int));
-	int *b = (int*) malloc(n*sizeof(int));
+        srand (time (NULL));
+        int n;
+        cin >> n;
+        cout << fixed << setprecision(5);
+        int *a = (int*) malloc(n*sizeof(int));
+        int *b = (int*) malloc(n*sizeof(int));
 
-	Random(n, a);
-	for(int i = 0; i < n; ++i)
-		b[i] = a[i];
+        Random(n, a);
+		copy(b, a, n);
 
-	///////////////////////////////
-	int now = clock();
-	Bubble_sort(n, a);
-	if (check(n, a))
-		cout << "Bubble_sort = "<< (clock() - now + 0.0)/CLOCKS_PER_SEC << "\n";
-	else 
-		cout << "Bubble_sort failed";
+        ///////////////////////////////
+        float now = clock();
+        Bubble_sort(n, a);
+        now  = float(clock() - now)/CLOCKS_PER_SEC;
+		if (check(n, a))
+                cout << "Bubble_sort = "<< now << " c\n";
+        else 
+                cout << "Bubble_sort failed";
 
-	for(int i = 0; i < n; ++i)
-		a[i] = b[i];
-	///////////////////////////////
+		copy(a, b, n);
+        ///////////////////////////////
 
+        ///////////////////////////////
+        now = clock();
+		int *temp = (int*) malloc((n + 1)*sizeof(int));
+        MergeSort(0, n - 1, a, temp);
+        now  = float(clock() - now)/CLOCKS_PER_SEC;        
+		if (check(n, a))        
+                cout << "Merge_sort = "<< now << " c\n"; 
+        else 
+                cout << "Merge_sort failed";
 
-	///////////////////////////////
-	now = clock();
-    int *temp = (int*) malloc((n + 1)*sizeof(int));
-	MergeSort(0, n - 1, a, temp);
-	if (check(n, a))	
-		cout << "Merge_sort = "<< (clock() - now + 0.0)/CLOCKS_PER_SEC << "\n";	
-	else 
-		cout << "Merge_sort failed";
+        free(temp);
+		copy(a, b, n);
+        ///////////////////////////////
 
-	free(temp);
-	///////////////////////////////
+        ///////////////////////////////
+        now = clock();
+        InsertSort(0, n, a);
+	    now  = float(clock() - now)/CLOCKS_PER_SEC;    
+        if (check(n, a))        
+                cout << "Insert_sort = "<< now << " c\n";
+        else 
+                cout << "Insert_sort failed";
+		copy(a, b, n);
+        /////////////////////////////// 
 
-	///////////////////////////////
-	for(int i = 0; i < n; ++i)
-		a[i] = b[i];
+        ///////////////////////////////
+        now = clock();
+        QSort(0, n - 1, a);
+        now  = float(clock() - now)/CLOCKS_PER_SEC;    
+        if (check(n, a))        
+                cout << "Qsort = "<< now << " c\n";
+        else 
+                cout << "Qsort failed";
+		copy(a, b, n);
+		///////////////////////////////
 
-	now = clock();
-	InsertSort(0, n, a);
-	if (check(n, a))	
-		cout << "Insert_sort = "<< (clock() - now + 0.0)/CLOCKS_PER_SEC << "\n";
-	else 
-		cout << "Insert_sort failed";
-	///////////////////////////////	
+        ///////////////////////////////
+        now = clock();
+		qsort((void*)a, n, sizeof(int), compare);
+        now  = float(clock() - now)/CLOCKS_PER_SEC;    
+		if (check(n, a))        
+                cout << "CQsort = "<< now << " c\n";
+        else 
+                cout << "CQsort failed";
+		copy(a, b, n);
+		///////////////////////////////
 
-	///////////////////////////////
-	for(int i = 0; i < n; ++i)
-		a[i] = b[i];
+        ///////////////////////////////
+        now = clock();
+        AllRadix(a, n);
+	    now  = float(clock() - now)/CLOCKS_PER_SEC;   
+        if (check(n, a))        
+                cout << "RadixSort = "<< now << " c\n";
+        else 
+                cout << "RadixSort failed";     
+		copy(a, b, n);
+        /////////////////////////////// 
+        
+        ///////////////////////////////
+        now = clock();
+		THeap h(a, n);
+		h.HeapSort(a, n);
+	    now  = float(clock() - now)/CLOCKS_PER_SEC; 
+        if (check(n, a))
+                cout << "Heap_Sort = "<< now << " c\n";
+        else 
+                cout << "Heap_Sort failed";     
+        /////////////////////////////// 
+        free(b);
+        free(a);
 
-	now = clock();
-	QSort(0, n - 1, a);
-	if (check(n, a))	
-		cout << "Qsort = "<< (clock() - now + 0.0)/CLOCKS_PER_SEC << "\n";
-	else 
-		cout << "Qsort failed";
-	///////////////////////////////
-
-	///////////////////////////////
-	for(int i = 0; i < n; ++i)
-		a[i] = b[i];
-
-	now = clock();
-	sort(a, a + n);
-	if (check(n, a))	
-		cout << "Sort = "<< (clock() - now + 0.0)/CLOCKS_PER_SEC << "\n";
-	else 
-		cout << "Sort failed";
-	///////////////////////////////
-
-	///////////////////////////////
-	for(int i = 0; i < n; ++i)
-		a[i] = b[i];
-
-	now = clock();
-	
-	int *b1 = (int*) malloc(n*sizeof(int));
-	int *c = (int*) malloc(n*sizeof(int));
-	int n1 = 0, n2 = 0;
-	for(int i = 0; i < n; i++)
-		if (a[i] > 0)
-			b1[n1++] = a[i];
-		else
-			c[n2++] = -a[i];
-	RadixSort(b1, n1);
-	RadixSort(c, n2);
-	for(int i = 0; i < n2; i++)
-		a[i] = -c[n2 - i - 1];
-	for(int i = 0; i < n1; i++)
-		a[n2 + i] = b1[i];
-	
-	if (check(n, a))	
-		cout << "RadixSort = "<< (clock() - now + 0.0)/CLOCKS_PER_SEC << "\n";
-	else 
-		cout << "RadixSort failed";	
-
-    free(b1);
-    free(c);
-	///////////////////////////////	
-	
-	///////////////////////////////
-	for(int i = 0; i < n; ++i)
-		a[i] = b[i];
-
-	now = clock();
-    THeap h(a, n);
-    h.HeapSort(a, n);
-	if (check(n, a))
-		cout << "Heap_Sort = "<< (clock() - now + 0.0)/CLOCKS_PER_SEC << "\n";
-	else 
-		cout << "Heap_Sort failed";	
-	///////////////////////////////	
-	
-	free(a);
-	cin >> n;
-	return(0);
+        return(0);
 
 }
