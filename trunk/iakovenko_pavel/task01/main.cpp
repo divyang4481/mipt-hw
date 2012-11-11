@@ -20,6 +20,7 @@ int main(){
 	BubleSort(arr, n);
 	for(int i=0; i<n; ++i)
 		cout <<arr[i] <<" ";
+	delete arr;
 	system("pause");
 	return 0;
 }
