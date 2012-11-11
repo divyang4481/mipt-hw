@@ -8,27 +8,28 @@ int main(){
 	long double cl, slr=0, slf=0;
 	int n;
 	cin >> n;
-	for (float i=1; i<=n; i+=1){
-		cf=1/(i*i);
-		cd=1/(i*i);
-		cl=1/(i*i);
+	for (int i=1; i<=n; i+=1){
+		cf=1/((float)(i*i));
+		cd=1/((double)(i*i));
+		cl=1/((long double)(i*i));
 		sff+=cf;
 		sdf+=cd;
 		slf+=cl;
 	}
-	for (float i=n; i>0; i-=1){
-		cf=1/(i*i);
-		cd=1/(i*i);
-		cl=1/(i*i);
+	for (int i=n; i>0; i-=1){
+		cf=1/((float)(i*i));
+		cd=1/((double)(i*i));
+		cl=1/((long double)(i*i));
 		sfr+=cf;
 		sdr+=cd;
 		slr+=cl;
 	}
-	cout << setprecision (15) << sfr << endl;
-	cout << setprecision (15) << sff << endl;
-	cout << setprecision (15) << sdr << endl;
-	cout << setprecision (15) << sdf << endl;
-	cout << setprecision (15) << slr << endl;
-	cout << setprecision (15) << slf << endl;
+	cout << sfr << endl;
+	cout << sff << endl;
+	cout << sdr << endl;
+	cout << sdf << endl;
+	cout << slr << endl;
+	cout << slf << endl;
+	cin >> n;
 	return 0;
 }
