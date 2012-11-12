@@ -1,16 +1,16 @@
 #include<iostream>
 using namespace std;
-struct list
+struct TNode
 {   
 	int x;
-	list *prev,*next;
+	TNode *prev,*next;
 };
 class TList
 {   
    
     public:
     //private;
-	list *first,*last;
+	TNode *first,*last;
     public:
 	TList()
 	{
@@ -19,22 +19,26 @@ class TList
 	};
 	TList(const TList& other)
 	{
-		first=NULL;
+		/*first=NULL;
 		last=NULL;
-		list *dop;
+		TNode *dop;
 		dop=other.first;
 		while(dop!=other.last)
 		{
 			PushBack(dop->x);
 			dop=dop->next;
 		}
-		PushBack(dop->x);
+		PushBack(dop->x);*/
+		*this=other;
 	};
-	void operator=(const TList& other)
+	//void operator=(const TList &other)
+	TList& operator=(const TList &other)
 	{ 
+	  if(this!=&other)
+	  {
 		first=NULL;
 		last=NULL;
-		list *dop;
+		TNode *dop;
 		dop=other.first;
 		while(dop!=other.last)
 		{
@@ -42,6 +46,8 @@ class TList
 			dop=dop->next;
 		}
 		PushBack(dop->x);
+	  }
+	  return *this;
 	};
 	~TList()
 	{
@@ -64,17 +70,17 @@ class TList
 	{	
 	    return(last->x);
 	};
-	const list* FirstNode() const
+	const TNode* FirstNode() const
 	{
 		return first;
 	};
-	const list* LastNode() const
+	const TNode* LastNode() const
 	{
 		return last;
 	};
 	void PushBack(int val)
 	{
-		list *n=new list;
+		TNode *n=new TNode;
 		n->x=val;
 		n->next=NULL;
 		if(first!=NULL)
@@ -89,7 +95,7 @@ class TList
 			first=last=n;
 		}
 	};
-	void PushBack(list* node)
+	void PushBack(TNode* node)
 	{
 		node->next=NULL;
 		if(first!=NULL)
@@ -108,7 +114,7 @@ class TList
 	};
 	void PushFront(int val)
 	{
-	    list *n=new list;
+	    TNode *n=new TNode; 
 		n->x=val;
 		n->prev=NULL;
 		if(first!=NULL)
@@ -123,7 +129,7 @@ class TList
 			first=last=n;
 		}
 	};
-	void PushFront(list* node)
+	void PushFront(TNode* node)
 	{
 		node->prev=NULL;
 		if(first!=NULL)
@@ -138,9 +144,9 @@ class TList
 			first=last=node;
 		}
 	};
-	void Insert(list* where, int val)
+	void Insert(TNode* where, int val)
 	{   
-		list* n=new list;
+		TNode* n=new TNode;
 		n->x=val;
 		if(where->prev!=NULL)
 		{
@@ -149,10 +155,12 @@ class TList
 			n->next=where;
 			where->prev=n;
 		}
-		else PushBack(n);
+		else PushFront(n);
 	};
-	void Insert(list* where,list* node)
+	void Insert(TNode* where,TNode* node)
 	{
+	  if(node!=NULL)
+	  {
 		if(where->prev!=NULL)
 		{
 			where->prev->next=node;
@@ -161,10 +169,13 @@ class TList
 			where->prev=node;
 			node=NULL;
 		}
-		else PushBack(node);
+		else PushFront(node);
+	  }
 	};
-	void Insert(list* where,TList& other)
-	{
+	void Insert(TNode* where,TList& other)
+	{ 
+	  if(other.first!=NULL)
+	  {
 		if(where->prev!=NULL)
 		{
 			where->prev->next=other.first;
@@ -183,6 +194,7 @@ class TList
 			other.first=NULL;
 			other.last=NULL;	
 		}
+	 }
 	};
 	int PopLast()
 	{
@@ -202,7 +214,7 @@ class TList
 	};
 	void show()
 	{
-		list *k=first;
+		TNode *k=first;
 		if (first!=NULL)
 		{
 		while(k!=last)
@@ -210,9 +222,9 @@ class TList
 		cout<<k->x<<'\n';
 		}
 	}
-	list* ExtractLast()
+	TNode* ExtractLast()
 	{
-		list *k=last;
+		TNode *k=last;
 		if(first!=last)
 		{
 		last=last->prev;
@@ -222,9 +234,9 @@ class TList
 		else first=last=NULL;
 		return k;
 	};
-	list* ExtractFirst()
+	TNode* ExtractFirst()
 	{
-		list *k=first;
+		TNode *k=first;
 		if(first!=last)
 		{
 			first=first->next;
@@ -234,54 +246,59 @@ class TList
 		else first=last=NULL;
 		return k;
 	};
-	void Delete(list* node)
+	void Delete(const TNode* node)
 	{
-		if(node->prev!=NULL)node->prev->next=node->next;
-		if(node->next!=NULL)node->next->prev=node->prev;
+		if(node->prev!=NULL)node->prev->next=node->next;else first=node->next;
+		if(node->next!=NULL)node->next->prev=node->prev;else last=node->prev;
 		delete node;
 	};
-	void Delete(list* from, list *to)
+	void Delete(const TNode *from, const TNode *to)
 	{
-		while(from!=to)
+		if(from->prev!=NULL)from->prev->next=to->next;else first=to->next;
+		if(to->next!=NULL)to->next->prev=from->prev;else last=from->prev;
+		TNode *k;
+		k=from->next->prev;
+		while(k!=to->prev)
 		{
-			from=from->next;
-			Delete(from->prev);
+			k=k->next;
+			delete k->prev;
 		}
-		Delete(from);
+		delete k;
+		delete to;
 	};
-	list* Extract(list* node)
+	TNode* Extract(TNode* node)
 	{
-		list *k=node;
+		TNode *k=node;
 		if(node->prev!=NULL)node->prev->next=node->next;else first=node->next;
 		if(node->next!=NULL)node->next->prev=node->prev;else last=node->prev;
 		node=NULL;
 		return k;
 	};
-	TList Extract(list* from, list* to)
+	TList Extract(TNode* from, TNode* to)
 	{
 		TList k;
-		if(from->prev!=NULL)from->prev->next=to->next;else first=to->next;
-		if(to->next!=NULL)to->next->prev=from->prev;else last=from->prev;
+		if(from!=first)from->prev->next=to->next;else first=to->next;
+		if(to!=last)to->next->prev=from->prev;else last=from->prev;
 		while(from!=to)
 		{
 			k.PushBack(from->x);
 			from=from->next;
 			delete from->prev;
 		}
-		k.PushBack(from);
-		from=to=NULL;
+		k.PushBack(from->x);
+		delete from;
 		return k;
 	};
 };
 int main()
 {
-	TList a,b,c;
+	/*TList a,b,c;
 	for(int i=0;i<10;++i)a.PushBack(i);
 	a.show();
 	b=a.Extract(a.first->next->next,a.last->prev);
 	a.show();
 	b.show();
-	list *k;
+	TNode *k;
 	k=b.Extract(b.first);
 	b.show();
 	a.PushFront(k);
@@ -309,6 +326,25 @@ int main()
 	b.Insert(k,100);
 	b.show();
 	a.show();
+	c.show();
+	return 0;*/
+
+	TList a,b,c;
+    for (int i = 0; i < 10; ++i)
+        a.PushBack(i);
+    while (a.IsEmpty() == false)
+        a.Delete( a.FirstNode() );
+	for(int i=0;i<10;++i)
+	a.PushBack(i);
+	a.show();
+	b=a;
+	b.Delete(b.FirstNode(),b.FirstNode());
+	b.PushFront(-2);
+	b.show();
+	c=b.Extract(b.first,b.last);
+	c.show();
+	b.show();
+	c.Insert(c.last,b);
 	c.show();
 	return 0;
 }
