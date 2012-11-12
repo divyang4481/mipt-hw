@@ -324,7 +324,7 @@ int main()
     t = Clock();
     HeapSort(B, N);
     t1 = Clock()-t;
-    cout <<"HeapSort "<< t1 <<" ms";
+    cout <<"HeapSort "<< t1 <<" ms" << CLOCKS_PER_SEC;
     Cor(B, N);
     delete[] A;
     delete[] B;
