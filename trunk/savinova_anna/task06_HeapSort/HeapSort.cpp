@@ -92,6 +92,10 @@ public:
         swap(Buf[idx], Buf[Size]);
         Heapify(Parent(idx));
     }
+    ~THeap()
+    {
+        delete[] Buf;
+    };
 };
 
 int HeapSort(int* a, int len) {
