@@ -24,10 +24,10 @@ int main()
     long double SUMLD1 = 0;
     for (long double i = 1; i < N+1; ++i)
         SUMLD1 += 1 / (i * i);
-    printf("%.20f\n", SUMLD1);
+    printf("%.16f\n", SUMLD1);
     long double SUMLD2 = 0;
     for (long double i = N; i > 0; --i)
         SUMLD2 += 1 / (i * i);
-    printf("%.20f\n", SUMLD2);
+    printf("%.16f\n", SUMLD2);
     return 0;
 }
