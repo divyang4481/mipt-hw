@@ -16,21 +16,23 @@ bool check(int* a)
 
 int* BubbleSort(int* a, int n)
 {
+    int t = clock();
     for (int i = 0; i < n; ++i)
         for (int j = 0; j < (n - 1); ++j)
             if (a[j] > a[j + 1])
             {
                 swap(a[j], a[j + 1]);
             }
+    printf("BubbleSort time=%f ", ((float)(clock() - t)/CLOCKS_PER_SEC));
     return a;
 }
 
-int* MergeSort(int x, int y, int *a, int *b)
+int* MSort(int x, int y, int *a, int *b)
 {
     int i;
     if ((y - x) > 1) {
-    MergeSort(x, (x + y) / 2, a, b);
-    MergeSort((x + y)/2 + 1, y, a, b);
+    MSort(x, (x + y) / 2, a, b);
+    MSort((x + y)/2 + 1, y, a, b);
     }
 
     int l = x, r = ((x + y) / 2 + 1), count = x;
@@ -69,16 +71,27 @@ int* MergeSort(int x, int y, int *a, int *b)
     return a;
 }
 
+int* MergeSort(int x, int y, int *a)
+{
+    int t = clock();
+    int* b = new int[n];
+    MSort(x, y, a, b);
+    printf("MergeSort time=%f ", ((float)(clock() - t)/CLOCKS_PER_SEC));
+    return a;
+}
+
 int* InsertSort(int *a, int n)
 {
+    int t = clock();
     for (int i = 0; i < n; ++i)
         for (int j = 0; j < i; ++j)
             if (a[i] < a[j])
                 swap(a[i], a[j]);
+    printf("InsertSort time=%f ", ((float)(clock() - t)/CLOCKS_PER_SEC));
     return a;
 }
 
-int* QuickSort(int x, int y, int *a)
+int* QSort(int x, int y, int *a)
 {
     if (x >= y)
         return a;
@@ -101,11 +114,22 @@ int* QuickSort(int x, int y, int *a)
     }
     while (i <= j);
 
-    QuickSort(x, j, a);
-    QuickSort(i, y, a);
+    QSort(x, j, a);
+    QSort(i, y, a);
 
     return a;
 }
+
+int* QuickSort(int x, int y, int *a)
+{
+    int t = clock();
+    QSort(x, y, a);
+
+
+    printf("Qucksort time=%f ", ((float)(clock() - t)/CLOCKS_PER_SEC));
+    return a;
+}
+
 
 int* RSort(int* a, int x)
 {
@@ -142,6 +166,7 @@ int* RSort(int* a, int x)
 
 int* RadixSort(int* arr, int n)
 {
+    int t = clock();
     int* a = new int[n];
     int* b = new int[n];
     int a_count = 0;
@@ -162,7 +187,50 @@ int* RadixSort(int* arr, int n)
     for (int i = a_count; i < (a_count + b_count); ++i)
         arr[i] = a[i - b_count];
 
+    printf("Radixsort time=%f ", ((float)(clock() - t)/CLOCKS_PER_SEC));
     return a;
+}
+
+void heapify(int *a, int num, int size)
+{
+    if (num*2 > size)
+        return;
+    int max_ind;
+    if (num*2 < size)
+    {
+    if (a[num*2] < a[num*2 + 1])
+        max_ind = num*2;
+    else
+        max_ind = num*2 + 1;
+    }
+    else
+        max_ind = num*2;
+
+
+    if (a[num] > a[max_ind])
+        swap(a[num], a[max_ind]);
+
+    heapify(a, max_ind, size);
+}
+
+int* HeapSort(int* a, int n)
+{
+    int t = clock();
+    int* res = new int[n];
+
+    for (int i = (n/2); i>0; --i)
+        heapify(a, i, n);
+
+    int count = 0;
+    for (int i = n; i>0; --i)
+    {
+        res[count++] = a[1];
+        swap(a[1], a[i]);
+        heapify(a, 1, i - 1);
+    }
+    printf("HeapSort time=%f ", ((float)(clock() - t)/CLOCKS_PER_SEC));
+
+    return res;
 }
 
 int* generate()
@@ -175,29 +243,22 @@ int* generate()
 
 int main()
 {
-
     scanf("%d", &n);
 
-    int a = clock();
-    printf("%d ", check(BubbleSort(generate(), n)));
-    printf("%f\n", ((float)(clock() - a)/CLOCKS_PER_SEC));
+    if (n < 30000)
+    {
+        printf("correct=%d\n", check(BubbleSort(generate(), n)));
 
-    a = clock();
-    int* b = new int[n];
-    printf("%d ", check(MergeSort(0, n - 1, generate(), b)));
-    printf("%f\n", ((float)(clock() - a)/CLOCKS_PER_SEC));
-    delete[] b;
+        printf("correct=%d\n", check(InsertSort(generate(), n)));
+    }
 
-    a = clock();
-    printf("%d ", check(InsertSort(generate(), n)));
-    printf("%f\n", ((float)(clock() - a)/CLOCKS_PER_SEC));
+    printf("correct=%d\n", check(MergeSort(0, n - 1, generate())));
 
-    a = clock();
-    printf("%d ", check(QuickSort(0, n - 1, generate())));
-    printf("%f\n", ((float)(clock() - a)/CLOCKS_PER_SEC));
+    printf("correct=%d\n", check(QuickSort(0, n - 1, generate())));
 
-    a = clock();
-    printf("%d ", check(RadixSort(generate(), n)));
-    printf("%f\n", ((float)(clock() - a)/CLOCKS_PER_SEC));
+    printf("correct=%d\n", check(RadixSort(generate(), n)));
+
+    printf("correct=%d\n", check(HeapSort(generate(), n)));
+
     return 0;
 }
