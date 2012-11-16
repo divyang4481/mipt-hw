@@ -11,7 +11,7 @@ int main()
 {
     int bal = 0;
     char ch[10000];
-    scanf("%s", ch);
+    scanf("%s", &ch);
     for (int i = 0; i < (signed)strlen(ch); ++i)
     {
         if (ch[i]=='(')
