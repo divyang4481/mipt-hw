@@ -20,6 +20,7 @@ void PrintMem(const void *ptr, int size){
 		dl.i = dl.i << 1;
 		s--;
 	}
+	delete c;
 	cout << endl;
 };
 
@@ -30,5 +31,6 @@ int main(){
 	const void* p = a;
 	cin >> *a;
 	PrintMem (p, sizeof(double));
+	delete a;
 	return 0;
 }
