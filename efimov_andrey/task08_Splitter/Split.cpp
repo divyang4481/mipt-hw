@@ -34,7 +34,7 @@ char** split(const char* str, const char*delim){
 }
 
 void delete_string_array(char **str){
-	for (int i=0; i<count; i++)
+	for (int i=0; i<strlen(*str); i++)
 		delete [] str[i];
 	delete [] str;
 }
