@@ -32,11 +32,12 @@ int main(){
 	int k, n;
 	cin >> n;
 	cin >> k;
-	int*a = new int[n];
+	int* a = new int[n];
 	for (int i=0; i<n; i++){
 		cin >> a[i];
 	}
 	halfsort (a, 0, n, k);
 	cout << a[k];
+	delete[] a;
 	return 0;
 }
