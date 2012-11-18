@@ -128,16 +128,32 @@ public:
 	}
 	
 	void Insert(TNode* where, int val){ // вставляет перед узлом where узел со значением val
-
+		TNode* node = new TNode();
+		node->value = val;
+		Insert(where, node);
 	}
 	void Insert(TNode* where, TNode* node) { // вставляет перед узлом where узел node.
 	// Узел при этом переходит во владение объекта-списка
-			
+		TNode* temp = where->prev;
+		node->next = where;
+		where->prev = node;
+		node->prev = temp;
+		if(temp)
+			temp->next = node;
 	}
-	void Insert(TNode* where, TList &other); // вставляет перед узлом where все элементы списка other (за O(1)).
+	void Insert(TNode* where, TList &other) { // вставляет перед узлом where все элементы списка other (за O(1)).
 	// При этом список other становится пустым и все его элементы переходят во владение
 	// текущего объекта-списка (чей метод вызван)
-
+		TNode* temp = where->prev;
+		TNode* last = other.LastNode();
+		TNode* first = other.FirstNode();
+		last->next = where;
+		where->prev = last;
+		first->prev = temp;
+		if(temp)
+			temp->next = first;
+		other.Delete(first, last);
+	}
 	int PopLast() { // извлекает из списка последний элемента, освобождает память,
 	// выделенную под него, и возвращает значение элемента
 		TNode* node = LastNode(); 
@@ -204,11 +220,28 @@ public:
 		Delete(to);
 	}
 
-	TNode* Extract(TNode* node); // извлекает из списка узел node и возвращает указатель на него;
+	TNode* Extract(TNode* node) // извлекает из списка узел node и возвращает указатель на него;
 	// за владение узла отвечает вызвавший метод клиентский код
-
-	TList Extract(TNode* from, TNode* to); // извлекает из списка интервал элментов от from до to.
-	// возвращает объект TList, содержащий этот интервал
+	{
+		TNode* n;
+		n->value = node->value;
+		n->next = node->next;
+		n->prev = node->prev;
+		Delete(node);
+		return n;
+	}
+	TList Extract(TNode* from, TNode* to)   // извлекает из списка интервал элементов от from до to.
+											 // возвращает объект TList, содержащий этот интервал
+	{
+		TList result;
+		for(TNode* i = from; i != to->next; i = i->next)
+		{
+			result.PushBack(i);
+		}
+		from->prev->next = to->next;
+		to->next->prev = from->prev;
+		return result;
+	};
 private:
 	int size;
 	TNode* first;
