@@ -4,32 +4,35 @@
 
 using namespace std;
 
-int Compare (const void * a, const void * b)
-{
-  return ( *(int*)a - *(int*)b );
-}
-
 int main()
 {
     int N = 0;
     cin >> N;
     double* Ar = new double[N];
-    for (int i = 1; i < N; ++i)
-    cin >> Ar[i];
+    for (int i = 0; i < N; ++i)
+        cin >> Ar[i];
     int t = clock();
     double e = 0.0;
-    double sum = 0.0;
-    for (int i = 1; i < N; ++i ) 
+    double sum1 = 0.0, sum2 = 0.0;
+    for (int i = 0; i < N; ++i ) 
     {
         const double y = Ar[i] - e;
-        const double tmp = sum + y;
-        e = (tmp - sum) - y;   
-        sum = tmp;
+        const double tmp = sum1 + y;
+        e = (tmp - sum1) - y;   
+        sum1 = tmp;
     }
     int t1 = clock() - t;
-    printf("%f",sum);
-    //cout << sum << " " << (float)t1/CLOCKS_PER_SEC;
-    /*priority_queue (Compare()) pq;
-    cout << */
+    cout << sum1 << " " << (double)t1/CLOCKS_PER_SEC << endl;
+    priority_queue <double, vector<double>, greater<double> > PQ;
+    for (int i = 0; i < N; ++i)
+        PQ.push(Ar[i]);    
+    t = clock();
+    for (int i = 0; i < N; ++i)
+    {
+        sum2 += PQ.top();
+        PQ.pop();
+    }
+    t1 = clock() - t;
+    cout << sum2 << " " << (double)t1/CLOCKS_PER_SEC << endl;
     return 0;
 }
