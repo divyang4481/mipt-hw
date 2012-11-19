@@ -94,7 +94,12 @@ void MergeSort(int* buf,int* help,int l,int r)
         Merge(buf,help,l,m,r);
     }
 };
-
+void MergeToHelp(int* buf, int l, int r)
+{
+    int *helptomerge=(int*)malloc((r+1)*sizeof(int));
+    MergeSort(buf, helptomerge,l,r);
+    free(helptomerge);
+}
 void QuickSort(int l, int r, int *buf)
 {
     int i=l,j=r,k=(l+r)/2,x=buf[k];
@@ -145,7 +150,7 @@ void HeapSort(int *buf, int n)
 
 int kolb(int a)
 {
-    int q=1,b=0;
+    int b = 0;
     while (a!=0)
     {
         a=a/2;
@@ -154,18 +159,23 @@ int kolb(int a)
     }
     return b;
 }
-void RadixSort(int* buf,int n,int k)
+void RadixSort(int* buf,int n)
 {
 
 
     int* k0;
     int* k1;
+    int max=0;
+    for (int i=0;i<n;++i)
+     {
+         if (max<abs(buf[i])) max=abs(buf[i]);
+     }
+    int k = kolb(max);
     k0=(int*)malloc(n*sizeof(int));
     k1=(int*)malloc(n*sizeof(int));
 
     for (int i=0;i<k;++i)
     {
-
         k0[0]=0;k1[0]=0;
         for (int j=0;j<n;++j)
         if ((abs(buf[j])&(1<<i))==0)
@@ -194,10 +204,11 @@ int main()
 
     int n,t,t1;
     cin >> n;
-    int *buf,*help,*helptomerge;
+
+    int *buf,*help;
     buf=(int*)malloc(n*sizeof(int));
     help=(int*)malloc(n*sizeof(int));
-    helptomerge=(int*)malloc(n*sizeof(int));
+
     Random(buf,n);
 
 
@@ -207,15 +218,15 @@ int main()
     t=clock();
     qsort((void*)help, n, sizeof(int), Compare);
     t1 = clock();
-    cout << "qsort = "<< (t1 - t) << "\n";
+    cout << "qsort = "<< (((t1 - t)*1000)/CLOCKS_PER_SEC) << "ms  true" <<"\n";
 
     ////insertsort
     CopyBuf(buf,help,n);
     t=clock();
     InsertSort(n,help);
     t1 = clock();
-    if (Check(help,n)==true)
-    cout << "InsertSort = "<< (t1 - t) << "  true"<< "\n";
+    if (Check(help,n))
+    cout << "InsertSort = "<< (((t1 - t)*1000)/CLOCKS_PER_SEC) << "ms  true"<< "\n";
     else {
            cout << "false";
            return(0);
@@ -224,10 +235,10 @@ int main()
     ////mergesort
     CopyBuf(buf,help,n);
     t=clock();
-    MergeSort(help,helptomerge,0,n-1);
+    MergeToHelp(help,0,n-1);
     t1 = clock();
-    if (Check(help,n)==true)
-    cout << "MergeSort = "<< (t1 - t) << "  true"<< "\n";
+    if (Check(help,n))
+    cout << "MergeSort = "<< (((t1 - t)*1000)/CLOCKS_PER_SEC) << "ms  true"<< "\n";
     else {
            cout << "false";
            return(0);
@@ -238,8 +249,8 @@ int main()
     t=clock();
     QuickSort(0,n-1,help);
     t1 = clock();
-    if (Check(help,n)==true)
-    cout << "QuickSort = "<< (t1 - t) << "  true"<< "\n";
+    if (Check(help,n))
+    cout << "QuickSort = "<< (((t1 - t)*1000)/CLOCKS_PER_SEC) << "ms  true"<< "\n";
     else {
            cout << "false";
            return(0);
@@ -250,30 +261,28 @@ int main()
     t=clock();
     HeapSort(help,n);
     t1 = clock();
-    if (Check(help,n)==true)
-    cout << "HeapSort = "<< (t1 - t) << "  true"<< "\n";
+    if (Check(help,n))
+    cout << "HeapSort = "<< (((t1 - t)*1000)/CLOCKS_PER_SEC) << "ms  true"<< "\n";
     else {
            cout << "false";
            return(0);
          }
+
 
     ////radixsort
     CopyBuf(buf,help,n);
-    int max=0;
-    for (int i=0;i<n;++i)
-     {
-         if (max<abs(help[i])) max=abs(help[i]);
-     }
+
     t=clock();
-    RadixSort(help,n,kolb(max));
+    RadixSort(help,n);
     t1 = clock();
-    if (Check(help,n)==true)
-    cout << "RadixSort = "<< (t1 - t) << "  true"<< "\n";
+    if (Check(help,n))
+    cout << "RadixSort = "<< (((t1 - t)*1000)/CLOCKS_PER_SEC) << "ms  true"<< "\n";
     else {
            cout << "false";
            return(0);
          }
 
-
+    free(buf);
+    free(help);
     return 0;
 }
