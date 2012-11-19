@@ -2,96 +2,80 @@
 
 using namespace std;
 
-int** CreateMatr(int w, int h)
+int CountingSort(int* a, int k, int len, int t)
 {
-    
-    int** buf=new int*[h];
-    for (int i=0; i<h; ++i)
+    int* b = new int [len];
+    int* c = new int[k];
+    for (int i = 0; i < k; ++i)
+        c[i] = 0;
+    for (int i = 0; i < len; ++i)
+        ++c[(a[i] / t) % 10];
+    for (int i = 1; i < k; ++i)
+        c[i] += c[i-1];
+    for (int i = len-1; i >= 0; --i)
     {
-        *(buf+i)=new int[w];
+        b[c[(a[i] / t) % 10]-1] = a[i];
+        --c[(a[i] / t) % 10];
     }
-    return buf;
-}
-
-int** CopyMatr(int** a, int w, int h)
-{
-    int** b=CreateMatr(w,h);
-    for (int i=0; i<h; ++i)
-    {
-        for (int j=0; j<w; ++j)
-        {
-            b[i][j]=a[i][j];
-        }
-    }
-    return b;
-}
-
-void WriteMatr(const int* const* buf, int w, int h)
-{
-    for (int i=0; i<h; ++i)
-    {
-        for (int j=0; j<w; ++j)
-        {
-            cout<<buf[i][j]<<" ";
-        }
-        cout<<endl;
-    }
-}
-
-int CountingSort(int** a, int la, int** &b, int k)
-{
-    int c[10];
-    for (int i=0; i<=9; ++i)
-        c[i]=0;
-    for (int i=0; i<la; ++i)
-        ++c[a[i][k]];
-    for (int i=1; i<=9; ++i)
-        c[i]+=c[i-1];
-    for (int j=la-1; j>=0; --j)
-    {
-        b[c[a[j][k]]-1]=a[j];
-        --c[a[j][k]];
-    }
+    for (int i = 0; i < len; ++i)
+        a[i] = b[i];
+    delete[] b;
+    delete[] c;
     return 0;
 }
-int RadixSort(int* a, int la)
+
+int RadixSort(int* a, int len)
 {
     int d = 0;
-    int max = a[0];
-    for (int i = 0; i < la; ++i)
-        if (a[i] > max)
-            max = a[i];
+    int max = abs(a[0]);
+    for (int i = 0; i < len; ++i)
+        if (abs(a[i]) > max)
+            max = abs(a[i]);
     for (int i = 1; i < max; i *= 10, ++d);
-    int** m = CreateMatr(d, la);
-    int** n = CreateMatr(d, la);
-    for (int i = 0; i < la; ++i)
-        for (int j = 0; j < d; ++j)
-        {
-            m[i][j] = a[i] % 10;
-            a[i] /= 10;
-        }
-    for (int i = 0; i < d; ++i)
+    int count = 0;
+    for (int i = 0; i < len; ++i)
+        if (a[i] >= 0)
+            ++count;
+    int* pos = new int[count];
+    int* neg = new int[len - count];
+    for (int i = 0, p = 0, n = 0; i < len; ++i)
     {
-        CountingSort(m, la, n, i);
-        m = CopyMatr(n, d, la);
+        if (a[i] >= 0)
+        {
+            pos[p] = a[i];
+            ++p;
+        }
+        else
+        {
+            neg[n] = - a[i];
+            ++n;
+        }
     }
-    for (int i = 0; i < la; ++i)
-        for (int j = 0, k = 1; j <d ; ++j, k *= 10)
-            a[i] += m[i][j] * k;
+    int t = 1;
+    for (int i = 0; i < d; ++i, t *= 10)
+    {
+        CountingSort(pos, 10, count, t);
+        CountingSort(neg, 10, len - count, t);
+    }
+    for (int i = len - count - 1; i >= 0 ; --i)
+        a[i] = - neg[len - count - i - 1];
+    for (int i = len - count; i < len; ++i)
+        a[i] = pos[i - len + count];
+    delete[] pos;
+    delete[] neg;
     return 0;
 }
 
 int main()
 {
-    int N=0;
-    cin>>N;
-    int* A=new int[N];
-    int D=0;
-    for (int i=0; i<N; ++i)
-        cin>>A[i];
-    RadixSort(A,N);
-    for (int i=0; i<N; ++i)
-        cout<<A[i]<<" ";
+    int N = 0;
+    cin >> N;
+    int* A = new int[N];
+    for (int i = 0; i < N; ++i)
+        cin >> A[i];
+    RadixSort(A, N);
+    for (int i = 0; i < N; ++i)
+        cout << A[i] << endl;
     delete[] A;
     return 0;
 }

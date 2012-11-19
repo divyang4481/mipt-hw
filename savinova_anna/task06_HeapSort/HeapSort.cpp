@@ -114,5 +114,6 @@ int main() {
     HeapSort(A, N);
     for (int i = 0; i < N; ++i)
         cout << A[i] << ' ';
+    delete[] A;
     return 0;
 }
