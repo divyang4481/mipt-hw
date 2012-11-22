@@ -85,7 +85,7 @@ void RadixSort(int *a, int n)
         for (int j=0, k=1; j<d; ++j, k*=2) a[n2-i-1]+=c[i][j]*k;
         a[n2-i-1]*=-1;
     }
-    if (n1) for (int i=0; i<n; ++i)
+    if (n1) for (int i=0; i+n2<n; ++i)
     {
         for (int j=0, k=1; j<d; ++j, k*=2) a[i+n2]+=b[i][j]*k;
     }    
