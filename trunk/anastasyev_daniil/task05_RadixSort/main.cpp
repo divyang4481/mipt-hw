@@ -1,4 +1,6 @@
 #include <iostream>
+#include <cmath>
+#include <cstdio>
 using namespace std;
 
 int** Create(int h, int w)
