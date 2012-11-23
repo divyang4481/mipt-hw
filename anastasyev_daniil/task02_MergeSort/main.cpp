@@ -1,4 +1,4 @@
-# include <iostream>
+#include <iostream>
 using namespace std;
 
 void Merge(int *a, int l, int m, int r, int *c)
@@ -37,6 +37,7 @@ void MERGESORT(int *a, int n)
 {
     int *c= new int[n];
     MergeSort(a,0,n-1,c);
+	delete [] c;
 }
 
 int main()
