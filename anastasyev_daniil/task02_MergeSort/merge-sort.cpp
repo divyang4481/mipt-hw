@@ -1,4 +1,6 @@
-# include <iostream>
+#include <iostream>
+#include <cstdio>
+
 using namespace std;
 
 int Min(int *a, int &i, int &j)
