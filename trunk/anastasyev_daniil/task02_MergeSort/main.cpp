@@ -1,4 +1,5 @@
 #include <iostream>
+#include <cstdio>
 using namespace std;
 
 void Merge(int *a, int l, int m, int r, int *c)
