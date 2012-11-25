@@ -1,6 +1,8 @@
 // Binom.cpp: определяет точку входа для консольного приложения.
 //
 
+#include <cstdio>
+
 int Bin(int *A,int k)
    {int *B=new int[10];
      B[0]=1;
