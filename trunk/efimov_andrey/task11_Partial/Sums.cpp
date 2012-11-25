@@ -12,23 +12,17 @@ int main(){
 		cf=(float)i;
 		cd=(double)i;
 		cl=(long double)i;
-		cf=1/(cf*cf);
-		cd=1/(cd*cd);
-		cl=1/(cl*cl);
-		sff+=cf;
-		sdf+=cd;
-		slf+=cl;
+		sff+=1/(cf*cf);
+		sdf+=1/(cd*cd);
+		slf+=1/(cl*cl);
 	}
 	for (int i=n; i>0; i-=1){
 		cf=(float)i;
 		cd=(double)i;
 		cl=(long double)i;
-		cf=1/(cf*cf);
-		cd=1/(cd*cd);
-		cl=1/(cl*cl);
-		sfr+=cf;
-		sdr+=cd;
-		slr+=cl;
+		sfr+=1/(cf*cf);
+		sdr+=1/(cd*cd);
+		slr+=1/(cl*cl);
 	}
 	cout << setprecision(7) << sfr << endl;
 	cout << setprecision(7) << sff << endl;
