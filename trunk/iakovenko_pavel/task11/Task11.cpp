@@ -1,5 +1,6 @@
 #include <iostream>
 #include <math.h>
+#include <cstdio>
 using namespace std;
 
 int main(){
@@ -29,7 +30,7 @@ int main(){
 		sumld2+=1/((i+1)*(i+1));
 	printf("%.31Lf\n", sumld1);
 	printf("%.31Lf\n", sumld2);
-	system ("pause");
+	//system ("pause");
 	return 0;
 }
 	
