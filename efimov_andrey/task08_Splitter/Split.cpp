@@ -5,7 +5,7 @@ using namespace std;
 int count;
 
 bool isSplit(const char *str, const char *delim, int st){
-	for (int i=0; i<strlen(delim); i++){
+	for (unsigned int i=0; i<strlen(delim); i++){
 		if (str[st+i]!=delim[i]) return false;
 	}
 	return true;
@@ -14,11 +14,12 @@ bool isSplit(const char *str, const char *delim, int st){
 char** split(const char* str, const char*delim){
 	int sl=strlen(str);
 	int dl=strlen(delim);
+	int i;
 	char** s=new char*[sl];
 	for (int i=0; i<sl; i++)
 		s[i]=new char[sl];
 	int sn=0;
-	for (int i=0; i<sl; i++){
+	for (i=0; i<sl; i++){
 		if (isSplit(str, delim, i)){
 			i+=dl-1;
 			s[count][sn]='\0';
@@ -30,12 +31,11 @@ char** split(const char* str, const char*delim){
 			sn++;
 		}
 	}
-	s[count][sn]='\0';
 	return s;
 }
 
 void delete_string_array(char **str){
-	for (int i=0; i<strlen(*str); i++)
+	for (unsigned int i=0; i<count; i++)
 		delete [] str[i];
 	delete [] str;
 }
@@ -55,6 +55,5 @@ int main(){
 	delete_string_array(r);
 	delete[] str;
 	delete[] spl;
-	cin >> count;
 	return 0;
 }
