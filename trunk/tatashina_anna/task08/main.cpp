@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <time.h>
 #include <algorithm>
+#include <cstring>
 
 using namespace std;
 
