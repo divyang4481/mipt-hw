@@ -9,17 +9,23 @@ int main(){
 	int n;
 	cin >> n;
 	for (int i=1; i<=n; i+=1){
-		cf=1/((float)(i*i));
-		cd=1/((double)(i*i));
-		cl=1/((long double)(i*i));
+		cf=(float)i;
+		cd=(double)i;
+		cl=(long double)i;
+		cf=1/(cf*cf);
+		cd=1/(cd*cd);
+		cl=1/(cl*cl);
 		sff+=cf;
 		sdf+=cd;
 		slf+=cl;
 	}
 	for (int i=n; i>0; i-=1){
-		cf=1/((float)(i*i));
-		cd=1/((double)(i*i));
-		cl=1/((long double)(i*i));
+		cf=(float)i;
+		cd=(double)i;
+		cl=(long double)i;
+		cf=1/(cf*cf);
+		cd=1/(cd*cd);
+		cl=1/(cl*cl);
 		sfr+=cf;
 		sdr+=cd;
 		slr+=cl;
