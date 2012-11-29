@@ -15,12 +15,11 @@ int QuickSort(int* a, int b, int f)
             while (a[r]>x) --r;
             if (l<=r)
             {
-                if (l<r)
-                {
+                
                     int tmp=a[l];
                     a[l]=a[r];
                     a[r]=tmp;
-                }
+                
                 ++l;
                 --r;
             }
@@ -30,7 +29,7 @@ int QuickSort(int* a, int b, int f)
         return 0;
     }
 }
-int main()
+/*int main()
 {
 	int N=0;    
     scanf("%d",&N);
@@ -42,5 +41,5 @@ int main()
         printf("%d ",A[i]);
     delete[] A;
     return 0;
-}
+}*/
 
