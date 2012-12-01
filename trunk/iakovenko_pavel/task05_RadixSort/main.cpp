@@ -52,8 +52,9 @@ int main(){
 		}
 		
 	}
-	
+	if (k>0)
 	RadixSort(arr1, k, max1);
+	if (l>0)
 	RadixSort(arr2, l, max2);
 	for(int i=0; i<l; ++i)
 		cout <<arr2[i] <<" ";
