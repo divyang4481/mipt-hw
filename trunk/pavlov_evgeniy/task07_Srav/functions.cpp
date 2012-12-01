@@ -1,20 +1,29 @@
 #include<iostream>
 using namespace std;
+
+
+
 void BubbleSort(int *m,int s)
 {for(int i=0;i<s;++i)
 	for(int j=i+1;j<s;++j)
 		if (m[j]<m[i]){
 			int k;k=m[i];m[i]=m[j];m[j]=k;}
 }
+
+
+
 void merge(int *a,int b,int e,int *c,int k,int m,int k1)
 {
-	for(int i=0;i<e-b+1;++i)if(k>>m){c[i]=a[k1];++k1;}
+	for(int i=0;i<e-b+1;++i)if(k>m){c[i]=a[k1];++k1;}
 	else{if(k1>e){c[i]=a[k];++k;}
 	else{if(a[k]<a[k1]){c[i]=a[k];++k;}else{c[i]=a[k1];++k1;}
 	}
 	}
 	for(int i=0;i<e-b+1;++i)a[b+i]=c[i];
 }
+
+
+
 void mergesort(int *a,int b,int e,int *c)
 { 
 	if(e-b>0)
@@ -26,6 +35,9 @@ void mergesort(int *a,int b,int e,int *c)
 		merge(a,b,e,c,b,(e+b)/2,(e+b)/2+1);
 
 }
+
+
+
 void msort(int *a,int n)
 {
 	int *c;
@@ -33,12 +45,18 @@ void msort(int *a,int n)
     mergesort(a,0,n-1,c);
 	delete[] c;
 }
+
+
+
 void insertsort(int *a,int n)
 {
 	for(int i=1;i<n;++i)
 		for(int j=i-1;(j>-1)&&(a[j+1]<a[j]);--j)
 		swap(a[j],a[j+1]);
 }
+
+
+
 void quicksort(int *a,int b,int e)
 {
 	int m=a[(b+e)/2];
@@ -53,6 +71,9 @@ void quicksort(int *a,int b,int e)
 	if(e1>b)quicksort(a,b,e1);
 	if(b1<e)quicksort(a,b1,e);
 }
+
+
+
 void radixs(int *a,int n)
 {
 	int m=1,ma=10;
@@ -74,6 +95,9 @@ void radixs(int *a,int n)
 	}
 	delete[]o;
 }
+
+
+
 void Heap(int *a,int k,int n)
 {int max=a[k],m1=a[k]-1,m2=a[k]-1;
 if ((2*(k+1)<n)&&(a[2*(k+1)]>max)){m1=a[2*(k+1)];max=m1;}
@@ -81,11 +105,16 @@ if ((2*(k+1)-1<n)&&(a[2*(k+1)-1]>max)){m2=a[2*(k+1)-1];max=m2;}
 if (max==m1){swap(a[2*(k+1)],a[k]);Heap(a,2*(k+1),n);}else
 	if(max==m2){swap(a[2*(k+1)-1],a[k]);Heap(a,2*(k+1)-1,n);}
 }
+
+
 void Heapstruct(int *a,int n)
 {int m=(n-2)/2;
 if (n-1<m)m=n-1;
 	for(int i=m;i>=0;--i)Heap(a,i,n);
 }
+
+
+
 void Heapsort(int *a,int n)
 {Heapstruct(a,n);
     swap(a[0],a[n-1]);
