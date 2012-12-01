@@ -27,7 +27,7 @@ void str(float *a,long n)
 }
 float sum(float *a,long n)
 {
-	str(a,n);
+    if(n!=1)str(a,n);
 	while(n>2)
 	{
 		swap(a[0],a[n-1]);
@@ -36,7 +36,7 @@ float sum(float *a,long n)
 		heap(a,0,(n-3)/2,n-1);
 		--n;
 	}
-	if(n=2)return (float)a[0]+a[1];else return a[0];
+	if(n==2)return a[0]+a[1];else return a[0];
 }
 int main()
 {
@@ -48,9 +48,10 @@ int main()
 	for(long i=0;i<n;++i)cin>>a[i];
 	t=clock();
 	o=kah(a,n);
-	cout<<fixed<<setprecision(7)<<o<<" time "<<clock()-t<<'\n';
+	cout<<fixed<<setprecision(7)<<o<<" time "<<(float)((clock()-t)*1000)/CLOCKS_PER_SEC<<'\n';
 	t=clock();
 	o=sum(a,n);
-	cout<<fixed<<setprecision(7)<<o<<" time "<<clock()-t<<'\n';
+	cout<<fixed<<setprecision(7)<<o<<" time "<<(float)((clock()-t)*1000)/CLOCKS_PER_SEC<<'\n';
+	delete[] a;
 	return 0;
 }
