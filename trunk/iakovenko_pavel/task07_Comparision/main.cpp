@@ -24,42 +24,42 @@ int main(){
 	t=clock();
 	MergeSort(arr,0,n-1);
 	t=clock()-t;
-	printf("MergeSort	time:%Lf	correct:", ((double)t)/CLOCKS_PER_SEC);
+	printf("MergeSort	time:%Lfs	correct:", ((double)t)/CLOCKS_PER_SEC);
 	(IsCorrect(arr, n))? cout <<"true\n":cout <<"false\n";
 	for (int j=0; j<n; j++)
 		arr[j]=rand()-RAND_MAX/2;
 	t=clock();
 	InsertionSort(arr, n);
 	t=clock()-t;
-	printf("InsertSort	time:%Lf	correct:", ((double)t)/CLOCKS_PER_SEC);
+	printf("InsertSort	time:%Lfs	correct:", ((double)t)/CLOCKS_PER_SEC);
 	(IsCorrect(arr, n))? cout <<"true\n":cout <<"false\n";
 	for (int j=0; j<n; j++)
 		arr[j]=rand()-RAND_MAX/2;
 	t=clock();
 	QuickSort(arr,0,n-1);
 	t=clock()-t;
-	printf("QuickSort	time:%Lf	correct:", ((double)t)/CLOCKS_PER_SEC);
+	printf("QuickSort	time:%Lfs	correct:", ((double)t)/CLOCKS_PER_SEC);
 	(IsCorrect(arr, n))? cout <<"true\n":cout <<"false\n";
 	for (int j=0; j<n; j++)
 		arr[j]=rand()-RAND_MAX/2;
 	t=clock();
 	RadixSort(arr,n);
 	t=clock()-t;
-	printf("RadixSort	time:%Lf	correct:", ((double)t)/CLOCKS_PER_SEC);
+	printf("RadixSort	time:%Lfs	correct:", ((double)t)/CLOCKS_PER_SEC);
 	(IsCorrect(arr, n))? cout <<"true\n":cout <<"false\n";
 	for (int j=0; j<n; j++)
 		arr[j]=rand()-RAND_MAX/2;
 	t=clock();
 	HeapSort(arr,n);
 	t=clock()-t;
-	printf("HeapSort	time:%Lf	correct:", ((double)t)/CLOCKS_PER_SEC);
+	printf("HeapSort	time:%Lfs	correct:", ((double)t)/CLOCKS_PER_SEC);
 	(IsCorrect(arr, n))? cout <<"true\n":cout <<"false\n";
 	for (int j=0; j<n; j++)
 		arr[j]=rand()-RAND_MAX/2;
 	t=clock();
 	qsort(arr,n,sizeof(int),compare);
 	t=clock()-t;
-	printf("qsort		time:%Lf	correct:", ((double)t)/CLOCKS_PER_SEC);
+	printf("qsort		time:%Lfs	correct:", ((double)t)/CLOCKS_PER_SEC);
 	(IsCorrect(arr, n))? cout <<"true\n":cout <<"false\n";
 	delete[] arr;
 	system("pause");
