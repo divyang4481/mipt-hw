@@ -26,37 +26,40 @@ void heapify(int *a, int num, int size)
     heapify(a, max_ind, size);
 }
 
-int main()
+void MakeHeap(int *a, int n)
+{
+    for (int i = (n/2); i>0; --i)
+    {
+        heapify(a, i, n);
+    }
+}
+
+void HeapSort(int *a, int n)
 {
 
+    MakeHeap(a, n);
+
+    int count = 0;
+    for (int i = n; i>0; --i)
+    {
+        printf("%d ", a[1]);
+        swap(a[1], a[i]);
+        heapify(a, 1, i - 1);
+    }
+}
+
+int main()
+{
     scanf("%d", &n);
     int* a = new int[n];
-    int* res = new int[n];
 
     for (int i = 1; i<=n; ++i)
     {
         scanf("%d", &a[i]);
     }
 
-    for (int i = (n/2); i>0; --i)
-    {
-        heapify(a, i, n);
-    }
-
-    int count = 0;
-    for (int i = n; i>0; --i)
-    {
-        res[count++] = a[1];
-        swap(a[1], a[i]);
-        heapify(a, 1, i - 1);
-    }
-
-    for (int i = 0; i<n; ++i)
-    {
-        printf("%d ", res[i]);
-    }
+    HeapSort(a, n);
 
     delete[] a;
-    delete[] res;
     return 0;
 }
