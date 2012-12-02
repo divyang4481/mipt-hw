@@ -420,6 +420,32 @@ students.exe C:\students.txt
 
 }}}
 
+==== search ====
+Если пользователь ввел команду search, программа должна предложить поиск по следующим возможным вариантам: Фамилия, Фамилия+Имя, НомерСтудБилета:
+{{{
+search
+   Enter:
+     1 - to search by LastName
+     2 - to search by LastName+Name
+     3 - to search by ID
+1
+   Enter LastName:
+Ivanov
+   Students found with LastName="Ivanov": 2
+   -------------------------------------
+   Name: Peter
+   LastName: Ivanov
+   ID: 1017
+   AverageMark: 4.8
+   Bio: Good boy
+
+   -------------------------------------
+   Name: Damien
+   LastName: Ivanov
+   ID: 666
+   AverageMark: 1.5
+   Bio: Pure Evil!
+}}}
 
 == Задание XXXXXX. Shell Sort ==
 
