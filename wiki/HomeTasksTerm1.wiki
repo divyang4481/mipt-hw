@@ -342,9 +342,51 @@ void PrintMem(const void *ptr, int size);
 
 Приведите примеры чисел (ноль, единица, маленькие положительные и отрицательные, большие положительные и отрицательные) и их бинарное представление. Объясните (письменно) устройство чисел типа double.
 
-== Задание XX. Shell Sort ==
+== Задание 19. База данных студентов =
+Deadline: 2012.12.10
 
-Deadline: 2012.11.XX
+Напишите программу для работы с базой данных студентов.
+
+=== Запуск программы ===
+
+Если кол-во аргументов командной строки не один, программа должна выдавать в консоль сообщение об ошибке, справку, как правильно пользоваться программой и завершить выполнение.
+
+Если есть ровно один аргумент и он равен "--help", программа должна вывести в консоль справку и завершить выполнение.
+
+Если аргумент один и он не равен "--help", то он должен трактоваться как путь к файлу с базой студентов. Если файл по такому пути не существует, он должен быть создан автоматически. Если файл не удается открыть, программа должна сообщить о соответствующей ошибке и завершиться.
+
+Примеры:
+
+{{{
+students.exe
+  Failed starting students.exe!
+  Error description: not enough command-line arguments!
+  Usage:
+     students.exe <db_path.exe>
+
+students.exe 1 2 3
+  Failed starting students.exe!
+  Error description: too many command-line arguments!
+  Usage:
+     students.exe <db_path.exe>
+
+students.exe --help
+  Usage:
+     students.exe <db_path.exe>
+
+students.exe C:\students.txt
+  Failed starting students.exe!
+  Error description: could not open file: "C:\students.txt"!
+  Usage:
+     students.exe <db_path.exe>
+}}}
+
+После успешного
+
+
+== Задание XXXXXX. Shell Sort ==
+
+Deadline: 2012.12.XX
 
 Необходимо написать программу сортировки массива чисел с использованием алгоритма ShellSort.
 
