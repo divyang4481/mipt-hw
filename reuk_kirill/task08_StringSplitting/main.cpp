@@ -49,7 +49,7 @@ char** split(const char *str, const char *delim)
             //bufstring[strcount++] = str[i];
         }
     }
-    for (int i = max((signed)(strlen(str) - strlen(delim)) + 1, lastdel + (signed)strlen(delim)); i < strlen(str); ++i)
+    for (int i = max((signed)(strlen(str) - strlen(delim)) + 1, lastdel + (signed)strlen(delim) - 1); i < (signed)strlen(str); ++i)
     {
         strcpy(cstring, "");
         cstring[0] = str[i];
