@@ -273,7 +273,7 @@ int main()
 
         float ct = clock() - t;
         PrintName(i);
-        printf("Correct=%d; Time=%fms \n", check(a), (float)(ct/CLOCKS_PER_SEC));
+        printf("Correct=%d Time=%fms \n", check(a), (float)(ct/CLOCKS_PER_SEC));
     }
 
     /*if (n < 30000)
