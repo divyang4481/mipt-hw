@@ -18,7 +18,7 @@ char** split(const char *str, const char *delim) {
         int cur = 0, cur2 = 0;
         while (cur < n) {
                 cur2 = cur;
-                while ((cur2 < n ) && (strncmp(str + cur2, delim, m)))
+                while ((cur2 < n) && (strncmp(str + cur2, delim, m)))
                         ++cur2;
                 result[size_res] = new char [max_n];
                 for (int i = 0; cur + i != cur2; ++i)
@@ -59,6 +59,6 @@ int main() {
                 cout << "\n";
         }
         delete(res);
-		system("pause");
+
         return 0;
 }
