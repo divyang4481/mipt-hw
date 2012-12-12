@@ -9,7 +9,7 @@ int main()
     int a=0;
 	scanf("%d",&N);
 	float m=(float(N));
-	for (int i=2;i<sqrt(m);++i)
+	for (int i=2;i<=sqrt(m);++i)
 		if (N%i==0) a=1;
 	if (a>0) printf("no");
 		else printf ("yes");
