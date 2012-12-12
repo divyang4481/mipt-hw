@@ -221,17 +221,21 @@ int main()
     cout << "qsort = "<< (((t1 - t)*1000)/CLOCKS_PER_SEC) << "ms  true" <<"\n";
 
     ////insertsort
-    CopyBuf(buf,help,n);
-    t=clock();
-    InsertSort(n,help);
-    t1 = clock();
-    if (Check(help,n))
-    cout << "InsertSort = "<< (((t1 - t)*1000)/CLOCKS_PER_SEC) << "ms  true"<< "\n";
-    else {
-           cout << "false";
-           return(0);
-         }
-
+    if (n <= 10000)
+    {
+        CopyBuf(buf,help,n);
+        t=clock();
+        InsertSort(n,help);
+        t1 = clock();
+        if (Check(help,n))
+        cout << "InsertSort = "<< (((t1 - t)*1000)/CLOCKS_PER_SEC) << "ms  true"<< "\n";
+        else {
+               cout << "false";
+               return(0);
+             }
+    }
+    else
+    cout << "A very large n for an insertsort" << endl;
     ////mergesort
     CopyBuf(buf,help,n);
     t=clock();
