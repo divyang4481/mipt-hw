@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <fstream>
 #include <stdlib.h>
@@ -43,8 +44,6 @@ void Merge(int* buf,int* help, int l,int m,int r)
 
     for (int i=l;i<=r;++i)
      buf[i]=help[i-l];
-    free(help);
-
 };
 void MergeSort(int* buf,int *help,int l,int r)
 {
@@ -56,22 +55,23 @@ void MergeSort(int* buf,int *help,int l,int r)
         Merge(buf,help,l,m,r);
     }
 };
+void MergeToStart(int* buf, int n)
+{
+    int *help=(int*)malloc((n)*sizeof(int));
+    MergeSort(buf, help, 0, n-1);
+    free(help);
+}
 int main ()
 {
-    //freopen("input.txt","r",stdin);
+    freopen("input.txt","r",stdin);
     int n;
     cin >> n;
     int *buf=(int*)malloc(n*sizeof(int));
-    int *help=(int*)malloc((n)*sizeof(int));
-
     for (int i=0;i<n;++i)
      cin >> buf[i];
-
-
-    MergeSort(buf,help,0,n-1);
+    MergeToStart(buf,n);
     for (int i=0;i<n;++i)
      cout << buf[i] << ' ';
     free(buf);
-    free(help);
     return(0);
 }
