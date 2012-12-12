@@ -288,17 +288,13 @@ class TList
 int main()
 {
     TList List;
-    cout << "Vvedite chislo" << endl;
-    int n;
-
-    cin >> n;
-    for (int i = 0; i < n; ++i)
+    cout << "Sdelaem spisok iz 10 elementov" << endl;
+    for (int i = 0; i < 10; ++i)
        List.PushBack(i);
     List.Print();
 
-    cout << "Vstavte v nachalo chislo" << endl;
-    cin >> n;
-    List.PushFront(n);
+    cout << "Vstavim v nachalo chislo 123" << endl;
+    List.PushFront(123);
     List.Print();
 
     cout << "Razdelim na 2 spiska" << endl;
