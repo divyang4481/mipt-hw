@@ -88,5 +88,13 @@ int main()
 
     delete_string_array(res);
 
+    free(str);
+    free(delim);
+    for (int i = 0; i < (signed)(sizeof(res)/sizeof(res[0])); ++i)
+    {
+        free(res[i]);
+    }
+    free(res);
+    free(res);
     return 0;
 }
