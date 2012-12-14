@@ -77,8 +77,8 @@ void fpr(FILE *f,TS *first)
 		++j;++k;
 	}
 	bio[j]='\0';
-	if(first->left)fpr(f,first->left);
 	fprintf(f,"%s;%s;%d;%f;%s\n",name,lname,first->value->value.ID,first->value->value.AverageMark,bio);
+	if(first->left)fpr(f,first->left);
 	if(first->right)fpr(f,first->right);
 	}
 }
