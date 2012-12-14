@@ -38,6 +38,8 @@ void print(TS *first)
 
 void fpr(FILE *f,TS *first)
 {
+	if(first)
+	{
 	int j=0,k=0;
 	char name[MAX_NAME_SIZE],lname[MAX_LASTNAME_SIZE],bio[MAX_BIO_SIZE];
 	while(first->value->value.Name[k])
@@ -78,6 +80,7 @@ void fpr(FILE *f,TS *first)
 	if(first->left)fpr(f,first->left);
 	fprintf(f,"%s;%s;%d;%f;%s\n",name,lname,first->value->value.ID,first->value->value.AverageMark,bio);
 	if(first->right)fpr(f,first->right);
+	}
 }
 
 void del(TS *u,TStu *a)
