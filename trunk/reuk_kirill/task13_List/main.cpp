@@ -36,18 +36,25 @@ public:
     }
     TList(const TList &other)
     {
-        first = other.first;
-        last = other.last;
+        *this = other;
     }
-   /* Tlist& operator=(const TList &other){
-        TNode *current = first;
-        TNode *othercurrent = other.first;
-        while (current <> 0)
+    TList& operator=(const TList &other)
+	{
+	    first = 0;
+        last = 0;
+        if(this!=&other)
         {
-            othercurrent.val = current.val;
-            current = current.next;
-            if othercurrent.next
-        }*/
+            TNode *a;
+            a = other.first;
+            while(a != other.last)
+            {
+                PushBack(a->val);
+                a = a->next;
+            }
+            PushBack(a->val);
+        }
+        return *this;
+	};
     bool IsEmpty()
     {
         return (first == last);
@@ -66,12 +73,11 @@ public:
         else
             return -1;
     }
-
-    const TNode* FirstNode() const
+    TNode* FirstNode() const
     {
         return first;
     }
-    const TNode* LastNode() const
+    TNode* LastNode() const
     {
         return last;
     }
@@ -83,7 +89,6 @@ public:
     void PushBack(TNode* node) // вставляет в конец списка узел node.
     {
         node->prev = last;
-        last = node;
         if (first != 0)
         {
             last->next = node;
@@ -92,6 +97,7 @@ public:
         {
             first = node;
         }
+        last = node;
     }
     void PushFront(int val) // вставляет в начало спика элемент со значением val
     {
@@ -101,7 +107,7 @@ public:
     void PushFront(TNode* node) // вставляет в начало списка узел node.
     {
         node->next = first;
-        first = node;
+
         if (last != 0)
         {
             first->prev = node;
@@ -110,6 +116,7 @@ public:
         {
             last = node;
         }
+        first = node;
     }
     void Insert(TNode* where, int val) // вставляет перед узлом where узел со значением val
     {
@@ -201,34 +208,70 @@ public:
 
     void Delete(TNode* node) // удаляет из списка узел node
     {
-        if ((node == last) && (node == first))
-        {
-            first = 0;
-            last = 0;
-        }
-        if (node != last)
+        if (node->next != 0)
         {
             (node->next)->prev = node->prev;
+        }
+        else
+        {
+            last=node->prev;
         }
         if (node != first)
         {
             (node->prev)->next = node->next;
         }
+        else
+        {
+            first=node->next;
+        }
         delete node;
     };
-    void Delete(TNode* from, TNode *to) // удаляет из списка все элемента от from до to
+    /*void Delete(TNode* from, TNode *to) // удаляет из списка все элемента от from до to
     {
-        TNode *cur = new TNode();
-        cur = from->next;
-        do
+        if (from->prev == 0)
         {
-            delete(cur->prev);
+            Delete(from);
         }
-        while (cur->next != to);
-    delete(to);
-    delete cur;
-    };
-
+        else
+        {
+            TNode *cur = from->next;
+            while (cur != to->next)
+            {
+                Delete(cur->prev);
+                cur = cur->next;
+            }
+            Delete(to);
+            delete cur;
+        }
+    };*/
+    void Delete(const TNode *from, const TNode *to)
+	{
+		if (from->prev != 0)
+		{
+		    (from->prev)->next = to->next;
+		}
+        else
+        {
+            first = to->next;
+        }
+		if (to->next != 0)
+		{
+		    (to->next)->prev = from->prev;
+        }
+        else
+        {
+            last=from->prev;
+        }
+		TNode *k;
+		k = (from->next)->prev;
+		while (k != to->prev)
+		{
+			k = k->next;
+			delete k->prev;
+		}
+		delete k;
+		delete to;
+	};
     TNode* Extract(TNode* node) // извлекает из списка узел node и возвращает указатель на него;
     {
         if ((node == last) && (node == first))
@@ -246,13 +289,12 @@ public:
         }
         return node;
     };
-
     TList Extract(TNode* from, TNode* to) // извлекает из списка интервал элментов от from до to.
     {
         TList a;
         a.first = from;
         a.last = to;
-        if ((from == last) && (from == first))
+        if ((to == last) && (from == first))
         {
             first = 0;
             last = 0;
@@ -265,13 +307,51 @@ public:
         {
             (from->prev)->next = to->next;
         }
+        from->prev = 0;
+        to->next = 0;
         return a;
+    };
+    void Print()
+    {
+        for (TNode *i = first; i != 0; i = i->next)
+            printf("%d ", i->val);
+        cout << endl;
     };
 };
 
 int main()
 {
-    TList a;
 
+    TList List;
+    cout << "10-element list with values from 1 to 10" << endl;
+    for (int i = 1; i <= 10; ++i)
+    {
+        List.PushBack(i);
+    }
+    List.Print();
+    cout << "Insert 100 in the front" << endl;
+    List.PushFront(100);
+    List.Print();
+
+    cout << "Split into 2 separate lists" << endl;
+    TNode* i = (List.FirstNode()) -> next;
+    TNode* j = (List.LastNode()) -> prev;
+    TList List1 = List.Extract(i,j);
+    List1.Print();
+    List.Print();
+
+    cout << "Make a second list with the 2 first and 2 last elements from the first one" << endl;
+    TList List2 = List1;
+    i = (List2.FirstNode()) -> next -> next;
+    j = (List2.LastNode()) -> prev -> prev;
+    List2.Delete(i,j);
+    List2.Print();
+    cout << "Delete those elements from the first list" << endl;
+    List1.Delete(List1.FirstNode());
+    List1.Delete(List1.FirstNode());
+    List1.Delete(List1.LastNode());
+    List1.Delete(List1.LastNode());
+    List1.Print();
+    List.Print();
     return 0;
 }
