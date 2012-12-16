@@ -6,6 +6,7 @@ using namespace std;
 const int MAX_NAME_SIZE = 30;
 const int MAX_LASTNAME_SIZE = 50;
 const int MAX_BIO_SIZE = 1024;
+const int maxn=20;
 
 struct TStudent {
 	char Name[MAX_NAME_SIZE]; // Èìÿ 
@@ -65,14 +66,14 @@ struct TStudent {
 
 class DataBase{
 	vector<TStudent> Students;
-	vector<int>ID;
-	vector<int>LN;
-	vector<int>LFN;
+	vector<int>ID ;
+	vector<int>LN ;
+	vector<int>LFN ;
 	char path[128];
 
 public:
 	DataBase(){
-	};
+	}
 	~DataBase(){
 	}
 	void sort(int size){
@@ -179,7 +180,7 @@ public:
 		cout << "Enter Last Name:\n";
 		char lastname[MAX_LASTNAME_SIZE];
 		cin>> lastname;
-		int a=0; int b=LN.size()-1; int tp; int tp1;
+		int a=0; int b=LN.size()-1; unsigned int tp; unsigned int tp1;
 		int count1=0; int count2=0; 
 		while(a<b){
 			tp=a+(b-a)/2;
@@ -232,8 +233,8 @@ public:
 		cout << "Enter Name:\n";
 		char name[MAX_NAME_SIZE];
 		cin>>name;
-		int count1=0; int count2=0; int tp1;
-		int a=0; int b=LN.size()-1; int tp; int count=0; int count3=0;
+		int count1=0; int count2=0; unsigned int tp1;
+		int a=0; int b=LN.size()-1; unsigned int tp; int count=0; int count3=0;
 		while(a<b){
 			tp=a+(b-a)/2;
 			int value=strcmp(lastname,Students[LN[tp]].LastName);
@@ -288,6 +289,8 @@ public:
 	}
 
 	int searchByIDhelp(int ID1){
+		if (ID.size()==0)
+			return -1;
 		int count1=0; int count2=0;
 		int a=0; int b=ID.size()-1; int tp; int count=0;
 		while(a<b){
@@ -330,6 +333,7 @@ public:
 		case 1:searchByLastName(); break;
 		case 2:searchByLastFirstName(); break;
 		case 3:searchByID(); break;
+		default: cout << "Wrong command!\n"; break;
 		}
 	}
 
@@ -392,19 +396,19 @@ public:
 			cout <<"Wrong ID! It should be non negative number\n";
 		int i=searchByIDhelp(ID1);
 		if(i>=0){
-			for (int j=0; j<ID.size(); j++){
+			for (unsigned int j=0; j<ID.size(); j++){
 				if(ID[j]==i)
 					ID.erase(ID.begin()+j);
 				if (j<ID.size() &&ID[j]>i)
 					ID[j]--;
 			}
-			for (int j=0; j<LN.size(); j++){
+			for (unsigned int j=0; j<LN.size(); j++){
 				if(LN[j]==i)
 					LN.erase(LN.begin()+j);
 				if (j<LN.size() &&LN[j]>i)
 					LN[j]--;
 			}
-			for (int j=0; j<LFN.size(); j++){
+			for (unsigned int j=0; j<LFN.size(); j++){
 				if(LFN[j]==i)
 					LFN.erase(LFN.begin()+j);
 				if (j<LFN.size() && LFN[j]>i)
@@ -477,6 +481,7 @@ bool CheckCommandLineArgs(int argc, char** argv){
 		"Usage:\n     students.exe <db_path.exe>"<<endl;
 		return false;
 	}
+	return false;
 }
 
 int main(int argc, char** argv){
@@ -484,7 +489,7 @@ int main(int argc, char** argv){
 		return 0;
 	}
 	DataBase db;
-	if(db.loadbase("students.txt"))
+	if(db.loadbase(argv[1]))
 		db.InterFace();
 	return 0;
 }
