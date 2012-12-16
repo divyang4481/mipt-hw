@@ -242,6 +242,12 @@ public:
 		to->next->prev = from->prev;
 		return result;
 	};
+
+    void Print() {
+        for (TNode *i = first; i != 0; i = i->next)
+            cout << i->value << ' ';
+        cout << endl;
+    };
 private:
 	int size;
 	TNode* first;
@@ -250,18 +256,49 @@ private:
 
 int main()
 {
-	{
+	
 		TList List1;
-		int n, a;
+		int n, a, b;
 		cin >> n;
-		for(int i = 0; i< n; i++) {
+		for(int i = 0; i < n; i++) {
+			cin >> a;
+			List1.PushBack(a);
+		}
+		if (List1.IsEmpty() == false)
+			List1.Print();
+		
+		cout << "First element = " << List1.First() << endl;
+		cout << "Last element = " << List1.Last() << endl;
+		cout << "Push Front: " << endl;
 			cin >> a;
 			List1.PushFront(a);
-		}
-		TList List2(List1);
-		List2.PushBack(5);
-	}
-	
+		cout << "Push Back: " << endl;
+			cin >> a;
+			List1.PushBack(a);
+		
+		List1.Print();
+
+		cout << "What element I can insert before last?" << endl;
+			cin >> b;
+
+		List1.Insert(List1.LastNode(), b);
+		List1.Print();	
+		
+		cout << "Delete first element!" << endl;
+		List1.Delete(List1.FirstNode());
+		List1.Print();
+
+		cout << "Razdelim na 2 spiska" << endl;
+		TNode* i = (List1.FirstNode()) -> next;
+		TNode* j = (List1.LastNode()) -> prev;
+		TList List2 = List1.Extract(i,j);
+		List1.Print();
+		List2.Print();
+
+
+
+
+		cin >> n;
 	//List2.Delete(List2.FirstNode()->next, List2.LastNode()->prev);
 	//_CrtDumpMemoryLeaks();
 	return 0;
