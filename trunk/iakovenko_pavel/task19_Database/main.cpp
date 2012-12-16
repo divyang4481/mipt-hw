@@ -9,11 +9,11 @@ const int MAX_BIO_SIZE = 1024;
 const int maxn=20;
 
 struct TStudent {
-	char Name[MAX_NAME_SIZE]; // Имя 
-	char LastName[MAX_LASTNAME_SIZE]; // Фамилия
-	int ID; // Номер студ билета
-	float AverageMark; // Средний балл
-	char Bio[MAX_BIO_SIZE]; // Биография
+	char Name[MAX_NAME_SIZE]; 
+	char LastName[MAX_LASTNAME_SIZE]; 
+	int ID; 
+	float AverageMark; 
+	char Bio[MAX_BIO_SIZE]; 
 	TStudent(){
 		char LastName[MAX_LASTNAME_SIZE]={' '};
 		char Name[MAX_LASTNAME_SIZE]={' '};
@@ -441,7 +441,7 @@ public:
 				search(); 
 			else if (strcmp("add",command)==0){
 				add();
-				//sort(My,Last,LastFirst,IDVector);
+				sort(Students.size());
 			}
 			else if(strcmp("del",command)==0)
 				del(); 
