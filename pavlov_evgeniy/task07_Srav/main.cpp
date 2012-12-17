@@ -1,4 +1,3 @@
-#pragma once
 #include"functions.h"
 #include<iostream>
 #include<time.h>
@@ -76,6 +75,7 @@ int main()
 	Heapsort(b,n);
 	prov(b,n);
 	cout<<"heap     "<<((float)((clock()-t)*1000))/CLOCKS_PER_SEC<<"msec"<<'\n';
-	delete[] a,b;
+	delete[] a;
+        delete[] b;
 	return 0;
 }
