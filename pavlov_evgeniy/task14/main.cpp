@@ -21,7 +21,8 @@ void qu(long *a,long b,long e,long k)
 			--ee;
 			}
 		}
-		if(k<=bb)qu(a,b,bb,k);else qu(a,bb,e,k);
+		if(bb==e)if(k<bb)qu(a,b,bb-1,k);else qu(a,bb,e,k);
+		else if(k<=bb)qu(a,b,bb,k);else qu(a,bb+1,e,k);
 	}
 	else
 	{
