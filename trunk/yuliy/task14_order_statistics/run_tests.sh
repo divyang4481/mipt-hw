@@ -1,7 +1,7 @@
-./test01.py | ./x
-./test02.py | ./x
-./test03.py | ./x
-./test04.py | ./x
-./test05.py | ./x
-./test06.py | ./x
-./test07.py | ./x
+~/programming/mipt-hw/yuliy/task14_order_statistics/test01.py | ./x
+~/programming/mipt-hw/yuliy/task14_order_statistics/test02.py | ./x
+~/programming/mipt-hw/yuliy/task14_order_statistics/test03.py | ./x
+~/programming/mipt-hw/yuliy/task14_order_statistics/test04.py | ./x
+~/programming/mipt-hw/yuliy/task14_order_statistics/test05.py | ./x
+~/programming/mipt-hw/yuliy/task14_order_statistics/test06.py | ./x
+~/programming/mipt-hw/yuliy/task14_order_statistics/test07.py | ./x
