@@ -11,7 +11,7 @@ def generate():
         data.append(i)
 
 def main():
-    print n, k
+    print n, k+1
     generate()
     for elem in data:
         print elem
