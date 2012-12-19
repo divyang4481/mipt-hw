@@ -21,9 +21,6 @@ struct TNode{
 		prev=p;
 		next=n;
 	}
-	~TNode(){
-		cout << "~TNode, val = " << val;
-	}
 };
 
 class TList{
@@ -61,14 +58,14 @@ public:
 	int Last() const{
 		return last->val;
 	}
-	TList& operator=(const TList &other);
 
 	bool IsEmpty() const{
 		return (first==0) ? 1 : 0;
 	}
-	void Insert(TNode* pos, int v){
+	TNode* Insert(TNode* pos, int v){
 		TNode* p = new TNode(v);
 		Insert (pos, p);
+		return p;
 	}
 	void Insert(TNode* pos, TNode* p){
 		if (first==0){
@@ -95,15 +92,18 @@ public:
 		that.first=0;
 		that.last=0;
 	}
-	void Pushfront(int v){
-		Insert (first, v);
+	TNode* Pushfront(int v){
+		TNode *p;
+		p=Insert (first, v);
+		return p;
 	}
 	void Pushfront(TNode* p){
 		Insert (first, p);
 	}
-	void Pushback (int v){
+	TNode* Pushback (int v){
 		TNode *p = new TNode(v);
 		Pushback (p);
+		return p;
 	}
 	void Pushback (TNode* p){
 		p->prev = last;
@@ -133,12 +133,14 @@ public:
 		int v=c->val;
 		first=c->next;
 		delete c;
+		return v;
 	}
 	int PopLast(){
 		TNode* c=last;
 		int v=c->val;
 		last=c->prev;
 		delete c;
+		return v;
 	}
 	TNode* Extract(TNode *n){
 		if (n==first) first=n->next;
@@ -148,10 +150,14 @@ public:
 		return n;
 	}
 	TNode* ExtractFirst(){
-		Extract(first);
+		TNode* n;
+		n=Extract(first);
+		return n;
 	}
 	TNode* ExtractLast(){
-		Extract(last);
+		TNode* n;
+		n=Extract(last);
+		return n;
 	}
 	TList Extract(TNode* l, TNode* r){
 		TList F (l, r);
@@ -182,7 +188,55 @@ public:
 	}
 };
 
+// in the following functions, use the same value, position and list as in 
+// the class methods that have been used and are being checked to find out if they worked correctly
+
+bool CheckPushfront (TList one, int v){
+	if (one.FirstNode()->val==v) return true;
+	else return false;
+};
+
+bool CheckPushback (TList one, int v){
+	if (one.LastNode()->val==v) return true;
+	else return false;
+}
+
+bool CheckInsert (TNode* pos, int v){
+	if (pos->prev->val==v) return true;
+	else return false;
+}
+
+// in the following functions, use the same node adress, position and list as in the checked class methods
+
+bool CheckPushFront (TList one, TNode* n){
+	if (one.FirstNode()==n) return true;
+	else return false;
+}
+
+bool CheckPushBack (TList one, TNode* n){
+	if (one.LastNode()==n) return true;
+	else return false;
+}
+
+bool CheckInsert (TNode* pos, TNode* n){
+	if (pos->prev==n) return true;
+	else return false;
+}
+
+//extraction methods are uncheckable because the object is destroyed or cut off from the list in the process
+
+bool operator == (TList one, TList two){
+	const TNode* a; const TNode* b;
+	for (a=one.FirstNode(), b=two.FirstNode(); a!=0, b!=0; a=a->next, b=b->next){
+		if (a->val!=b->val) return false;
+	}
+	if (((a!=0)&&(b==0))||((a==0)&&(b!=0)))
+		return false;
+	return true;
+}
+
+
+
 int main(){
-	TList p;
 	return 0;
 }
