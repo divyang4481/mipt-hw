@@ -1,5 +1,4 @@
 #include <iostream>
-#include <cstring>
 using namespace std;
 
 int count;
@@ -21,21 +20,39 @@ char** split(const char* str, const char*delim){
 	int sn=0;
 	for (i=0; i<sl; i++){
 		if (isSplit(str, delim, i)){
+<<<<<<< .mine
+			if (i+dl<sl){
+				i+=dl-1;
+				s[count][sn]='\0';
+				count++;
+				sn=0;
+			}
+			else {
+				s[count][sn]='\0';
+				return s;
+			}
+=======
 			i+=dl-1;
 			s[::count][sn]='\0';
 			::count++;
 			sn=0;
+>>>>>>> .r432
 		}
 		else{
 			s[::count][sn]=str[i];
 			sn++;
 		}
 	}
+	s[count][sn]='\0';
 	return s;
 }
 
 void delete_string_array(char **str){
+<<<<<<< .mine
+	for (unsigned int i=0; i<=count; i++)
+=======
 	for (unsigned int i=0; i < ::count; i++)
+>>>>>>> .r432
 		delete [] str[i];
 	delete [] str;
 }
@@ -50,10 +67,15 @@ int main(){
 	for (int i=0; i<length; i++)
 		r[i]=new char [length];
 	r=split(str, spl);
+<<<<<<< .mine
+	for (int i=0; i<=count; i++)
+=======
 	for (int i=0; i < ::count; i++)
+>>>>>>> .r432
 		cout << r[i] << endl;
 	delete_string_array(r);
 	delete[] str;
 	delete[] spl;
+	system("pause");
 	return 0;
 }
