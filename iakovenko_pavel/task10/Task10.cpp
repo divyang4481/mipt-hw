@@ -1,18 +1,15 @@
 #include <iostream>
-
 using namespace std;
-
-int binom (int n, int k){
-	if (n==k) 
-		return 1;
-	return n*binom(n-1, k)/(n-k);
-}
 
 int main(){
 	int n;
 	cin >> n;
-	for (int i=0; i<=n; ++i)
-		cout << binom(n, i)<< endl;	
+	long long int b=1;
+	for (int i=0; i<n+1; i++){
+		cout << b<< endl;
+		b*=n-i;
+		b/=i+1;
+	}
 	system("pause");
 	return 0;
 }
