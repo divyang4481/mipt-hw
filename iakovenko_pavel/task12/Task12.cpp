@@ -42,6 +42,8 @@ public:
 		size=tsize;
 		BuildHeap();
 	}
+	~TQueue(){
+	};
 	
 	float Extract_min (){
 		float temp=arr[0];
