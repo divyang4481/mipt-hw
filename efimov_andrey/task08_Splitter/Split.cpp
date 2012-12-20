@@ -22,26 +22,26 @@ char** split(const char* str, const char*delim){
 		if (isSplit(str, delim, i)){
 			if (i+dl<sl){
 				i+=dl-1;
-				s[count][sn]='\0';
-				count++;
+				s[::count][sn]='\0';
+				::count++;
 				sn=0;
 			}
 			else {
-				s[count][sn]='\0';
+				s[::count][sn]='\0';
 				return s;
 			}
 		}
 		else{
-			s[count][sn]=str[i];
+			s[::count][sn]=str[i];
 			sn++;
 		}
 	}
-	s[count][sn]='\0';
+	s[::count][sn]='\0';
 	return s;
 }
 
 void delete_string_array(char **str){
-	for (unsigned int i=0; i<=count; i++)
+	for (unsigned int i=0; i<= ::count; i++)
 		delete [] str[i];
 	delete [] str;
 }
@@ -56,7 +56,7 @@ int main(){
 	for (int i=0; i<length; i++)
 		r[i]=new char [length];
 	r=split(str, spl);
-	for (int i=0; i<=count; i++)
+	for (int i=0; i<= ::count; i++)
 		cout << r[i] << endl;
 	delete_string_array(r);
 	delete[] str;
