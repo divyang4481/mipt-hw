@@ -42,6 +42,11 @@ private:
             Heapify(max);
         }
     }
+    /*~THeap()
+    {
+        printf("Delete/n");
+        delete[] Buf;
+    };*/
 
 public:
     THeap(int* buf, int size) {
@@ -92,10 +97,7 @@ public:
         swap(Buf[idx], Buf[Size]);
         Heapify(Parent(idx));
     }
-    ~THeap()
-    {
-        delete[] Buf;
-    };
+    
 };
 
 int HeapSort(int* a, int len) {
