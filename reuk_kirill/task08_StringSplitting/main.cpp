@@ -39,7 +39,6 @@ char** split(const char *str, const char *delim)
                 strcpy(bufstring, "");
             }
             i += (strlen(delim) - 1);
-            lastdel = i;
         }
         else
         {
@@ -48,13 +47,20 @@ char** split(const char *str, const char *delim)
             strcat(bufstring, cstring);
             //bufstring[strcount++] = str[i];
         }
+        lastdel = i;
     }
-    for (int i = max((signed)(strlen(str) - strlen(delim)) + 1, lastdel + (signed)strlen(delim) - 1); i < (signed)strlen(str); ++i)
+    for (;++lastdel<(signed)strlen(str);)
+    {
+        strcpy(cstring, "");
+        cstring[0] = str[lastdel];
+        strcat(bufstring, cstring);
+    }
+    /*for (int i = max((signed)(strlen(str) - strlen(delim)) + 1, lastdel + (signed)strlen(delim) - 1); i < (signed)strlen(str); ++i)
     {
         strcpy(cstring, "");
         cstring[0] = str[i];
         strcat(bufstring, cstring);
-    }
+    }*/
     if (strlen(bufstring)>0)
     {
         strcpy(buf[cnt], bufstring);
@@ -90,11 +96,5 @@ int main()
 
     free(str);
     free(delim);
-    for (int i = 0; i < (signed)(sizeof(res)/sizeof(res[0])); ++i)
-    {
-        free(res[i]);
-    }
-    free(res);
-    free(res);
     return 0;
 }
