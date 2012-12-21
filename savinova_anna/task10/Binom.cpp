@@ -1,27 +1,15 @@
 #include <iostream>
-
 using namespace std;
 
 int main()
 {
-    int n = 0;
-    cin >> n;
-    int* A = new int[n + 1];
-    int* B = new int[n + 1];
-    A[0]=1;
-    A[1]=1;
-    for (int i = 0; i <= n; ++i)
+    int N = 0;
+    cin >> N;
+    int cnk = 1;
+    for (int k = 0; k <= N; ++k)
     {
-       B[0] = 1;
-       B[i] = 1;
-       for (int j = 1; j < i; ++j)
-       {
-           B[j] = A[j-1] + A[j];
-       }
-       for (int j = 0; j <= i; ++j)
-           A[j] = B[j];
+        cout << cnk << endl;
+        cnk = cnk * (N - k) / (k + 1);
     }
-    for (int k = 0; k <= n; ++k)
-        cout << A[k] << endl;
     return 0;
 }
