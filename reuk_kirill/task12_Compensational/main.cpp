@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 int n;
 
@@ -65,6 +66,7 @@ float CompSum(float *a, int n)
     }
     return a[1];
 }
+
 int main()
 {
     cin >> n;
@@ -73,7 +75,11 @@ int main()
     {
         cin >> a[i];
     }
+    float t = clock();
     cout << KahanSum(a, n) << endl;
+    cout << "Kahan summation algorithm time:" << ((clock() - t)/CLOCKS_PER_SEC) << "sec" << endl;
+    t = clock();
     cout << CompSum(a, n) << endl;
+    cout << "Priority queue algorithm time:" << ((clock() - t)/CLOCKS_PER_SEC) << "sec" << endl;
     return 0;
 }
