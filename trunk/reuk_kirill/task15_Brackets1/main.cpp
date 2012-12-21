@@ -1,20 +1,20 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include <string.h>
-
 
 using namespace std;
 
 int main()
 {
     int bal = 0;
-    char ch[10000];
-    scanf("%s", &ch);
-    for (int i = 0; i < (signed)strlen(ch); ++i)
+    char ch;
+    while (1)
     {
-        if (ch[i]=='(')
+        scanf("%c", &ch);
+        if ((ch != '(') && (ch != ')'))
+            break;
+        if (ch=='(')
             bal++;
         else
             bal--;
