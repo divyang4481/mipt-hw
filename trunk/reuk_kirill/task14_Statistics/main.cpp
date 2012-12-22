@@ -8,17 +8,19 @@ int n;
 
 int part(int *a, int l, int r)
 {
-    int x = a[l + (rand() % (r - l + 1))];
+    int x = a[l];
     int i = l - 1;
     int j = r + 1;
     while (1)
     {
         do
             --j;
-        while((a[j] >= x) && (j > l));
+        while(a[j] > x);
+        //while((a[j] >= x) && (j > l));
         do
             ++i;
-        while ((a[i] <= x) && (i < r));
+        while (a[i] < x);
+        //while ((a[i] <= x) && (i < r));
         if (i < j)
             swap(a[i], a[j]);
         else
@@ -33,15 +35,16 @@ int Statistic(int *a, int l, int r, int k)
         return a[l];
 
     int q = part(a, l, r);
-    int s = q - l + 1;
-    if (k < s)
+    //int s = q - l + 1;
+    if (k <= q)
         return Statistic(a, l, q, k);
     else
-        return Statistic(a, q + 1, r, k - s);
+        return Statistic(a, q + 1, r, k);
 }
 
 int main()
 {
+    //FILE* f = fopen("t05.txt", "r");
     scanf("%d", &n);
     int k;
     scanf("%d", &k);
