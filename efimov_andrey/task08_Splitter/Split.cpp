@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std;
 
-int count;
+int Count;
 
 bool isSplit(const char *str, const char *delim, int st){
 	for (unsigned int i=0; i<strlen(delim); i++){
@@ -26,27 +26,27 @@ char** split(const char* str, const char*delim){
 			else {
 				if ((i+dl<sl)){
 					i+=dl-1;
-					s[count][sn]='\0';
-					count++;
+					s[Count][sn]='\0';
+					Count++;
 					sn=0;
 				}
 				else {
-					s[count][sn]='\0';
+					s[Count][sn]='\0';
 					return s;
 				}
 			}
 		}
 		else{
-			s[count][sn]=str[i];
+			s[Count][sn]=str[i];
 			sn++;
 		}
 	}
-	s[count][sn]='\0';
+	s[Count][sn]='\0';
 	return s;
 }
 
 void delete_string_array(char **str){
-	for (unsigned int i=0; i<=count; i++)
+	for (unsigned int i=0; i<=Count; i++)
 		delete [] str[i];
 	delete [] str;
 }
@@ -61,7 +61,7 @@ int main(){
 	for (int i=0; i<length; i++)
 		r[i]=new char [length];
 	r=split(str, spl);
-	for (int i=0; i<=count; i++)
+	for (int i=0; i<=Count; i++)
 		cout << r[i] << endl;
 	delete_string_array(r);
 	delete[] str;
