@@ -5,6 +5,9 @@
 
 using namespace std;
 
+int Created = 0;
+int Deleted = 0;
+
 struct TNode
 {
     int val;
@@ -12,15 +15,20 @@ struct TNode
     TNode *next;
     TNode()
     {
+        ++Created;
         prev = 0;
         next = 0;
         val = 0;
     }
     TNode(int a)
     {
+        ++Created;
         prev = 0;
         next = 0;
         val = a;
+    }
+    ~TNode() {
+        ++Deleted;
     }
 };
 
@@ -321,37 +329,41 @@ public:
 
 int main()
 {
-
-    TList List;
-    cout << "10-element list with values from 1 to 10" << endl;
-    for (int i = 1; i <= 10; ++i)
     {
-        List.PushBack(i);
+        TList List;
+        cout << "10-element list with values from 1 to 10" << endl;
+        for (int i = 1; i <= 10; ++i)
+        {
+            List.PushBack(i);
+        }
+        List.Print();
+        cout << "Insert 100 in the front" << endl;
+        List.PushFront(100);
+        List.Print();
+
+        cout << "Split into 2 separate lists" << endl;
+        TNode* i = (List.FirstNode()) -> next;
+        TNode* j = (List.LastNode()) -> prev;
+        TList List1 = List.Extract(i,j);
+        List1.Print();
+        List.Print();
+
+        cout << "Make a second list with the 2 first and 2 last elements from the first one" << endl;
+        TList List2 = List1;
+        i = (List2.FirstNode()) -> next -> next;
+        j = (List2.LastNode()) -> prev -> prev;
+        List2.Delete(i,j);
+        List2.Print();
+        cout << "Delete those elements from the first list" << endl;
+        List1.Delete(List1.FirstNode());
+        List1.Delete(List1.FirstNode());
+        List1.Delete(List1.LastNode());
+        List1.Delete(List1.LastNode());
+        List1.Print();
+        List.Print();
     }
-    List.Print();
-    cout << "Insert 100 in the front" << endl;
-    List.PushFront(100);
-    List.Print();
 
-    cout << "Split into 2 separate lists" << endl;
-    TNode* i = (List.FirstNode()) -> next;
-    TNode* j = (List.LastNode()) -> prev;
-    TList List1 = List.Extract(i,j);
-    List1.Print();
-    List.Print();
-
-    cout << "Make a second list with the 2 first and 2 last elements from the first one" << endl;
-    TList List2 = List1;
-    i = (List2.FirstNode()) -> next -> next;
-    j = (List2.LastNode()) -> prev -> prev;
-    List2.Delete(i,j);
-    List2.Print();
-    cout << "Delete those elements from the first list" << endl;
-    List1.Delete(List1.FirstNode());
-    List1.Delete(List1.FirstNode());
-    List1.Delete(List1.LastNode());
-    List1.Delete(List1.LastNode());
-    List1.Print();
-    List.Print();
+    cout << "Created: " << Created << endl;
+    cout << "Deleted: " << Deleted << endl;
     return 0;
 }
