@@ -7,7 +7,8 @@ const int MAX_NAME_SIZE = 30;
 const int MAX_LASTNAME_SIZE = 50;
 const int MAX_BIO_SIZE = 1024;
 
-struct TStudent {
+struct TStudent 
+{
 	char Name[MAX_NAME_SIZE]; 
 	char LastName[MAX_LASTNAME_SIZE]; 
 	int ID; 
