@@ -6,7 +6,8 @@ using namespace std;
 
 void Q_stat(int left, int right, int *a, int k) {
 		
-	int m = a[rand()%(right - left + 1)];
+    int m = a[left + rand() % ((right + left) / 2)];
+
 	int i = left;
 	int j = right;
 	do {
@@ -25,8 +26,7 @@ void Q_stat(int left, int right, int *a, int k) {
 	if (i < k) Q_stat(i, right, a, k);
 	
 }
-	void a[k];
-
+	
 int Kth_order_statistics(int N, int *a, int k) {
 	Q_stat(0, N - 1, a, k);
 	return a[k];
@@ -43,8 +43,8 @@ int main()
     for (int i = 0; i < N; i++)
         scanf("%d", &(a[i]));
  
-    printf("%d ", Kth_order_statistics(a, N, k));
-   
+    printf("%d ", Kth_order_statistics(N, a, k));
+
     free(a);
 
     return 0;
