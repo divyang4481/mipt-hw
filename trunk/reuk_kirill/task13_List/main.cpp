@@ -42,6 +42,10 @@ public:
         first = 0;
         last = 0;
     }
+    ~TList()
+    {
+        Delete(FirstNode(), LastNode());
+    }
     TList(const TList &other)
     {
         *this = other;
