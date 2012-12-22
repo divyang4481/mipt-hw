@@ -34,5 +34,6 @@ int main()
     }
     t1 = clock() - t;
     cout << sum2 << " " << (double)t1/CLOCKS_PER_SEC << endl;
+    delete[] Ar;
     return 0;
 }
