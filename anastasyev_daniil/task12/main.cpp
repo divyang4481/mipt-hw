@@ -31,7 +31,7 @@ public:
     void Print(){
         for (int i=0; i<Size; ++i) printf("%f ",Buf[i]);
     }
-    float Max()
+    float Min()
     {
         return Buf[0];
     }
@@ -45,23 +45,23 @@ public:
     }
 	void Heapify(int idx, int n)
     {
-        int max=idx, l=Left(idx), r=Right(idx);
-        if ((l<n) && (Buf[idx]<Buf[l])) max=l;
-        if ((r<n) && (Buf[max]<Buf[r])) max=r;
-        if (max!=idx) 
+        int min=idx, l=Left(idx), r=Right(idx);
+        if ((l<n) && (Buf[idx]>Buf[l])) min=l;
+        if ((r<n) && (Buf[min]>Buf[r])) min=r;
+        if (min!=idx) 
         {
-            swap(Buf[idx],Buf[max]);
-            Heapify(max,n);
+            swap(Buf[idx],Buf[min]);
+            Heapify(min,n);
         }
     }
-	float ExtractMax()
+	float ExtractMin()
 	{
 		if (Size<1) return 0;
-		float max = Buf[0];
+		float min = Buf[0];
 		Buf[0] = Buf[Size-1];
 		--Size;
 		Heapify(0, Size);
-		return max;
+		return min;
 	}
 	void Insert(float k)
 	{
@@ -98,13 +98,13 @@ int main()
 	if (n>1)
 		for (int i=0; i<n-1; ++i)
 		{
-			float f1 = p.ExtractMax();
-			float f2 = p.ExtractMax();
+			float f1 = p.ExtractMin();
+			float f2 = p.ExtractMin();
 			f1 += f2;
 			p.Insert(f1);
 		}
 	time = clock() - time;
-	printf("%.7f %f",p.Max(),((float)time)/CLOCKS_PER_SEC);
+	printf("%.7f %f",p.Min(),((float)time)/CLOCKS_PER_SEC);
 	delete [] f;
     return 0;
 }
