@@ -1,5 +1,5 @@
 #include <iostream>
-#include "sorts.h"
+#include "functions.h"
 #include <time.h>
 #include <algorithm>
 using namespace std;
@@ -18,50 +18,55 @@ int main(){
 	int n;
 	cin >> n;
 	clock_t t;
+	srand((unsigned int)time(0));
 	int* arr=new int [n];
+	int* temp=new int [n];
 	for (int j=0; j<n; j++)
 		arr[j]=rand()-RAND_MAX/2;
+	for (int i=0; i<n; i++)
+		temp[i]=arr[i];
 	t=clock();
-	MergeSort(arr,0,n-1);
+	MergeSort(temp,0,n-1);
 	t=clock()-t;
-	printf("MergeSort	time:%Lfs	correct:", ((double)t)/CLOCKS_PER_SEC);
-	(IsCorrect(arr, n))? cout <<"true\n":cout <<"false\n";
-	for (int j=0; j<n; j++)
-		arr[j]=rand()-RAND_MAX/2;
+	printf("MergeSort	time:%fs	correct:", ((double)t)/CLOCKS_PER_SEC);
+	(IsCorrect(temp, n))? cout <<"true\n":cout <<"false\n";
+	for (int i=0; i<n; i++)
+		temp[i]=arr[i];
 	t=clock();
-	InsertionSort(arr, n);
+	InsertionSort(temp, n);
 	t=clock()-t;
-	printf("InsertSort	time:%Lfs	correct:", ((double)t)/CLOCKS_PER_SEC);
-	(IsCorrect(arr, n))? cout <<"true\n":cout <<"false\n";
-	for (int j=0; j<n; j++)
-		arr[j]=rand()-RAND_MAX/2;
+	printf("InsertSort	time:%fs	correct:", ((double)t)/CLOCKS_PER_SEC);
+	(IsCorrect(temp, n))? cout <<"true\n":cout <<"false\n";
+	for (int i=0; i<n; i++)
+		temp[i]=arr[i];
 	t=clock();
-	QuickSort(arr,0,n-1);
+	QuickSort(temp,0,n-1);
 	t=clock()-t;
-	printf("QuickSort	time:%Lfs	correct:", ((double)t)/CLOCKS_PER_SEC);
-	(IsCorrect(arr, n))? cout <<"true\n":cout <<"false\n";
-	for (int j=0; j<n; j++)
-		arr[j]=rand()-RAND_MAX/2;
+	printf("QuickSort	time:%fs	correct:", ((double)t)/CLOCKS_PER_SEC);
+	(IsCorrect(temp, n))? cout <<"true\n":cout <<"false\n";
+	for (int i=0; i<n; i++)
+		temp[i]=arr[i];
 	t=clock();
-	RadixSort(arr,n);
+	RadixSort(temp,n);
 	t=clock()-t;
-	printf("RadixSort	time:%Lfs	correct:", ((double)t)/CLOCKS_PER_SEC);
-	(IsCorrect(arr, n))? cout <<"true\n":cout <<"false\n";
-	for (int j=0; j<n; j++)
-		arr[j]=rand()-RAND_MAX/2;
+	printf("RadixSort	time:%fs	correct:", ((double)t)/CLOCKS_PER_SEC);
+	(IsCorrect(temp, n))? cout <<"true\n":cout <<"false\n";
+	for (int i=0; i<n; i++)
+		temp[i]=arr[i];
 	t=clock();
-	HeapSort(arr,n);
+	HeapSort(temp,n);
 	t=clock()-t;
-	printf("HeapSort	time:%Lfs	correct:", ((double)t)/CLOCKS_PER_SEC);
-	(IsCorrect(arr, n))? cout <<"true\n":cout <<"false\n";
-	for (int j=0; j<n; j++)
-		arr[j]=rand()-RAND_MAX/2;
+	printf("HeapSort	time:%fs	correct:", ((double)t)/CLOCKS_PER_SEC);
+	(IsCorrect(temp, n))? cout <<"true\n":cout <<"false\n";
+	for (int i=0; i<n; i++)
+		temp[i]=arr[i];
 	t=clock();
-	qsort(arr,n,sizeof(int),compare);
+	qsort(temp,n,sizeof(int),compare);
 	t=clock()-t;
-	printf("qsort		time:%Lfs	correct:", ((double)t)/CLOCKS_PER_SEC);
-	(IsCorrect(arr, n))? cout <<"true\n":cout <<"false\n";
+	printf("qsort		time:%fs	correct:", ((double)t)/CLOCKS_PER_SEC);
+	(IsCorrect(temp, n))? cout <<"true\n":cout <<"false\n"; 
 	delete[] arr;
+	delete [] temp;
 	system("pause");
 	return 0;
 }
