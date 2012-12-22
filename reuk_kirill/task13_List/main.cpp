@@ -252,7 +252,7 @@ public:
             delete cur;
         }
     };*/
-    void Delete(const TNode *from, const TNode *to)
+    void Delete(TNode *from, TNode *to)
 	{
 		if (from->prev != 0)
 		{
@@ -361,6 +361,9 @@ int main()
         List1.Delete(List1.LastNode());
         List1.Print();
         List.Print();
+        List1.Delete(List1.FirstNode(), List1.LastNode());
+        List.Delete(List.FirstNode(), List.LastNode());
+        List2.Delete(List2.FirstNode(), List2.LastNode());
     }
 
     cout << "Created: " << Created << endl;
