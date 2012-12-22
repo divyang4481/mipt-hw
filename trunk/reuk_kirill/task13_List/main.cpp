@@ -48,23 +48,25 @@ public:
     }
     TList(const TList &other)
     {
+        first = 0;
+        last = 0;
         *this = other;
     }
     TList& operator=(const TList &other)
 	{
+	    Delete(FirstNode(), LastNode());
 	    first = 0;
         last = 0;
-        if(this!=&other)
+
+        TNode *a;
+        a = other.first;
+        while(a->next != 0)
         {
-            TNode *a;
-            a = other.first;
-            while(a != other.last)
-            {
-                PushBack(a->val);
-                a = a->next;
-            }
             PushBack(a->val);
+            a = a->next;
         }
+        PushBack(a->val);
+
         return *this;
 	};
     bool IsEmpty()
@@ -258,6 +260,10 @@ public:
     };*/
     void Delete(TNode *from, TNode *to)
 	{
+	    if((from == 0) && (to == 0))
+	    {
+            return;
+	    }
 		if (from->prev != 0)
 		{
 		    (from->prev)->next = to->next;
@@ -368,7 +374,7 @@ int main()
         List.Print();
         */
 
-        TList l1;
+        /*TList l1;
         for (int i = 0; i < 10; ++i)
             l1.PushBack(i);
 
@@ -379,7 +385,7 @@ int main()
             l3.PushBack(i);
 
         l3 = l2;
-        l2 = l1;
+        l2 = l1;*/
     }
 
     cout << "Created: " << Created << endl;
