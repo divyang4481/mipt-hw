@@ -39,6 +39,5 @@ int main()
         cin >> A[i];
     int X = KSearch(A, 0, N-1, k);
     cout << X;
-    system("pause");
     return 0;
 }
