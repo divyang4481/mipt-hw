@@ -2,8 +2,8 @@
 //
 
 #include "cstdio"
-#include "stdafx.h"
-
+#include <iostream>
+ using namespace std;
 int BubbleSort(int l, int r, int* a)
 {
     for (int i=r-1;i>l;--i)
@@ -31,5 +31,8 @@ int main()
     BubbleSort(1,N,Ar);
     for (int i=0; i<N; ++i)
         printf("%d ",Ar[i]);    
+     delete[]Ar;
+	 system("pause");
     return 0;
+	
 }

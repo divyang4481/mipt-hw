@@ -2,17 +2,17 @@
 //
 
 #include <cstdio>
-#include <cmath>
-
+#include <iostream>
+using namespace std;
 int main()
-{   int N; 
+{   int N=0; 
     int a=0;
 	scanf("%d",&N);
-	float m=(float(N));
-	for (int i=2;i<=sqrt(m);++i)
+	for (int i=2;i*i<=N;++i)
 		if (N%i==0) a=1;
 	if (a>0) printf("no");
 		else printf ("yes");
+		system("pause");
 	return 0;
 }
 
