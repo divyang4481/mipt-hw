@@ -36,6 +36,7 @@ int main()
 	InsertSort(Ar,N);
 	for (int i=0; i<N;++i)
 	printf("%d ",Ar[i]);
+	delete[]Ar;
 	return 0;
 
 }
