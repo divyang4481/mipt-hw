@@ -1,25 +1,32 @@
 #include <iostream>
 using namespace std;
 
+int Created = 0;
+int Deleted = 0;
+
 struct TNode{
 	int value;
 	TNode *next, *prev;
 	TNode(){
+            ++Created;
 		prev=0;
 		next=0;
 		value=0;
 	};
 	explicit TNode(int a){
+            ++Created;
 		value=a;
 		prev=0;
 		next=0;
 	};
 	TNode(int a, TNode *p, TNode *n){
+            ++Created;
 		value=a;
 		prev=p;
 		next=n;
 	};
 	~TNode(){
+            ++Deleted;
 	};
 
 };
@@ -271,6 +278,7 @@ void show (){
 };
 
 int main(){
+    {
 	TList a,b;
 	for (int i=0; i<10; i++)
 		a.PushFront(i);
@@ -308,6 +316,9 @@ int main(){
 	TNode* tp1;
 	a.Insert(a.FirstNode(), b);
 	a.show();
-	system("pause");
-	return 0;
+    }
+
+    cout << "Created: " << Created << endl;
+    cout << "Deleted: " << Deleted << endl;
+    return 0;
 }
