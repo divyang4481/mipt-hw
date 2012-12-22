@@ -334,7 +334,7 @@ public:
 int main()
 {
     {
-    /*
+
         TList List;
         cout << "10-element list with values from 1 to 10" << endl;
         for (int i = 1; i <= 10; ++i)
@@ -366,14 +366,10 @@ int main()
         List1.Delete(List1.LastNode());
         List1.Print();
         List.Print();
-        List1.Delete(List1.FirstNode(), List1.LastNode());
-        List.Delete(List.FirstNode(), List.LastNode());
-        List2.Delete(List2.FirstNode(), List2.LastNode());
-        */
 
-        TList l1;
+        /*TList l1;
         for (int i = 0; i < 10; ++i)
-            l1.PushBack(i);
+            l1.PushBack(i);*/
     }
 
     cout << "Created: " << Created << endl;
