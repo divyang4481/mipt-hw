@@ -1,71 +1,56 @@
-// MERGE.cpp: определяет точку входа для консольного приложения.
-//
 #include <cstdio>
-
-void ArrayInTwo(int *a, int n, int *a1, int *a2)
+#include <iostream>
+using namespace std;
+void Merge(int n, int k, int *a)
 {
-	for (int i=0; i<n/2; i++)
+	int i=n, j=(n+k)/2+1, *b=new int[10000];
+	for (int h=n; h<=k; h++)
 	{
-		a1[i]=a[i];
-		a2[i]=a[i+n/2];
-	}
-	if (n%2==1) a2[n/2]=a[n-1];
-}
-void Merge(int *a1, int n1, int *a2, int n2, int *a)
-{
-	int i=0,j=0;
-	while (i<n1 || j<n2)
-	{
-		if (i==n2)
+		if (i>(n+k)/2)
 		{
-			a[i+j]=a2[j];
+			b[h]=a[j];
 			j++;
 			continue;
 		}
-		if (j==n2)
+		if (j>k)
 		{
-			a[i+j]=a1[i];
+			b[h]=a[i];
 			i++;
 			continue;
 		}
-		if (a1[i]<a2[j])
+		if (a[i]<a[j])
 		{
-			a[i+j]=a1[i];
+			b[h]=a[i];
 			i++;
 		}
 		else
 		{
-			a[i+j]=a2[j];
+			b[h]=a[j];
 			j++;
 		}
 	}
+	for (int i=n; i<=k; i++) a[i]=b[i];
 }
-void MergeSort(int *a,int n)
+void MergeSort(int n, int k, int *a)
 {
-	if (n>1)
+	if (k>n)
 	{
-		
-		int *a1=new int [1000000];
-		int *a2=new int [1000000];
-		ArrayInTwo(a,n,a1,a2);
-		MergeSort(a1,n/2);
-		MergeSort(a2,n/2+n%2);
-		Merge(a1, n/2, a2, n/2+n%2, a);
-		delete [] a1;
-		delete [] a2;
+		MergeSort(n, (n+k)/2, a);
+		MergeSort((n+k)/2+1, k, a);
+		Merge(n, k, a);
 	}
 }
 int main()
 {
-	
-	int *a=new int [1000000];
+	int *a = new int[10000];
 	int n;
 	scanf("%d",&n);
 	for (int i=0; i<n; i++) scanf("%d",&a[i]);
-	MergeSort(a,n);
+	printf("\n");
+	MergeSort(0,n-1,a);
 	for (int i=0; i<n; i++) printf("%d ",a[i]);
+	printf("\n");
 	delete [] a;
+	system("pause");
 	return 0;
 }
-
-
