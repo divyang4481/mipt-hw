@@ -6,7 +6,7 @@ using namespace std;
 
 void Q_stat(int left, int right, int *a, int k) {
 		
-    int m = a[left + rand() % ((right + left) / 2)];
+    int m = a[left + rand() % (right - left + 1)];
 
 	int i = left;
 	int j = right;
