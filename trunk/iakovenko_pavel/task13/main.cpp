@@ -1,32 +1,21 @@
 #include <iostream>
 using namespace std;
-
 int Created = 0;
 int Deleted = 0;
+
+
 
 struct TNode{
 	int value;
 	TNode *next, *prev;
 	TNode(){
-            ++Created;
 		prev=0;
 		next=0;
 		value=0;
-	};
-	explicit TNode(int a){
-            ++Created;
-		value=a;
-		prev=0;
-		next=0;
-	};
-	TNode(int a, TNode *p, TNode *n){
-            ++Created;
-		value=a;
-		prev=p;
-		next=n;
+		++Created;
 	};
 	~TNode(){
-            ++Deleted;
+		 ++Deleted;
 	};
 
 };
@@ -172,7 +161,7 @@ void Insert(TNode* where, TList &other){
 int PopLast(){
 	int temp=last->value;
 	last=last->prev;	
-	free(last->next);
+	delete last->next;
 	last->next=0;
 	return temp;
 };
@@ -180,7 +169,7 @@ int PopLast(){
 int PopFirst(){
 	int temp=first->value;
 	first=first->next;
-	free(first->prev);
+	delete first->prev;
 	first->prev=0;
 	return temp;
 };
@@ -193,7 +182,7 @@ void Delete(const TNode* node){
 	}
 	if(node->prev==0){
 		first=node->next;
-		delete node;;
+		delete node;
 		first->prev=0;
 	}
 	else if (node->next==0){
@@ -247,23 +236,20 @@ TNode* Extract(TNode* node){
 
 TList Extract(TNode* from, TNode* to){
 	TList temp;
-	if (from==first && to==last){
-		first=last=0;
-	}
-	if(from==first)
-		to->next->prev=0;
-	else
-		to->next->prev=from->prev;
-	if(to==last)
-		from->prev->next=0;
-	else
+	if(from!=first)
 		from->prev->next=to->next;
-	while (from!=to){
+	else 
+		first=to->next;
+	if(to!=last)
+		to->next->prev=from->prev;
+	else last=from->prev;
+	while(from!=to){
 		temp.PushBack(from->value);
 		from=from->next;
 		delete from->prev;
 	}
-	temp.PushBack(to);
+	temp.PushBack(from->value);
+	delete from;
 	return temp;
 };
 
@@ -278,8 +264,7 @@ void show (){
 };
 
 int main(){
-    {
-	TList a,b;
+	{TList a,b;
 	for (int i=0; i<10; i++)
 		a.PushFront(i);
 	for (int i=0; i<10; i++)
@@ -300,25 +285,16 @@ int main(){
 	for (int i=0; i<10; i++)
 		a.PushFront(i);
 	a.show();
-	a.Insert(a.FirstNode()->next, 10);
-	a.show();
 	b=a;
 	a.show();
-	b.show();
-	TNode* tp=a.Extract(a.FirstNode());
-	a.show();
-	b=a.Extract(a.FirstNode()->next, a.LastNode()->prev);
 	b.show();
 	for (int i=0; i<10; i++)
 		b.PushBack(i);
 	a.show();
 	b.show();
-	TNode* tp1;
-	a.Insert(a.FirstNode(), b);
-	a.show();
-    }
-
-    cout << "Created: " << Created << endl;
+	}
+	cout << "Created: " << Created << endl;
     cout << "Deleted: " << Deleted << endl;
-    return 0;
+	system("pause");
+	return 0;
 }
