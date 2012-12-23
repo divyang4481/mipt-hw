@@ -264,6 +264,7 @@ void show (){
 };
 
 int main(){
+    /*
 	{TList a,b;
 	for (int i=0; i<10; i++)
 		a.PushFront(i);
@@ -293,8 +294,24 @@ int main(){
 	a.show();
 	b.show();
 	}
+        */
+
+        {
+            TList l1;
+            for (int i = 0; i < 10; ++i)
+                l1.PushBack(i);
+
+            TList l2(l1);
+
+            TList l3;
+            for (int i = 0; i < 5; ++i)
+                l3.PushBack(i);
+
+            l3 = l2;
+            l2 = l1;
+        }
+
 	cout << "Created: " << Created << endl;
-    cout << "Deleted: " << Deleted << endl;
-	system("pause");
+        cout << "Deleted: " << Deleted << endl;
 	return 0;
 }
