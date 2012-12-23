@@ -42,15 +42,14 @@ void MergeSort(int n, int k, int *a)
 }
 int main()
 {
-	int *a = new int[10000];
 	int n;
 	scanf("%d",&n);
+	int *a = new int[n];
 	for (int i=0; i<n; i++) scanf("%d",&a[i]);
 	printf("\n");
 	MergeSort(0,n-1,a);
 	for (int i=0; i<n; i++) printf("%d ",a[i]);
 	printf("\n");
 	delete [] a;
-	system("pause");
 	return 0;
 }
