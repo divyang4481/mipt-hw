@@ -1,7 +1,9 @@
 // TNode.cpp: определяет точку входа для консольного приложения.
 //
 
-#include "stdafx.h"
+#include <iostream>
+using namespace std;
+
 
 struct TNode
 {
@@ -33,7 +35,6 @@ struct TNode
 
 class TList
 {
-//private:
 public:
     TNode *first;
     TNode *last;
@@ -88,15 +89,7 @@ public:
     {
         return first;
     };
-    TNode* FirstNode()
-    {
-        return first;
-    };
     const TNode* LastNode() const
-    {
-        return last;
-    };
-    TNode* LastNode()
     {
         return last;
     };
@@ -227,20 +220,43 @@ public:
         first -> prev = 0;
         return tmp;
     };// извлекает из списка первый узел и возвращает указатель на него, за владение узла отвечает вызвавший метод клиентский код
-    int Delete(TNode* node)
+    void Delete(TNode* node)
     {
+		TNode* tmp = node;
         node -> prev -> next = node -> next;
         node -> next -> prev = node -> prev;
+		delete tmp;
     };
     void Delete(TNode* from, TNode *to)
     {
-
-    }; // удаляет из списка все элемента от from до to
-    TNode* Extract(TNode* v)
+        TNode* tmp = from -> next;
+        while (tmp != to)
+        {
+            tmp = tmp -> next;
+            delete tmp -> prev;
+        }
+        from -> next = to;
+        to -> prev = from;
+    };
+    TNode* Extract(TNode* node)
     {
+        TNode* tmp = node;
+        node -> prev -> next = tmp -> next;
+        node -> next -> prev = tmp -> prev;
+        delete node;
+        return tmp;
     };    
     TList Extract(TNode* from, TNode* to)
     {
+        TList tmp;
+        from = from -> prev;
+        while (from != to)
+        {
+            from = from -> next;
+            TNode* t = Extract(from);
+            tmp.PushBack(t);            
+        }
+        return tmp;
     }; // извлекает из списка интервал элментов от from до to. возвращает объект TList, содержащий этот интервал
     void Print()
     {
@@ -253,11 +269,11 @@ int main()
 {
     //TNode n = 1; //вызов конструктора TNode n(1) Если нет explicit;
     TList p;
-    for (int i=1; i<6; ++i)
+    /*for (int i=1; i<6; ++i)
         p.PushBack(i);    
     p.Insert(p.LastNode(),7);
     p.Print();
     TList lst(p);
-    lst.Print();
+    lst.Print();*/
 	return 0;
 }
