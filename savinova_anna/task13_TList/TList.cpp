@@ -1,49 +1,30 @@
-// TNode.cpp: определяет точку входа для консольного приложения.
-//
 
 #include <iostream>
 using namespace std;
 
-
-struct TNode
-{
-    int val;
-    TNode *prev, *next;
-    explicit TNode()
-    {
+template <typename T>
+struct TNode {
+    T val;
+    TNode<T> *prev, *next;
+    explicit TNode() {
         prev = 0;
         next = 0;
         val = 0;
     }
-    explicit TNode(int a)
-    {
-        prev = 0;
-        next = 0;
-        val = a;
-    }
-    explicit TNode(int a, TNode* p, TNode* n)
-    {
-        val = a;
-        prev = p;
-        next = n;
-    }
-    ~TNode()
-    {
-        printf("~TNode, val=%d\n",val);
+    ~TNode(){
     }
 };
 
-class TList
-{
+template <typename T>
+class TList {
+    TNode<T> *first;
+    TNode<T> *last;
 public:
-    TNode *first;
-    TNode *last;
-    TList()
-    {
+    TList<T> () {
         first = 0;
         last = 0;
     }
-    TList(const TList &lst)
+    TList<T> (const TList &lst)
     {
         if (lst.first == 0)
         {
@@ -60,9 +41,6 @@ public:
         }
         last = p;
     }
-    TList& operator=(const TList &other)
-    {
-    };    
     ~TList()
     {
         for (;first;)
@@ -72,7 +50,7 @@ public:
             first=p;
         }
     }
-    bool IsEmpty() const//пустой ли
+    bool Empty() const//пустой ли
     {
         if (first) return false;
         return true;
