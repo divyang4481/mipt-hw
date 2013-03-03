@@ -64,8 +64,8 @@ Deadline: 2013.03.10
   * TBigUInt() - конструктор по умолчанию, создает число "0"
   * TBigUInt(const TBigInt&) - конструктор копирования
   * TBigUInt(int) - конструктор длинного числа из короткого
-  * explicit TBigUInt(const char *) - конструктор длинного числа из си-строки
-  * explicit TBigUInt(std::string *) - конструктор длинного числа из std::string
+  * explicit TBigUInt(const char`*` str) - конструктор длинного числа из си-строки
+  * explicit TBigUInt(const std::string& str) - конструктор длинного числа из std::string
   * operator=
   * operator<< - печатает число в поток вывода
   * operator>> - читает длинное число из потока ввода
