@@ -63,8 +63,8 @@ Deadline: 2013.03.10
 Методы:
   * TBigUInt() - конструктор по умолчанию, создает число "0"
   * TBigUInt(const TBigInt&) - конструктор копирования
-  * TBigUInt(int) - конструктор длинного числа из int
-  * TBigUInt(long long) - конструктор длинного числа из long long
+  * TBigUInt(unsigned int) - конструктор длинного числа из unsigned int
+  * TBigUInt(unsigned long long) - конструктор длинного числа из unsigned long long
   * explicit TBigUInt(const char`*` str) - конструктор длинного числа из си-строки
   * explicit TBigUInt(const std::string& str) - конструктор длинного числа из std::string
   * operator=
