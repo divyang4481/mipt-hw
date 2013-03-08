@@ -71,7 +71,7 @@ public:
                 Begin = Buf_tmp;
                 End = Buf + Size;
 	}
-        bool empty(){
+        bool empty() const{
                 return (Size == 0);
         }
         void clear(){
