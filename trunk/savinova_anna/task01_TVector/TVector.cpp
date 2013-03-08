@@ -6,7 +6,7 @@ template <typename T>
 class TVector
 {        
         T* Buf;
-        int name;
+        //int name;
         size_t Size;
         size_t Capacity;  
 public:        
@@ -32,7 +32,7 @@ public:
         const_iterator cend() const{
                 return End;
         }
-        void PrintStat(){
+        void PrintStat(int name){
                 cout << name << " Size: " << Size << " Capacity: " << Capacity << " Is empty: " << empty() << endl;
                 cout << "Elements: ";
                 for (int i = 0; i < Size; ++i)
@@ -42,13 +42,12 @@ public:
         TVector(){
                 Capacity = 16;        
                 Size = 0;
-                name = 0;
                 Buf = new T[Capacity];
                 Begin = Buf;
                 End = Begin;
-                cout << name << " Create" << endl;
+                cout << " Create" << endl;
         }
-        TVector(int val){
+        /*TVector(int val){
                 Capacity = 16;        
                 Size = 0;
                 name = val;
@@ -56,13 +55,13 @@ public:
                 Begin = Buf;
                 End = Begin;
                 cout << name << " Create" << endl;
-        }
+        }*/
         ~TVector(){
-                cout << name << " Delete" << endl;
+                cout << " Delete" << endl;
                 delete[] Buf;
         }
 	void resize(){
-                cout << name << " Resize 2 times" << endl;		
+                cout << " Resize 2 times" << endl;		
                 Capacity *= 2;
 		T* Buf_tmp = new T[Capacity];
 		for (int i = 0; i < Size; ++i)
@@ -76,12 +75,12 @@ public:
                 return (Size == 0);
         }
         void clear(){
-                cout << name << " Clear" << endl;
+                cout << " Clear" << endl;
                 Size = 0;
                 End = Begin + 1;
         }
         void swap(int a, int b){
-                cout << name << " Swap " << a << " " << b << endl;
+                cout << " Swap " << a << " " << b << endl;
                 T tmp = Buf[a];
                 Buf[a] = Buf[b];
                 Buf[b] = tmp;
@@ -102,7 +101,7 @@ public:
                 return Buf[0];
         }
         void push_back(T val){
-                cout << name << " Push_back: " << val << endl;
+                cout << " Push_back: " << val << endl;
                 if (Size == Capacity)
 	                resize();                
                 Buf[Size] = val;
@@ -110,7 +109,7 @@ public:
                 ++End;
         }
         int pop_back(){
-                cout << name << " Pop_back: " << Buf[Size-1] << endl;
+                cout << " Pop_back: " << Buf[Size-1] << endl;
                 --Size;
                 --End;
                 return Buf[Size];
@@ -141,31 +140,31 @@ public:
 
 int main()
 {
-        TVector<int> A(1);
-        A.PrintStat();
+        TVector<int> A;
+        A.PrintStat(1);
         for (int i = 0; i < 35; ++i)
                 A.push_back(i);
-        A.PrintStat();        
-        TVector<int> B(2);
+        A.PrintStat(1);        
+        TVector<int> B;
         B = A;
-        B.PrintStat();
+        B.PrintStat(2);
         for (int i = 0; i < 5; ++i)
                 A.pop_back();
-        A.PrintStat();
+        A.PrintStat(1);
         B = A;
-        B.PrintStat();
+        B.PrintStat(2);
         A.swap(5,6);
-        A.PrintStat();
+        A.PrintStat(1);
         cout << "Test []:" << endl;
         for (int i = 0; i < A.size(); ++i)
                 cout << A[i] << " ";
         cout << endl;
         A.clear();
-	A.PrintStat();
+	A.PrintStat(1);
         A = B;
-        A.PrintStat();
+        A.PrintStat(1);
         B.reserve(65);
-        B.PrintStat();
+        B.PrintStat(2);
         TVector<int>::iterator i = A.begin();
         cout << *i << endl;
         for (TVector<int>::const_iterator i = A.cbegin(); i != A.cend(); ++i)
@@ -173,10 +172,10 @@ int main()
         cout << endl;
         A.back() = 5;
         cout << A.back() << endl;
-        A.PrintStat();
+        A.PrintStat(1);
         A.insert(A.begin() + 5, 71);
-        A.PrintStat();
+        A.PrintStat(1);
         A.erase(A.begin() + 7);
-        A.PrintStat();
+        A.PrintStat(1);
         return 0;
 }
