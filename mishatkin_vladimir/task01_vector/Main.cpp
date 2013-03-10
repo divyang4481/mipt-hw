@@ -7,8 +7,7 @@
 
 #define _DEBUG_CAPACITY_MULTIPLYING
 #define _DEBUG_GVECTOR_EXCEPTIONS
-//TODO: implement this!
-//#define _TEST_MEMORY_LEAK
+#define _TEST_MEMORY_LEAK
 
 using namespace std;
 
@@ -299,6 +298,17 @@ protected:
 		sprintf(c_strDescription, "\n\tsize = %d\n\tsapacity = %d\n\tdata pointer = 0x%x",
 									m_nSize, m_nCapacity, (unsigned int)m_pData);
 		string retValue = Object::_internalDescription() + string(c_strDescription);
+//		retValue += "\n\telements = (";
+//		for (iterator it = begin(); it != end(); ++it)
+//		{
+//#if (dynamic_cast<Object *>(&(*it)))
+//				sprintf(c_strDescription, "\n\t\t" + (*it).description()) 
+//#else
+//				sprintf(c_strDescription, "\n\t\t%d", *it);
+//#endif
+//			retValue += string(c_strDescription);
+//		}
+//		retValue += ")";
 		free(c_strDescription);
 		return retValue;
 	}
@@ -317,10 +327,11 @@ public:
 #ifdef _DEBUG_CAPACITY_MULTIPLYING
                                 m_fCapacityFactor(2.0),
 #endif
-#ifdef _TEST_MEMORY_LEAK
-								m_nContainedObjectsCounter(0),
-#endif
                                 m_pData(NULL)
+#ifdef _TEST_MEMORY_LEAK
+								,m_nContainedObjectsCounter(0)
+#endif
+
         {
                 gvectorWasCreated();
         }
@@ -361,13 +372,14 @@ public:
 
         virtual ~GVector()
         {
-                if (!m_pData)
-                        delete[] m_pData;
 #ifdef _TEST_MEMORY_LEAK
 				m_nContainedObjectsCounter -= size();
-				cout << /*
-				assert(0 == */(m_nContainedObjectsCounter) << " objects contained\n";
+				assert(0 == m_nContainedObjectsCounter);
 #endif
+				if (m_pData)
+				{
+					delete[] m_pData;
+				}
                 gvectorWasDestroyed();
         }
 
@@ -383,12 +395,12 @@ public:
 
         void clear()
         {
-			/*for (iterator it = begin(); it != end(); ++it)
-				delete &(*it);*/
-#ifdef _TEST_MEMORY_LEAK
-				m_nContainedObjectsCounter -= size();
-#endif
-			m_nSize = 0;
+			erase(begin(), end());
+////			delete[] m_pData;
+//#ifdef _TEST_MEMORY_LEAK
+//				m_nContainedObjectsCounter -= size();
+//#endif
+//			m_nSize = 0;
         }
 
         void swap(GVector& target)
@@ -398,6 +410,9 @@ public:
 			std::swap(m_nCapacity, target.m_nCapacity);
 #ifdef _DEBUG_CAPACITY_MULTIPLYING
 			std::swap(m_fCapacityFactor, target.m_fCapacityFactor);
+#endif
+#ifdef _TEST_MEMORY_LEAK
+			std::swap(m_nContainedObjectsCounter, target.m_nContainedObjectsCounter);
 #endif
         }
 
@@ -443,8 +458,8 @@ public:
 
                         if (m_pData)
                         {
-                                //      what happens here, if the receiver suddenly contains an instanse of a subclass of T that would probbably require more memory to be stored in?
-                                memcpy(newData, m_pData, sizeof(T) * m_nSize);
+                                for (iterator it = begin(), newIt = (iterator)newData; it != end(); ++it, ++newIt)
+									*newIt = *it;
                                 delete[] m_pData;
                         }
                         m_pData = newData;
@@ -539,6 +554,7 @@ public:
                 size_t segmentSize = (toIterator - fromIterator);
                 size_t indexToInsert = position - begin();
                 size_t oldCapacity = m_nCapacity;
+//	objects counter increases here
                 this->resize(m_nSize + segmentSize);
                 if (m_nCapacity != oldCapacity)
                         position = m_pData + indexToInsert;
@@ -554,9 +570,6 @@ public:
                         iterator newIterator = (position + iterationNumber);
                         *newIterator = *item;
                 }
-#ifdef _TEST_MEMORY_LEAK
-				m_nContainedObjectsCounter += segmentSize;
-#endif
         }
 
 //      single element insertion
@@ -574,7 +587,7 @@ public:
                 }
 #ifdef _DEBUG_GVECTOR_EXCEPTIONS
                 int errorIndex;
-                if (fromIterator < begin()      || toIterator > end())
+                if (fromIterator < begin() || toIterator > end())
                 {
                         errorIndex = (fromIterator < begin()) ? fromIterator - begin() : toIterator - begin();
                         throw COutOfRangeException(0, (m_nSize - 1 > 0 ? m_nSize - 1 : 0), errorIndex, this, "Erase by iterator vector operation");
@@ -584,9 +597,11 @@ public:
 
                 for (iterator leftShifted = fromIterator; leftShifted != toIterator; ++leftShifted)
                 {
-                        iterator newIterator = leftShifted + segmentSize;
-                        *leftShifted = *newIterator;
+                        iterator oldIterator = leftShifted + segmentSize;
+                        *leftShifted = *oldIterator;
+						//oldIterator.destroyObject();
                 }
+				//(iterator)end();
                 m_nSize -= segmentSize;
 #ifdef _TEST_MEMORY_LEAK
 				m_nContainedObjectsCounter -= segmentSize;
