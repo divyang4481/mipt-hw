@@ -7,44 +7,101 @@
 
 #define _DEBUG_CAPACITY_MULTIPLYING
 #define _DEBUG_GVECTOR_EXCEPTIONS
-#define _TEST_MEMORY_LEAK
+//TODO: implement this!
+//#define _TEST_MEMORY_LEAK
 
 using namespace std;
 
+#define self (*this)
+#define YES 1
+#define NO 0
 
 static const string kCExceptionDefaultOperation = "Unknown operation";
 static const string kCExceptionDefaultReason = "Unknown reason";
 
-class CException
+class Object
 {
 protected:
+	virtual string _internalDescription()
+	{
+		char *c_strDescription = (char *)malloc(1000);
+		sprintf(c_strDescription, "0x%x: %s", (unsigned int)this, getClassName().c_str());
+		string retValue = string(c_strDescription);
+		free(c_strDescription);
+		return retValue;
+	}
+
+public:
+	virtual string getClassName()
+	{
+		return "Object";
+	}
+	string description()
+	{
+		return "<" + _internalDescription() + ">\n";
+	}
+};
+
+class CException : public Object
+{
+private:
         string _reason;
         string _operation;
-        const void *_source;
+        Object *_source;
+
+protected:
+	virtual string _internalDescription()
+	{
+		char *c_strDescription = (char *)malloc(2000);
+		sprintf(c_strDescription, "\n\treason = %s\n\toperation = %s\n\tsource = %s",
+									reason().c_str(), operation().c_str(), source()->description().c_str());
+		string retValue = Object::_internalDescription() + string(c_strDescription);
+		free(c_strDescription);
+		return retValue;
+	}
+
 public:
+	virtual string getClassName()
+	{
+		return "CException";
+	}
         CException()
         {
+			
                 _reason = kCExceptionDefaultReason;
                 _operation = kCExceptionDefaultOperation;
         }
-        CException(string aReason, const void *aSource = NULL, string anOperation = kCExceptionDefaultOperation)
+        CException(string aReason, Object *aSource = NULL, string anOperation = kCExceptionDefaultOperation)
         {
                 _reason = aReason;
                 _source = aSource;
                 _operation = anOperation;
         }
+		virtual ~CException() {}
         string reason() const
         {
                 return _reason;
         }
-        string sourceDescription()
+		void setReason(string aReason)
+		{
+			_reason = aReason;
+		}
+        string operation() const
         {
                 return _operation;
         }
-        const void *source()
+		void setOperation(string anOperation)
+		{
+			_operation = anOperation;
+		}
+        Object *source() const
         {
-                return _source;
+			return _source;
         }
+		void setSource(Object *aSource)
+		{
+			_source = aSource;
+		}
 };
 
 
@@ -54,18 +111,37 @@ private:
         int _lowerBoundIndex;
         int _upperBoundIndex;
         int _errorIndex;
+
+protected:
+	virtual string _internalDescription()
+	{
+		char *c_strDescription = (char *)malloc(2000);
+		sprintf(c_strDescription, "\n\trange = [%d, %d]\n\trequested index = %d",
+									lowerBoundIndex(), upperBoundIndex(), errorIndex());
+		string retValue = CException::_internalDescription() + string(c_strDescription);
+		free(c_strDescription);
+		return retValue;
+	}
+
 public:
+	virtual string getClassName()
+	{
+		return "COutOfRangeException";
+	}
         COutOfRangeException()
         {
                 _lowerBoundIndex = _upperBoundIndex = _errorIndex = 0;
         }
-        COutOfRangeException(int fromIndex, int toIndex, int calledIndex, const void *aSource = NULL, string performedOperation = kCExceptionDefaultOperation) :
+        COutOfRangeException(int fromIndex, int toIndex, int calledIndex, Object *aSource = NULL, string performedOperation = kCExceptionDefaultOperation) :
                                                         _lowerBoundIndex(fromIndex), _upperBoundIndex(toIndex), _errorIndex(calledIndex)
         {
-                _reason = "Out of range";
-                _operation = performedOperation;
-                _source = aSource;
+                setReason("Out of range");
+                setOperation(performedOperation);
+                setSource(aSource);
         }
+
+		virtual ~COutOfRangeException() {}
+
         int lowerBoundIndex()
         {
                 return _lowerBoundIndex;
@@ -99,10 +175,110 @@ void gvectorWasDestroyed()
 #endif
 }
 
-#define self (*this)
+template <typename T>
+class CIterator : public Object
+{
+private:
+        T *m_pObject;
+
+protected:
+	virtual string _internalDescription()
+	{
+		char *c_strDescription = (char *)malloc(2000);
+		sprintf(c_strDescription, "\n\twrapped object: 0x%x",
+									(unsigned int)m_pObject);
+		string retValue = Object::_internalDescription() + string(c_strDescription);
+		free(c_strDescription);
+		return retValue;
+	}
+
+public:
+	virtual string getClassName()
+	{
+		return "CIterator";
+	}
+
+        CIterator() : m_pObject(NULL) {}
+
+        CIterator(T *mem) : m_pObject(mem) {}
+        CIterator(const T *mem) : m_pObject((T*)mem) {}
+
+        //      prefix
+        CIterator &operator ++()
+        {
+                ++m_pObject;
+                return *this;
+        }
+
+        CIterator &operator --()
+        {
+                --m_pObject;
+                return *this;
+        }
+
+        //      postfix
+        CIterator operator ++(int)
+        {
+                CIterator retValue = *this;
+                m_pObject++;
+                return retValue;
+        }
+
+        CIterator operator --(int)
+        {
+                CIterator retValue = *this;
+                m_pObject--;
+                return retValue;
+        }
+
+        int operator -(const CIterator &target)
+        {
+                return (int)(m_pObject - target.m_pObject);
+        }
+
+        CIterator operator -(int leftShift)
+        {
+                CIterator retValue = *this;
+                retValue.m_pObject -= leftShift;
+                return retValue;
+        }
+
+        CIterator operator +(int rightShift)
+        {
+                CIterator retValue = *this;
+                retValue.m_pObject += rightShift;
+                return retValue;
+        }
+
+        T& operator *()
+        {
+                return *m_pObject;
+        }
+
+        bool operator ==(CIterator target)
+        {
+                return m_pObject == target.m_pObject;
+        }
+
+        bool operator !=(CIterator target)
+        {
+                return m_pObject != target.m_pObject;
+        }
+
+        bool operator <(const CIterator &target)
+        {
+                return m_pObject < target.m_pObject;
+        }
+        
+        bool operator >(const CIterator &target)
+        {
+                return m_pObject > target.m_pObject;
+        }
+
+};
 
 template <typename T>
-class GVector
+class GVector : public Object
 {
 private:
         size_t m_nSize;
@@ -111,12 +287,38 @@ private:
         double m_fCapacityFactor;
 #endif
         T *m_pData;
+
+#ifdef _TEST_MEMORY_LEAK
+		int m_nContainedObjectsCounter;
+#endif
+
+protected:
+	virtual string _internalDescription()
+	{
+		char *c_strDescription = (char *)malloc(2000);
+		sprintf(c_strDescription, "\n\tsize = %d\n\tsapacity = %d\n\tdata pointer = 0x%x",
+									m_nSize, m_nCapacity, (unsigned int)m_pData);
+		string retValue = Object::_internalDescription() + string(c_strDescription);
+		free(c_strDescription);
+		return retValue;
+	}
+
 public:
-		typedef T * iterator;
+
+	virtual string getClassName()
+	{
+		return "GVector";
+	}
+
+		typedef CIterator<T> iterator;
         typedef const iterator const_iterator;
+
         GVector() : m_nSize(0), m_nCapacity(1),
 #ifdef _DEBUG_CAPACITY_MULTIPLYING
                                 m_fCapacityFactor(2.0),
+#endif
+#ifdef _TEST_MEMORY_LEAK
+								m_nContainedObjectsCounter(0),
 #endif
                                 m_pData(NULL)
         {
@@ -127,20 +329,33 @@ public:
 #ifdef _DEBUG_CAPACITY_MULTIPLYING
                                                 ,m_fCapacityFactor(2.0)
 #endif
+#ifdef _TEST_MEMORY_LEAK
+												,m_nContainedObjectsCounter(0)
+#endif
         {
                 m_pData = new T[m_nCapacity];
                 for (iterator it = begin(); it != end(); ++it)
-                        *it = 0;
+					*it = T();
+#ifdef _TEST_MEMORY_LEAK
+				m_nContainedObjectsCounter += size;
+#endif
                 gvectorWasCreated();
         }
 
         GVector(GVector& sample) : m_nSize(sample.size()), m_nCapacity(sample.capacity())
 #ifdef _DEBUG_CAPACITY_MULTIPLYING
-                                                                        , m_fCapacityFactor(2.0)
+                                                         , m_fCapacityFactor(2.0)
+#endif
+#ifdef _TEST_MEMORY_LEAK
+														 , m_nContainedObjectsCounter(0)
 #endif
         {
                 m_pData = new T[m_nSize];
-                memcpy(m_pData, sample.m_pData, m_nSize * sizeof(T));
+				for (iterator it = begin(), sampleIterator = sample.begin(); sampleIterator != sample.end(); ++it, ++sampleIterator)
+					*it = *sampleIterator;
+#ifdef _TEST_MEMORY_LEAK
+				m_nContainedObjectsCounter += size();
+#endif
                 gvectorWasCreated();
         }
 
@@ -148,6 +363,11 @@ public:
         {
                 if (!m_pData)
                         delete[] m_pData;
+#ifdef _TEST_MEMORY_LEAK
+				m_nContainedObjectsCounter -= size();
+				cout << /*
+				assert(0 == */(m_nContainedObjectsCounter) << " objects contained\n";
+#endif
                 gvectorWasDestroyed();
         }
 
@@ -163,6 +383,11 @@ public:
 
         void clear()
         {
+			/*for (iterator it = begin(); it != end(); ++it)
+				delete &(*it);*/
+#ifdef _TEST_MEMORY_LEAK
+				m_nContainedObjectsCounter -= size();
+#endif
 			m_nSize = 0;
         }
 
@@ -180,6 +405,9 @@ public:
         {
             if (m_nSize == requestedSize)
                     return;
+#ifdef _TEST_MEMORY_LEAK
+			int oldSize = m_nSize;
+#endif
             if (m_nSize < requestedSize)
             {
                     reserve(requestedSize);
@@ -190,6 +418,9 @@ public:
             }
             else
                     m_nSize = requestedSize;
+#ifdef _TEST_MEMORY_LEAK
+			m_nContainedObjectsCounter += (m_nSize - oldSize);
+#endif
         }
 
         size_t capacity() const
@@ -197,7 +428,7 @@ public:
 			return m_nCapacity;
         }
 
-        virtual void reserve(size_t requestedCapacity)
+        void reserve(size_t requestedCapacity)
         {
                 if (!m_pData || requestedCapacity > m_nCapacity)
                 {
@@ -225,24 +456,34 @@ public:
                 return iterator(m_pData);
         }
 
-        virtual iterator end() const
+		const_iterator begin()
+		{
+			return const_iterator(m_pData);
+		}
+
+        iterator end() const
         {
                 return iterator(m_pData + m_nSize);
         }
 
-        virtual T& operator [] (size_t index) const
+		const_iterator end()
+		{
+			return const_iterator(m_pData + m_nSize);
+		}
+
+        T& operator [] (size_t index) const
         {
                 if (index >= 0 && index < m_nSize)
                         return *(m_pData + index);
 #ifdef _DEBUG_GVECTOR_EXCEPTIONS
-                throw COutOfRangeException(0, (m_nSize - 1 > 0 ? m_nSize - 1 : 0), index, this, "Access by index vector operation");
+                throw COutOfRangeException(0, (m_nSize - 1 > 0 ? m_nSize - 1 : 0), index, (Object *)this, "Access by index vector operation");
 #endif
 #ifndef _DEBUG_GVECTOR_EXCEPTIONS
                 assert(index >= 0 && index < m_nSize);  //      which would be false
 #endif
         }
 
-        virtual T& front() const
+        T& front() const
         {
 #ifndef _DEBUG_GVECTOR_EXCEPTIONS
                 if (m_nSize >= 0)
@@ -250,7 +491,7 @@ public:
                         return (*begin());
         }
 
-        virtual T& back() const
+        T& back() const
         {
 #ifndef _DEBUG_GVECTOR_EXCEPTIONS
                 if (m_nSize > 0)
@@ -258,29 +499,33 @@ public:
                         return m_pData[m_nSize - 1];
         }
 
-        virtual void push_front(const T& object)
+        void push_front(const T& object)
         {
                 if (!m_pData)
                         this->reserve((size_t)1);
-
                 insert(begin(), iterator(&object));
         }
 
-        virtual void push_back(const T& object)
+        void push_back(const T& object)
         {
                 if (!m_pData)
                         this->reserve((size_t)1);
                 insert(end(), (iterator)&object);
         }
 
-        virtual void pop_back()
+        void pop_back()
         {
                 if (m_nSize)
+				{
                         --m_nSize;
+#ifdef _TEST_MEMORY_LEAK
+						--m_nContainedObjectsCounter;
+#endif
+				}
         }
 
 //      segment insertion
-        virtual void insert(iterator position, iterator fromIterator, iterator toIterator)      //      [from, to)
+        void insert(iterator position, iterator fromIterator, iterator toIterator)      //      [from, to)
         {
                 if (fromIterator > toIterator)
                 {
@@ -309,16 +554,19 @@ public:
                         iterator newIterator = (position + iterationNumber);
                         *newIterator = *item;
                 }
+#ifdef _TEST_MEMORY_LEAK
+				m_nContainedObjectsCounter += segmentSize;
+#endif
         }
 
 //      single element insertion
-        virtual iterator insert(iterator position, iterator targetIterator)
+        iterator insert(iterator position, iterator targetIterator)
         {
                 insert(position, targetIterator, targetIterator + 1);
                 return position;
         }
 
-        virtual iterator erase(iterator fromIterator, iterator toIterator)      //      [from, to)
+        iterator erase(iterator fromIterator, iterator toIterator)      //      [from, to)
         {
                 if (fromIterator > toIterator)
                 {
@@ -340,10 +588,13 @@ public:
                         *leftShifted = *newIterator;
                 }
                 m_nSize -= segmentSize;
+#ifdef _TEST_MEMORY_LEAK
+				m_nContainedObjectsCounter -= segmentSize;
+#endif
                 return fromIterator;
         }
 
-        virtual iterator erase(iterator targetIterator)
+        iterator erase(iterator targetIterator)
         {
                 return erase(targetIterator, targetIterator + 1);
         }
@@ -391,6 +642,7 @@ void launchGVectorTests()
         cout << "front(): " << items.front() << "\n";
         cout << "erase() the 7: "; items.erase(&items[3]); items.printContentTo(&cout);
         cout << "Assign operator test: "; GVector<int> newVector = items; newVector.printContentTo(&cout);
+		cout << items.description();
 }
 
 int main() {
