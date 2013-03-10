@@ -38,7 +38,7 @@ public:
 		size = 0;
 	}
 
-	void Swap(TVector &other) {
+	void Swap(TVector &other) { //!!
 		swap(*this.buf, other.buf);
 		swap(*this.size, other.size);
 		swap(*this.buf, other.buf);
@@ -49,7 +49,6 @@ public:
 		T* buf_new = new T[capacity];
 		for (int i = 0; i < size - 1; ++i) {
 			buf_new[i] = buf[i];
-			cout << buf_new[i] << " "; 	
 		}
 		delete buf;
 		buf = buf_new;
@@ -73,9 +72,9 @@ public:
 		return(buf + size);
 	}
 
-	T& operator[](size_t n) {
+	T& operator[](int n) {
 		if (n <= size && n >= 0 )
-			return(buf[n])
+			return(buf[n]);
 		else
 			cout << "wrong index" << endl;
 	}
@@ -95,37 +94,78 @@ public:
 	}
 
 	void Pop_back() {
-		buf[end] = 0; //проверить
 		size--;
 	}
 
 	void Insert (iterator ind, const T& n) {
 		size++;
-		reserve(size);
+		Reserve(size);
 		for(iterator i = End(); i != ind; --i) {
-			buf[i] = buf[i - 1];
+			*i = *(i - 1);
 		}
-		buf[ind] = n;
+		*ind = n;
 	}
 
 	void Erase(iterator ind) {
-		for (iterator i = ind; i != End(), ++i)
-			buf[i] = buf[i + 1];
+		for (iterator i = ind; i != End(); ++i)
+			*i = *(i + 1);
 		size--;
 	} 
+	TVector& operator= (TVector& other) /*const?*/ {
+		delete[] buf;
+		size = other.Size();
+		capacity = other.Capacity();
+		buf = new T[size];
+		for (int i = 0; i < other.Size(); ++i)
+			Push_back(other[i]);
+		return *this;
+    }
+
+
 
 };
 
 
 int main() {
 	//freopen("output.txt", "w", stdout);
+
 	TVector<int> V1;
-	
-	for (int i = 0; i < 10; ++i)
+
+	cout << "Empty? " << V1.Empty() << " Size: " << V1.Size() << " Capacity: " << V1.Capacity() << endl;
+	cout << "V1: " << endl;
+	for (int i = 0; i < 10; ++i) {
 		V1.Push_back(i);
+	    cout << V1[i] << endl;
+	}
+	cout << "Empty? " << V1.Empty() << " Size: " << V1.Size() << " Capacity: " << V1.Capacity() << endl;
+	cout << "First element: " << V1.Front() << " Last element: " << V1.Back() << endl;
 
-	cout << V1.Size() << endl;
+	////for swap
+	//TVector<int> V2;
+	//for (int i = 9; i >= 0; --i) {
+	//	V2.Push_back(i);
+	//}	
+	//cout << "V2: " << endl;
+	//for (int i = 0; i < 10; ++i) {
+	//    cout << V2[i] << endl;
+	//}
 
+//	V1.Pop_back();
+//	for (int i = 0; i < V1.Size(); ++i) {
+//	    cout << V1[i] << endl;
+//	}
+
+	V1.Insert(V1.Begin(), 11);
+	cout << "V1: " << endl;	
+	for (int i = 0; i < V1.Size(); ++i) {
+	    cout << V1[i] << endl;
+	}
+
+	V1.Erase(V1.Begin());
+	cout << "V1: " << endl;	
+	for (int i = 0; i < V1.Size(); ++i) {
+	    cout << V1[i] << endl;
+	}
 	
 
 	return 0;
