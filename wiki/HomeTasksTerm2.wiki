@@ -108,7 +108,7 @@ Deadline: 2013.03.24
   * Resize(size_t rowCount, size_t colCount)
   * const T& At(size_t row, size_t col) const
   * T& At(size_t row, size_t col)
-  * TMatrix Transpose() const - возвращает транспонированную матрицу
+  * Transpose() - транспонирует матрицу
   * operator<<
   * operator>>
   * ShtrassenMultiply
