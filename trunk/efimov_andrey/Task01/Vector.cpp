@@ -16,10 +16,13 @@ void SizeErrorWarn(int f){
 	case 3:
 		cout << "Front ";
 		break;
+	case 4: 
+		cout << "Operator [] ";
+		break;
 	default:
 		cout << "Something ";
 	}
-	cout << "not completed: picked number is larger than size" << endl;
+	cout << "not completed: chosen number is out of size range" << endl;
 }
 
 template <typename T>
@@ -197,6 +200,11 @@ public:
 		for (unsigned int i=0; i<vsize; ++i)
 			cont[i]=other.cont[i];
 		return true;
+	}
+	T operator [] (unsigned int n){
+		if (n<size) return cont[n];
+		SizeErrorWarn(4);
+		return cont[size];
 	}
 private:
 	T* begT;
