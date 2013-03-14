@@ -47,6 +47,15 @@ public:
    size--;
    }
 
+   void pushback(T val)
+   {
+	   if (capacity()==size()) resize();
+	   buf[size]=val;
+	   size++;
+	 }
+
+
+
    void resize
    {   capacity=2*capacity;
 	   T* newbuf=new T[capacity];
@@ -54,6 +63,41 @@ public:
             newbuf[i]=buf[i];
 	   buf=newbuf;     
    }
+
+   void reserve(int n)
+   {
+	   while (capacity<n) resize();
+   }
+
+   iterator begin()
+   {
+	   return(buf);
+   };
+   iterator end()
+   {
+	   return (buf+size);
+   };
+   T& front()
+   {
+	   return(buf[0]);
+   };
+   T& back()
+   {
+	   return(buf[size-1]);
+   };
+   swap()
+   {
+
+   };
+   insert()
+   {
+
+   };
+   erase()
+   {
+
+   };
+
  int main () 
  {
  }
