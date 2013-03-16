@@ -14,13 +14,13 @@ struct TNode
         ~TNode<T>()
         {
         };
-}
+};
 
 template <typename T>
 class Myiterator
 {
         TNode<T>* val;
-}
+};
 
 template <typename T>
 class TList
@@ -43,6 +43,7 @@ public:
                         first=p;
                 }
         }
+};
 
 int main()
 {
