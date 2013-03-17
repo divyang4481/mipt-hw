@@ -85,9 +85,11 @@ public:
    {
 	   return(buf[size-1]);
    };
-   swap()
+   swap(TVector &a, TVector &b)
    {
-
+       T t=buf[a];
+	   buf[a]=buf[b];
+	   buf[b]=t;
    };
    insert()
    {
