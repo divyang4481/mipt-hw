@@ -2,6 +2,7 @@
 #include<vector>
 #include <string>
 #include <time.h>
+#include <math.h>
 using namespace std;
 
 
