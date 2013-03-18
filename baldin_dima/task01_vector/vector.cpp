@@ -1,7 +1,6 @@
 // vector.cpp: определяет точку входа для консольного приложения.
 //
 
-#include "stdafx.h"
 #include <iostream>
 #include <vector>
 using namespace std;
