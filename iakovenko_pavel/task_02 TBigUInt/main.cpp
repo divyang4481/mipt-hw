@@ -7,7 +7,7 @@ using namespace std;
 
 
 class TBigUInt{
-//public: should be public for comparision of Karatsuba and usual methods of multiplying
+//public: //should be public for comparision of Karatsuba and usual methods of multiplying
 	vector<unsigned char> vec;
 	static const int base = 256;
 	static const int BASE_DIGITSbase_digits = 3;
@@ -90,6 +90,22 @@ public:
 				}
 				vec.push_back(remainder);
 				vec_temp=quotient;
+			}
+		}
+	}
+
+
+	TBigUInt (const TBigUInt a, unsigned int from, unsigned int to){
+		if (from>=a.vec.size()){
+			vec.push_back(0);
+		}
+		else{
+			if (to<=a.vec.size()){
+				for (int i=from; i<to; ++i)
+					vec.push_back(a.vec[i]);
+			} else {
+				for (int i=from; i<a.vec.size(); ++i)
+					vec.push_back(a.vec[i]);
 			}
 		}
 	}
@@ -400,37 +416,32 @@ public:
 		*this=(*this/a);
 	}
 
-
-	TBigUInt KaratsubaMultiply(const TBigUInt& a, const TBigUInt& b){//- умножение длинных чисел, реализованное с помощью алгоритма Карацубы
-		//if (a.vec.size()<30 ||a.vec.size()!=b.vec.size())
-		//	return a*b;
-		int p=a.vec.size()/2;
-		TBigUInt a1,a2,b1,b2;
-		for (unsigned int i=p; i<a.vec.size(); ++i)
-			a1.vec.push_back(a.vec[i]);
-		for (unsigned int i=p; i<b.vec.size(); ++i)
-			b1.vec.push_back(b.vec[i]);
-		for(unsigned int i=0; i<p; i++){
-			a2.vec.push_back(a.vec[i]);
-			b2.vec.push_back(b.vec[i]);
-		}
-		TBigUInt result,tp,tp1,tp2;
-		TBigUInt power (base);
-		tp1=a1*b1;
-		tp2=b2*a2;
-		result=tp2;
-		tp=(a1+a2)*(b1+b2)-tp2-tp1;
-		for(int i=1; i<p; ++i)
-			power=power*base;
-		tp=tp*power;
-		result+=tp;
-		tp1=tp1*power;
-		tp1=tp1*power;
-		result+=tp1;
-		return result;
+	TBigUInt operator<<(int power){
+		vector<unsigned char>::iterator pos=vec.begin();
+		vec.insert(pos, power, 0);
+		return *this;
+	}
+	 unsigned int size_of_vector () const {
+		return (int)vec.size();
 	}
 };
 
+TBigUInt KaratsubaMultiply(const TBigUInt& a, const TBigUInt& b){//- умножение длинных чисел, реализованное с помощью алгоритма Карацубы
+		unsigned int maxDigits = max(a.size_of_vector(), b.size_of_vector());
+		if (maxDigits <= 50) 
+			return a*b;
+		int median = maxDigits / 2;
+		TBigUInt aPart1(a, 0, median);
+		TBigUInt aPart2(a, median, maxDigits); 
+		TBigUInt bPart1(b, 0, median);
+		TBigUInt bPart2(b, median, maxDigits);
+		TBigUInt z2 = KaratsubaMultiply(aPart2, bPart2);
+		TBigUInt z0 = KaratsubaMultiply(aPart1, bPart1);
+		TBigUInt z1 = KaratsubaMultiply(aPart1 + aPart2, bPart1 + bPart2) - z2 - z0;
+		z2<<(2 * median);
+		z1<<(median);
+		return z2 + z1 + z0;
+	}
 
 ostream& operator<<(ostream& out, const TBigUInt& num){
 	int dec=10;
@@ -508,14 +519,14 @@ int main(){
 	cc=aa/bb;
 	cout<<cc<<endl;
 	str.clear();
-	for (int i=1; i<120; i++)
+	for (int i=1; i<20; i++)
 		str.push_back((char)((i*241*123)%10+(int)'0'));
 	TBigUInt aaa(str);
 	TBigUInt bbb(str);
 	cout<<aaa<<endl;
 	cout<<aaa*bbb<<endl;
-	cout<<aaa.KaratsubaMultiply(aaa,bbb)<<endl;
-	// comparision of Karatsuba and usual methods of multiplying
+	cout<<KaratsubaMultiply(aaa,bbb)<<endl;
+	//// comparision of Karatsuba and usual methods of multiplying
 	//string str;
 	//int num=10;
 	//for(int i=1; i<num; i++)
@@ -525,21 +536,22 @@ int main(){
 	//TBigUInt b(str);
 	////long long power=static_cast<long long >(pow(256.0, 10));
 	//for (int i=1; i<7; i++){
-	//	for(int k=num; k<num*10; ++k)
-	//		a.vec.push_back((char)(i*k*14*267*13)%256);
-	//	num*=10;
+	//	if (i>1){
+	//		for(int k=num; k<num*10; ++k)
+	//			a.vec.push_back((char)(i*k*14*267*13)%256);
+	//		num*=10;
+	//	}
 	//	b=a;
-	//	if (i<2)
-	//		cout<<a;
 	//	t=clock();
 	//	a*b;
 	//	t=clock()-t;
 	//	cout << "Usual method for num="<<num<<" time: "<<(float)t/CLOCKS_PER_SEC<<endl;
 	//	t=clock();
-	//	a.KaratsubaMultiply(a,b);
+	//	KaratsubaMultiply(a,b);
 	//	t=clock()-t;
 	//	cout << "Karatsuba method for num="<<num<<" time: "<<(float)t/CLOCKS_PER_SEC<<endl;
 	//	str.clear();
+	//	cout<< ((KaratsubaMultiply(a,b)==(a*b))? 1:0)<< endl;
 	//}
 	return 0;
 }
