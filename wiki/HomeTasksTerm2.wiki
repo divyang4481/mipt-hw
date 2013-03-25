@@ -130,11 +130,15 @@ TPolygon`<`T`>` - многоугольник
 
 TCircle`<`T`>` - круг
 
-Предусмотреть у всех классов методы:
-
-  *  HasPoint (const TPoint `<`T`>` `&`p) const; - проверяет, что точка принадлежит фигуре (включая границу)
-
-  *  Intersects (const TSegment `<`T`>` `&`s) const; - проверяет, что отрезок пересекается с границей фигуры
+Все классы должны реализовывать интерфейс IShape:
+{{{
+template<typename T>
+class IShape: {
+public:
+  virtual bool HasPoint(const TPoint`<`T`>` `&`p) const = 0; // 
+  virtual bool Intersects(const TSegment `<`T`>` `&`s) const = 0; // 
+};
+}}}
 
 ==Задание 5. Выпуклая оболочка==
 
