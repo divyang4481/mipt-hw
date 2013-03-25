@@ -135,8 +135,8 @@ TCircle`<`T`>` - круг
 template<typename T>
 class IShape: {
 public:
-  virtual bool HasPoint(const TPoint`<`T`>` `&`p) const = 0; // 
-  virtual bool Intersects(const TSegment `<`T`>` `&`s) const = 0; // 
+  virtual bool HasPoint(const TPoint<T>& p) const = 0; // Проверяет, что точка лежит внутри фигуры или на границе
+  virtual bool Intersects(const TSegment <T>& s) const = 0; // Проверяет, что отрезок пересекает границу фигуры или касается ее
 };
 }}}
 
