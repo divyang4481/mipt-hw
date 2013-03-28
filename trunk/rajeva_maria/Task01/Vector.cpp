@@ -91,15 +91,26 @@ public:
 	   buf[a]=buf[b];
 	   buf[b]=t;
    };
-   insert()
+   void insert (iterator iter; T &n)
    {
-
+       reserve(size+1);
+	   ++size;
+	   for (iter i=size;i!=iter;--i)
+	   {
+		   *i=*(i-1);
+	   }
+	   *iter=n;
    };
-   erase()
+   void erase(iterator iter)
    {
-
+	   for (iterator i=iter;i<end();++i) 
+	   {
+		   *i=*(i+1);
+	   }
+	   --size;
    };
 
  int main () 
- {
+ {    
+	 return 0;
  }
