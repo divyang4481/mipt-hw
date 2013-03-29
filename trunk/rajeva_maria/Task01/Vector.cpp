@@ -10,14 +10,14 @@ class TVector
 public:
    typedef T* iterator;
    typedef const T* const_iterator
-   TVector()
+;   TVector()
    {
 	   size=0;
 	   capacity=1;
 	   buf = new T[1];
    }
    
-   int size()
+   int Size()
    {
    return size;
    }
@@ -37,34 +37,36 @@ public:
 	   delete[] buf;
    }
 
-   int capacity
+   int Capacity()
    {
    return(capacity); 
    }
    
-   void popback()
+   T popback()
    {
+   T t=buf[size-1];
    size--;
+   return(t);
    }
 
    void pushback(T val)
    {
-	   if (capacity()==size()) resize();
+	   if (Capacity()==Size()) resize();
 	   buf[size]=val;
 	   size++;
 	 }
 
 
 
-   void resize
+   void resize()
    {   capacity=2*capacity;
 	   T* newbuf=new T[capacity];
-	   for (i=0;i<size;i++)
+	   for (int i=0;i<size;i++)
             newbuf[i]=buf[i];
 	   buf=newbuf;     
    }
 
-   void reserve(int n)
+   void reserve(T&n)
    {
 	   while (capacity<n) resize();
    }
@@ -85,13 +87,13 @@ public:
    {
 	   return(buf[size-1]);
    };
-   swap(TVector &a, TVector &b)
+   void swap(TVector &a, TVector &b)
    {
        T t=buf[a];
 	   buf[a]=buf[b];
 	   buf[b]=t;
    };
-   void insert (iterator iter; T &n)
+   void insert (iterator iter, T &n)
    {
        reserve(size+1);
 	   ++size;
@@ -109,8 +111,15 @@ public:
 	   }
 	   --size;
    };
+   };
 
  int main () 
- {    
-	 return 0;
+ {    TVector <int> A;
+      A.pushback(54); 
+	  cout<<A.popback()<<endl;
+      cout<<A.Size()<<endl;
+	  cout<<A.Capacity()<<endl;
+	  cout<<A.empty()<<endl;
+	  system("pause");
+	  return 0;
  }
