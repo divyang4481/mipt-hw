@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <cmath>
+#include <vector>
 using namespace std;
 
 
@@ -8,6 +9,7 @@ template <typename T>
 class IShape;
 template <typename T>
 class TSegment;
+enum {LEFT,  RIGHT,  BEYOND,  BEHIND, BETWEEN, ORIGIN, DESTINATION};
 template <typename T>
 class TPoint: public IShape<T>
 {
@@ -18,7 +20,7 @@ public:
 	{
 		x = y = 0;
 	}
-	TPoint (TPoint &a) 
+	TPoint (const TPoint &a)
 	{
 		x = a.GetX();
 		y = a.GetY();
@@ -57,6 +59,36 @@ public:
 	{
 		x = a; y = b;
 	}
+	TPoint<T> operator- (TPoint<T> &p)
+	{
+		return TPoint<T> (x - p.GetX(), y - p.GetY());
+	}
+	
+	int Classify( TPoint<T> &p0, TPoint<T> &p1) const
+	{
+		
+		
+		
+		TPoint<T> p2 = *this;
+		TPoint<T> a = p1 - p0;
+		TPoint<T> b = p2 - p0;
+		double sa = a.GetX() * b.GetY() - b.GetX() * a.GetY();
+		if (sa > 0.0)
+			return LEFT;
+		if (sa < 0.0)
+			return RIGHT;
+		if ((a.GetX() * b.GetX() < 0.0 ) || (a.GetY() * b.GetY() < 0.0))
+			return BEHIND;
+		if ((a.GetX()*a.GetX() + a.GetY()*a.GetY()) <
+			(b.GetX()*b.GetX() + b.GetY()*b.GetY()))
+			return BEYOND;
+		if ((p0.GetX() == p2.GetX()) && (p0.GetY() == p2.GetY()))
+			return ORIGIN;
+		if ((p1.GetX() == p2.GetX()) && (p1.GetY() == p2.GetY()))
+			return DESTINATION;
+		return BETWEEN;
+	}
+
 };
 template <typename T>
 class TSegment: public IShape<T>
@@ -69,7 +101,7 @@ public:
 	{
 	}
 	
-	TSegment(TPoint<T> &a, TPoint<T> &b)
+	TSegment(const TPoint<T> &a,const TPoint<T> &b)
 	{
 		beginning = a;
 		ending = b;
@@ -135,7 +167,7 @@ public:
 		 T y1 = s.GetBeg().GetY() - center.GetY();
 		 T x2 = s.GetEnd().GetX() - center.GetX();
 		 T y2 = s.GetEnd().GetY() - center.GetY();
-		 if ((x1*A + y1*B) * (x2*A + y2*B)<0)
+		 if ((x1*A + y1*B) * (x2*A + y2*B)>0)
 			 return false;
 		 else 
 		 {
@@ -148,6 +180,75 @@ public:
 	 }
 };
 template <typename T>
+class TPolygon: public IShape<T>
+{
+private:
+	vector< TPoint<T> > pol;
+public:
+	enum {OUTSIDE, INSIDE, BOUNDARY};
+	enum { TOUCHING, CROSSING, INESSENTIAL };
+	TPolygon()
+	{
+	}
+	TPolygon(const vector< TPoint<T> > &p)
+	{
+		pol = p;
+		pol.push_back(p[0]);
+	}
+	
+	size_t PolygonSize () const
+	{
+		return pol.size();
+	}
+	bool HasPoint(const TPoint <T> &p)  const
+	{
+		int parity = 0;
+		
+		TPoint<T> x,y;
+		for (size_t i = 1; i < this ->PolygonSize(); ++i)
+		{
+			x = pol[i-1]; y = pol[i];
+			switch (SegmentType(p,x,y))
+			{
+			case TOUCHING:
+				return BOUNDARY;
+			case CROSSING:
+				parity = 1 - parity;
+			}
+		}
+		return (parity ? INSIDE : OUTSIDE);
+	}
+	int SegmentType (const TPoint<T> &a,TPoint<T> &x, TPoint<T> &y) const
+	{
+		switch (a.Classify(x,y))
+		{
+		case LEFT:
+			return ((x.GetY() < a.GetY()) && (a.GetY() <= y.GetY()))
+				? CROSSING : INESSENTIAL;
+		case RIGHT:
+			return ((y.GetY() < a.GetY()) && (a.GetY() <= x.GetY()))
+				? CROSSING : INESSENTIAL;
+		case BETWEEN:
+		case ORIGIN:
+		case DESTINATION:
+			return TOUCHING;
+		default:
+			return INESSENTIAL;
+		}
+	}
+	bool Intersects(const TSegment <T> &s) const
+	{
+		for (size_t i = 1; i < this ->PolygonSize(); ++i)
+		{
+			TSegment<T> *a = new TSegment<T>(pol[i - 1], pol[i]);
+			if (a ->Intersects(s)) return true;
+			
+		}
+		return false;
+	}
+
+};
+template <typename T>
 class IShape
 {
 public:
@@ -158,7 +259,7 @@ public:
 template <typename T>
 T Area (const TPoint<T> &a, const TPoint<T> &b, const TPoint<T> &c)
 {
-	return (b.GetX() - a.GetX()) * (c.GetX() - a.GetY())
+	return (b.GetX() - a.GetX()) * (c.GetY() - a.GetY())
 		- (b.GetY() - a.GetY()) * (c.GetX() - a.GetX());
 }
 template <typename T>
@@ -185,16 +286,51 @@ bool Intersect_1 (const TSegment<T> &x, const TSegment<T> &y)
 int main()
 {
 	
-	TPoint<int> *a = new TPoint<int> (0,0);
-	IShape<int> *c = new TCircle<int> (*a, 2);
-	TPoint<int> *b = new TPoint<int> (-2,2);
-	TPoint<int> *d = new TPoint<int> (3,3);
-	TSegment<int> *e = new TSegment<int>(*b, *d);
-	//cout << c -> HasPoint(*b) << endl;
-	//cout << d ->Intersects(*d1) << endl;
-	//cout << c ->HasPoint(*b) << endl;
-	//cout << d -> HasPoint(*a) << endl;
-	cout << c ->Intersects(*e) << endl;
+	vector<TPoint<int> > p;
+	TPoint<int> *a = new TPoint<int> (-2,3);
+	p.push_back(*a);
+	TPoint<int> *b = new TPoint<int> (-4,1);
+	p.push_back(*b);
+	TPoint<int> *c = new TPoint<int> (0,-2);
+	p.push_back(*c);
+	TPoint<int> *d = new TPoint<int> (4,1);
+	p.push_back(*d);
+	TPoint<int> *e = new TPoint<int> (2,3);
+	p.push_back(*e);
+	cout << "Create Polygon with vertices((-2,3),(-4,1),(0,-2),(4,1),(2,3))" << endl;
+	TPolygon<int> *pol = new TPolygon<int> (p);
+	TPoint<int> *f = new TPoint<int> (-2,3);
+	TPoint<int> *g = new TPoint<int> (0,0);
+	cout << "Check one of the vertices (-2,3)" << endl;
+	cout << pol ->HasPoint(*f)<< endl;
+	f ->ChangeCoord(0,0);
+	cout << "Check point inside (0,0)" << endl;
+	cout << pol ->HasPoint(*f) << endl;
+	f ->ChangeCoord(4,0);
+	cout << "Check point outside (4,0)" << endl;
+	cout << pol ->HasPoint(*f) << endl;
+	TSegment<int> * fg = new TSegment<int>(*f, *g);
+	cout << "Check segment intersecting ((0,0),(4,0))" << endl;
+	cout << pol ->Intersects(*fg) << endl;
+	g ->ChangeCoord(0,-3);
+	fg = new TSegment<int>(*f, *g);
+	cout << "Check segment not intersecting ((0,-3),(4,0))" << endl;
+	cout << pol ->Intersects(*fg) << endl;
+	cout << "Create circle center (0,0), radius = 3" << endl;
+	f ->ChangeCoord(0,0);
+	TCircle<int> *w = new TCircle<int>(*f,3);
+	cout << "Check point inside (0,0)" << endl;
+	cout << w->HasPoint(*f) << endl;
+	cout<< "Check point outside (4,0)" << endl;
+	f ->ChangeCoord(4,0);
+	cout << w ->HasPoint(*f) << endl;
+	TSegment<int> *ab = new TSegment<int> (*a,*b);
+	cout << "Check segment not intersecting ((-2,3),(-4,1))" << endl;
+	cout << w ->Intersects(*ab) << endl;
+	TSegment<int> *cd = new TSegment<int> (*c,*d);
+	cout << "Check segment intersecting ((0,-2),(4,1))" << endl;
+	cout << w ->Intersects(*ab) << endl;
+
 	system("pause");
 
 }
