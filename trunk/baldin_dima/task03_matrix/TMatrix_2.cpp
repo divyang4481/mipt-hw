@@ -11,12 +11,8 @@ using namespace std;
 template <typename T>
 class TMatrix
 {
-        
-        
-        
 private:
-        vector<vector<T>> m;
-                
+        vector<vector<T> > m;
     void Separate (TMatrix &matr,TMatrix &a,TMatrix &b,TMatrix &c,TMatrix &d)
         {
                 size_t size = matr.rows()/2;
