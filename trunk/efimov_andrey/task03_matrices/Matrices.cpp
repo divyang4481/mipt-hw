@@ -49,7 +49,7 @@ class TMatrix{
 private:
 	int rows;
 	int cols;
-	vector<vector<T>> arry;
+	vector<vector<T> > arry;
 	void ArrayBuild(){
 		arry.resize(rows);
 		for (int i=0; i<rows; ++i){
