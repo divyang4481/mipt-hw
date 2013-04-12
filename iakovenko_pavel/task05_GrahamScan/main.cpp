@@ -5,7 +5,6 @@
 #include <algorithm>
 #include <string>
 using namespace std;
-int SIZE = 100;
 
 
 struct TPoint {
@@ -81,9 +80,9 @@ public:
 
 	void main () {
 		FILE* f = fopen ( name_of_file , "r+");
-		//int  n;
-		//fscanf ( f, "%d", &n);
-		if ( SIZE < 3){
+		int  n;
+		fscanf ( f, "%d", &n);
+		if ( n < 3){
 			fclose (f);
 			f = fopen ( name_of_file , "a");
 			fprintf ( f, "ERROR! NUMBER OF POINTS IS LESS THAN 3!\n");
@@ -91,7 +90,7 @@ public:
 			return;
 		}
 		TPoint tp;
-		for ( int i=0; i < SIZE; ++i){
+		for ( int i=0; i < n; ++i){
 			fscanf (f, "%d %d", &tp.x , &tp.y);
 			arr.push_back (tp);
 			arr1.push_back (tp);
