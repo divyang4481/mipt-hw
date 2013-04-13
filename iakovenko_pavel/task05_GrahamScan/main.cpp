@@ -68,8 +68,8 @@ public:
 		}
 		sort (arr.begin()+1, arr.end());
 		for ( unsigned int i = 2; i < arr.size(); ++i ){
-			//if ( arr[i-1].angel - 0.00001 <= arr[i].angel && arr[i-1].angel >= arr[i].angel- 0.00001 ){
-			if (arr[i-1].angel == arr[i].angel){
+			if ( arr[i-1].angel - 0.001 <= arr[i].angel && arr[i-1].angel >= arr[i].angel- 0.001 ){
+			//if (arr[i-1].angel == arr[i].angel){
 				if ( (sqrt ( static_cast <double> (arr[i-1].x * arr[i-1].x + arr[i-1].y * arr[i-1].y))) <= (sqrt (static_cast <double> (arr[i].x * arr[i].x + arr[i].y * arr[i].y)))) 
 					arr.erase ( arr.begin() + i - 1);
 				else
