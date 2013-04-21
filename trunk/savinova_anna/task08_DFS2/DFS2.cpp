@@ -2,7 +2,7 @@
 #include <iostream>
 using namespace std;
 
-enum Colour {WHITE, GREY, BLACK};
+enum Colour {WHITE, GRAY, BLACK};
 
 class Stat
 {
@@ -36,7 +36,7 @@ public:
 
 void DFSVisit(const int &u, int& time, vector<Stat> &S, vector< vector<int> > &Adm)
 {
-        S[u].Col() = GREY;
+        S[u].Col() = GRAY;
         S[u].D() = time++;
         for (int i = 0; i < Adm.size(); ++i)
         {
