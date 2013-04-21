@@ -50,11 +50,11 @@ void DFSVisit(const int &u, int& time, vector<Stat> &S, vector< vector<int> > &A
         S[u].F() = time++;
 }
 
-void DFS(vector< vector<int> > &Adj, const int &n, const int& m)
+void DFS(vector< vector<int> > &Adj)
 {
         int time = 0;
-        vector<Stat> S(n);
-        for (int i = 1; i < n; ++i)
+        vector<Stat> S(Adj.size());
+        for (int i = 1; i < Adj.size(); ++i)
         {
                 if (S[i].Col() == WHITE)
                         DFSVisit(i, time, S, Adj);
@@ -73,6 +73,6 @@ int main()
                 cin >> x >> y;
                 Adj[x].push_back(y);
         }
-        DFS(Adj, N + 1, M);
+        DFS(Adj);
         return 0;
 }
