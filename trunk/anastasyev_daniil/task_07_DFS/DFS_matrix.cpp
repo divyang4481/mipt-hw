@@ -45,9 +45,9 @@ void DFS (vector <vector <bool> > &g ,  int s)
 	DFS_VISIT (g, v, s, time);
 	for (int i = 0; i < v.size(); ++i)
 	{
-		cout << i << ": open time: " << v[i].open << ";   close time: " << v[i].close;
+		cout << i+1 << ": open time: " << v[i].open << ";   close time: " << v[i].close;
 		if (v[i].parent)
-			cout << ";   parent: " << v[i].parent << endl;
+			cout << ";   parent: " << v[i].parent+1 << endl;
 		else
 			cout << ";   no parent" << endl;
 	}

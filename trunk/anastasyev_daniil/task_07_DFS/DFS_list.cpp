@@ -43,9 +43,9 @@ void DFS(vector< vector<TNode*> > &g, int s)
 	DFSVisit(g, s, time);
 	for (int i = 0; i < g.size(); ++i)
 	{
-		cout << i << ": open time: " << g[i][0]->open << ";   close time: " << g[i][0]->close;
+		cout << i+1 << ": open time: " << g[i][0]->open << ";   close time: " << g[i][0]->close;
 		if (g[i][0]->parent)
-			cout << ";   parent: " << g[i][0]->parent->n << endl;
+			cout << ";   parent: " << g[i][0]->parent->n+1 << endl;
 		else
 			cout << ";   no parent" << endl;
 	}
