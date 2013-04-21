@@ -30,9 +30,9 @@ public:
         }
 };
 
-void BFS(vector< vector<int> > &Adm, const int &n, const int &m)
+void BFS(vector< vector<int> > &Adm)
 {
-        vector<Stat> S(n);
+        vector<Stat> S(Adm.size());
         S[1].Col() = GREY;
         S[1].D() = 0;
         list<int> Q;
@@ -40,7 +40,7 @@ void BFS(vector< vector<int> > &Adm, const int &n, const int &m)
         while (!Q.empty())
         {
                 int u = Q.front();
-                for (int i = 0; i < n; ++i)
+                for (int i = 0; i < Adm.size(); ++i)
                 {
                         if (Adm[u][i] && S[i].Col() == WHITE)
                         {
@@ -70,6 +70,6 @@ int main()
                 cin >> x >> y;
                 Adm[x][y] = 1;
         }
-        BFS(Adm, N + 1, M);
+        BFS(Adm);
         return 0;
 }
