@@ -30,9 +30,9 @@ public:
         }
 };
 
-void BFS(vector< vector<int> > &Adj, const int &n, const int &m)
+void BFS(vector< vector<int> > &Adj)
 {
-        vector<Stat> S(n);
+        vector<Stat> S(Adj.size());
         S[1].Col() = GREY;
         S[1].D() = 0;
         list<int> Q;
@@ -68,13 +68,6 @@ int main()
                 cin >> x >> y;
                 Adj[x].push_back(y);
         }
-        /*for (int i = 1; i <= N; ++i)
-        {
-                cout << "i: " << i << " j: ";
-                for (int j = 0; j < Adj[i].size(); ++j)
-                        cout << Adj[i][j] << " ";
-                cout << endl;
-        }*/
-        BFS(Adj, N + 1, M);
+        BFS(Adj);
         return 0;
 }
