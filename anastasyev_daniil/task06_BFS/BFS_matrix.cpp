@@ -50,9 +50,9 @@ void BFS (vector < vector <bool> > &g, int s)
 	{
 		if (v[i].dist > 0)
 		{
-			cout << i << " distance: " << v[i].dist << " parent: " << v[i].parent << endl;
+			cout << i+1 << " distance: " << v[i].dist << " parent: " << v[i].parent+1 << endl;
 		}
-		else cout << i << " no links or initial node"<<endl;
+		else cout << i+1 << " no links or initial node"<<endl;
 	}
 }
 
