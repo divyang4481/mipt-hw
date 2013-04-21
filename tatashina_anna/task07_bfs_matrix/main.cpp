@@ -5,12 +5,6 @@
 
 using namespace std;
 
-/*struct TNode {
-    int num;
-    char color;
-    int distance;
-    TNode* parent;
-};*/
 
 void BFS_matr(vector < vector <int> >& graph_matr, int s, int N) {
 	enum clr {WHITE, GRAY, BLACK};	
@@ -52,17 +46,11 @@ void BFS_matr(vector < vector <int> >& graph_matr, int s, int N) {
 }
 
 int main() {
-	//vector <TNode> graph_list;
+
 	int a, b, N, M;
 	
 	 cin >> N >> M; // N - вершины, M - ребра
-	/*for (int i = 0; i < n; ++i) {
-		graph_list[i].num = i + 1;
-		graph_list[i].color = WHITE;
-		graph_list[i].distance = 0;
-		graph_list[i].parent = NULL;
-	}
-	*/
+
 	vector < vector <int> > graph_matr(N);
 	for (int i = 0; i < N; ++i)
 		graph_matr[i].resize(N);
@@ -75,7 +63,6 @@ int main() {
 
 	BFS_matr(graph_matr, 0, N);
 	
-//	cin >> N;
 	return 0;
 
 }
