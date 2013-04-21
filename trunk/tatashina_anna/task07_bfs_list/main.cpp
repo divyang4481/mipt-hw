@@ -60,7 +60,7 @@ int main() {
 
 	BFS_list(graph_list, 1, N);
 	
-	cin >> N;
+
 	return 0;
 
 }
