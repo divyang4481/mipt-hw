@@ -35,7 +35,7 @@ void DFS_matr(vector < vector <int> >& graph_matr, int s) {
 			DFS_Visit(graph_matr, color, d, p, f, time, i);
 	}
 	for (int i = 1; i < graph_matr.size(); ++i)
-		cout << "number: " << i << "  discovered: " << d[i] << " finished" << f[i] << "  parent: " << p[i] << endl;
+		cout << "number: " << i << "  discovered: " << d[i] << " finished: " << f[i] << "  parent: " << p[i] << endl;
 }
 
 int main() {
