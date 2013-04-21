@@ -102,6 +102,7 @@ list <TPoint> Graham(const char* fin)
 	SortPoints(points);
 	list <TPoint> ConvexHull;
 	ConvexHullBuild(ConvexHull, points);
+	fclose(in);
 	return ConvexHull;
 }
 
@@ -113,5 +114,6 @@ int main()
 	FILE * out = fopen("out.txt","w");
 	for (list <TPoint>::iterator it=ConvexHull.begin(); it!=ConvexHull.end(); ++it)
 		fprintf(out, "%d %d\n", it->getX(), it->getY());
+	fclose(out);
 	return 0;
 }
