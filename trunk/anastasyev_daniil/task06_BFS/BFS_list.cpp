@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <vector>
 #include <queue>
@@ -19,9 +18,12 @@ void BFS (vector < vector <TNode*> > &g, int s)
 	queue < TNode* > q;
 	for (int i = 0; i < g.size(); ++i)
 	{
-		g[i][0]->clr = WHITE;
-		g[i][0]->dist = -1;
-		g[i][0]->parent = NULL;
+		if ( i != s)
+		{
+			g[i][0]->clr = WHITE;
+			g[i][0]->dist = -1;
+			g[i][0]->parent = NULL;
+		}
 	}
 	g[s][0]->clr = GREY;
 	g[s][0]->dist = 0;
@@ -44,14 +46,6 @@ void BFS (vector < vector <TNode*> > &g, int s)
 		}
 		t->clr = BLACK;
 	}
-	for (int i = 0; i < g.size(); ++i)
-	{
-		if (g[i][0]->dist > 0)
-		{
-			cout << i << " distance: " << g[i][0]->dist << " parent: " << g[i][0]->parent->n << endl;
-		}
-		else cout << i << " no links or initial node"<<endl;
-	}
 }
 
 int main()
@@ -66,7 +60,7 @@ int main()
 		TNode *t = new TNode;
 		t->n = i;
 		t->clr = WHITE;
-		t->dist = -1;
+		t->dist = 0;
 		t->parent = NULL;
 		ver.push_back(t);
 		g[i].push_back(ver[i]);
@@ -79,6 +73,16 @@ int main()
 		g[y-1].push_back(ver[x-1]);
 	}
 	BFS (g, 0);
-	fclose(in);
+	for (int i = 0; i < N; ++i)
+	{
+		if (g[i][0]->dist > 0)
+		{
+			cout << i+1 << " distance: " << g[i][0]->dist;
+			if ( !g[i][0]->parent)
+				cout << "No parent" << endl;
+			else cout << " parent: " << g[i][0]->parent->n+1 << endl;
+		}
+		else cout << i+1 << " no links or initial node"<<endl;
+	}
 	return 0;
 }
