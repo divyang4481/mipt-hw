@@ -3,7 +3,7 @@
 #include <iostream>
 using namespace std;
 
-enum Colour {WHITE, GREY, BLACK};
+enum Colour {WHITE, GRAY, BLACK};
 
 class Stat
 {
@@ -33,7 +33,7 @@ public:
 void BFS(vector< vector<int> > &Adj)
 {
         vector<Stat> S(Adj.size());
-        S[1].Col() = GREY;
+        S[1].Col() = GRAY;
         S[1].D() = 0;
         list<int> Q;
         Q.push_back(1);
@@ -44,7 +44,7 @@ void BFS(vector< vector<int> > &Adj)
                 {
                         if (S[Adj[u][i]].Col() == WHITE)
                         {
-                                S[Adj[u][i]].Col() = GREY;
+                                S[Adj[u][i]].Col() = GRAY;
                                 S[Adj[u][i]].D() = S[u].D() + 1;
                                 S[Adj[u][i]].P() = u;
                                 Q.push_back(Adj[u][i]);
