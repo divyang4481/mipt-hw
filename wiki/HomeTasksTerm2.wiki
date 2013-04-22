@@ -168,14 +168,15 @@ Deadline: 2013.04.15
   * TDateTime (int year, int month, int day)
   * TDateTime (string s)
   * operator<<, operator>> - ввод/вывод в поток
-  * int Year ()
-  * int Month ()
-  * int Day ()
-  * int Hour ()
-  * int Minute ()
-  * int Second ()
-  * int `DayOfWeek ()`
-  * static TDateTime Now () - статический метод, возвращающий текущую дату-время
+  * int Year () const
+  * int Month () const
+  * int Day () const
+  * int Hour () const
+  * int Minute () const
+  * int Second () const
+  * int `DayOfWeek ()` const
+  * static TDateTime Now () - статический метод, возвращающий текущую дату-время (локальное время)
+  * static TDateTime GmNow() - статический метод, возвращающий текущую дату-время по Гринвичу (GMT)
   * bool operator<
   * TDateTime operator+ (const TTimeSpan &delta) - возвращает дату-время, смещенную на delta
   * TDateTime operator- (const TTimeSpan &delta) - возвращает дату-время, смещенную на -delta
@@ -216,6 +217,8 @@ Deadline: 2013.04.22
 
 == Задание 9. Topological Sort ==
 
+Deadline: 2013.04.29
+
 Для графа из задачи №7 получить топологически отсортированный граф.
 
 *Output:*
@@ -223,6 +226,8 @@ Deadline: 2013.04.22
 Номера вершин графа в порядке топологической сортировки.
 
 == Задание 10. SCCs ==
+
+Deadline: 2013.04.29
 
 Для графа из задачи №7 вычислить сильно связные компоненты.
 
