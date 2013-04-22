@@ -185,6 +185,20 @@ Deadline: 2013.04.15
 
 Класс TTimeSpan предназначен для представления промежутков времени. Продумайте его интерфейс самостоятельно.
 
+Прим.: прежде чем приступать к выполнению задания рекомендуется ознакомиться со следующими функциями стандартной библиотеки:
+{{{
+struct tm * gmtime (const time_t * timer);
+struct tm * localtime (const time_t * timer);
+time_t mktime (struct tm * timeptr);
+size_t strftime (char* ptr, size_t maxsize, const char* format, const struct tm* timeptr );
+}}}
+
+Также рекомендуется прочитать следующие статьи:
+http://ru.wikipedia.org/wiki/Unix_timestamp
+http://ru.wikipedia.org/wiki/Gmt
+http://ru.wikipedia.org/wiki/UTC
+
+
 == Задание 7. BFS ==
 
 Deadline: 2013.04.22
