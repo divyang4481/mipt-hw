@@ -8,7 +8,7 @@ enum color {BLACK, GREY, WHITE};
 struct TNode 
 {
 	int n;
-	unsigned char clr;
+	color clr;
 	int open;
 	int close;
 	TNode* parent;
@@ -40,7 +40,12 @@ void DFS(vector< vector<TNode*> > &g, int s)
 		g[i][0]->open = 0;
 		g[i][0]->close = 0;
 	}
-	DFSVisit(g, s, time);
+	for (int i = 0; i < g.size(); ++i)
+	{
+		if (g[i][0]->clr == WHITE)
+			DFSVisit(g, i, time);
+	}
+	
 	for (int i = 0; i < g.size(); ++i)
 	{
 		cout << i+1 << ": open time: " << g[i][0]->open << ";   close time: " << g[i][0]->close;
