@@ -194,8 +194,11 @@ size_t strftime (char* ptr, size_t maxsize, const char* format, const struct tm*
 }}}
 
 Также рекомендуется прочитать следующие статьи:
+
 http://ru.wikipedia.org/wiki/Unix_timestamp
+
 http://ru.wikipedia.org/wiki/Gmt
+
 http://ru.wikipedia.org/wiki/UTC
 
 
