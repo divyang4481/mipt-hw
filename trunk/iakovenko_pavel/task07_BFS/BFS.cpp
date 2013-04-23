@@ -72,7 +72,6 @@ int main () {
 	for (int i = 0; i < m; ++i){
 		fscanf(f, "%d %d", &from, &to);
 		adj[from-1].push_back ( &vec[to-1] );
-		adj[to-1].push_back ( &vec[from-1] );
 	}
 	BFS (adj, 1);
 	for (int i = 0; i < n; ++i){

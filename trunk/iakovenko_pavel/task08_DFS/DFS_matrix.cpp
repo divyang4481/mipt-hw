@@ -65,7 +65,6 @@ int main () {
 	for (int i = 0; i < m; ++i){
 		fscanf(f, "%d %d", &from, &to);
 		matrix [from - 1] [to - 1] = 1;
-		matrix [to - 1] [from - 1] = 1;
 	}
 	DFS (vec, matrix, 1);
 	for (int i = 0; i < n; ++i){
