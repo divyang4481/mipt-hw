@@ -3,6 +3,7 @@
 #include <ctime> 
 #include <cstdlib>
 using namespace std;
+
 int Created=0;
 int Deleted=0;
 
@@ -12,32 +13,39 @@ struct str{
 	~str (){Deleted++;}
 };
 
+
+  typedef long long i64;
+  i64 GetClock() {
+       return clock() * 1000 / CLOCKS_PER_SEC;
+  }
+
+  class TTimePrinter {
+      i64 Start;
+  public:
+      TTimePrinter()
+          : Start(GetClock()) {
+      }
+
+      void Print() const {
+          cout << "\tTime: " << this->GetTime() << " sec" << endl;
+      }
+
+      double GetTime() const {
+          return (GetClock() - Start) * 0.001;
+      }
+
+      void Reset() {
+          Start = GetClock();
+      }
+  };
+
+
 template<typename T>
 class TMatrix{
 private:
-	vector<vector<T> > mat;
+	vector<vector<T>> mat;
 public:
-	TMatrix(){
-	}
-	TMatrix(const TMatrix & a){
-		*this=a;
-	}
-	TMatrix(size_t rowCount, size_t colCount){
-		vector<T> vec(colCount);
-		for (unsigned int j=0; j<rowCount; ++j)
-			mat.push_back(vec);
-	}
 
-	/*TMatrix<T> (const TMatrix& a, const TMatrix& b, size_t a_from, size_t a_to, size_t b_from, size_t b_to){
-		TMatrix <T> result (a_to-a_from, b_to-b_from);
-		for (size_t i=a_from; i<=a_to; ++i)
-			for (size_t j=from; j<=a.col; ++j)
-				for (int k=0; k<; ++k)
-					result.mat[i][j]+=(a.mat[i][k]*b.mat[k][j]);
-		return result;
-	}*/
-	
-	// copy the quater of matrix 
 	void quater (TMatrix<T>& result, int number_of_quater, int size){
 		int rp=0;
 		int cp=0;
@@ -56,27 +64,20 @@ public:
 				for (int j=0; j<size; ++j)
 					result.At(i, j)=mat[i+rp][j+cp];
 	}
-	
-	//function add little matrix to bigger one
-	void put_matrix (TMatrix <T>& a, int number_of_quater, int size){
-		int rp=0;
-		int cp=0;
-		if(number_of_quater==1)
-			rp=cp=0;
-		else if (number_of_quater==3)
-			rp=cp=size;
-		else if (number_of_quater==4){
-			rp=0;
-			cp=size;
-		} else if (number_of_quater==2){
-			rp=size;
-			cp=0;
-		}
-		for (int i=0; i<size; ++i)
-				for (int j=0; j<size; ++j)
-					mat[i+rp][j+cp]=a.At(i,j);
+
+	TMatrix(){
 	}
-	
+
+	TMatrix(const TMatrix & a){
+		*this=a;
+	}
+
+	TMatrix(size_t rowCount, size_t colCount){
+		vector<T> vec(colCount);
+		for (unsigned int j=0; j<rowCount; ++j)
+			mat.push_back(vec);
+	}
+
 	size_t get_cols()const {
 		return mat[0].size();
 	}
@@ -85,8 +86,9 @@ public:
 		return mat.size();
 	}
 
-	void operator= (const TMatrix& a){
+	TMatrix& operator= (const TMatrix& a){
 		mat=a.mat;
+		return *this;
 	}
 
 	TMatrix<T> operator+(const TMatrix& a){
@@ -134,21 +136,38 @@ public:
 	}
 
 	TMatrix<T> operator+=(const TMatrix& a){
-		*this=*this+a;
+		for (unsigned int i=0; i<get_rows(); ++i)
+			for (unsigned int j=0; j<get_cols(); ++j)
+				mat[i][j]+=a.mat[i][j];
 		return *this;
 	}
+
 	TMatrix<T> operator-=(const TMatrix& a){
-		*this=*this-a;
+		for (unsigned int i=0; i<get_rows(); ++i)
+			for (unsigned int j=0; j<get_cols(); ++j)
+				mat[i][j]-=a.mat[i][j];
 		return *this;
 	}
+
 	TMatrix<T> operator*=(const TMatrix& a){
-		*this=*this*a;
+		T temp;
+		for (unsigned int i=0; i<get_rows(); ++i)
+			for (unsigned int j=0; j<a.get_cols(); ++j){
+				temp = 0;
+				for (unsigned int k=0; k<get_cols(); ++k)
+					temp+=(mat[i][k]*a.mat[k][j]);
+				mat[i][j] = temp;
+			}
 		return *this;
 	}
+
 	TMatrix<T> operator*=(long long a){
-		*this=*this*a;
+		for (unsigned int i=0; i<get_rows(); ++i)
+			for (unsigned int j=0; j<get_cols(); ++j)
+				mat[i][j]*=a;
 		return *this;
 	}
+
 	TMatrix<T> Resize(size_t rowCount, size_t colCount){
 		if(rowCount>get_rows()){
 			vector<T> tp (get_cols(),0);
@@ -168,9 +187,11 @@ public:
 	const T& At(size_t row, size_t col) const{
 		return mat[row][col];
 	}
+
 	T& At(size_t row, size_t col){
 		return mat[row][col];
 	}
+
 	TMatrix<T> Transpose(){
 		T tp;
 		for (unsigned int i=0; i<get_rows(); ++i)
@@ -208,18 +229,17 @@ int near_power_2 (int size){
 	return tp1;
 }
 
-
 // for square matrixes (power of 2)
 template<typename T>
 TMatrix<T> StrassenMultiply_for_2(TMatrix<T>& a, TMatrix<T>& b){
-	if(a.get_rows()<129){
+	if(a.get_rows() <= 128){
 		return a*b;
 	}
 	TMatrix <T> result (a.get_cols(), a.get_rows());
 	int n=a.get_cols()/2;
 	TMatrix <T> temp1 (n,n);
 	TMatrix <T> temp2 (n,n);
-	TMatrix <T> tempMatrix (a.get_cols(), a.get_rows()); //each quater contain one matrix (M1-M7) in different steps 
+
 	// Matrix M1
 		//A11+A22
 		for (int i=0; i<n; ++i)
@@ -229,7 +249,11 @@ TMatrix<T> StrassenMultiply_for_2(TMatrix<T>& a, TMatrix<T>& b){
 		for (int i=0; i<n; ++i)
 			for (int j=0; j<n; ++j)
 				temp2.At(i,j)=b.At(i,j)+b.At(n+i, n+j);
-	tempMatrix.put_matrix(StrassenMultiply(temp1, temp2),1,n);
+	temp1 = StrassenMultiply_for_2(temp1, temp2);
+	for (int i=0; i<n; ++i)
+		for (int j=0; j<n; ++j)
+			result.At (i, j) = result.At (i+n, j+n) = temp1.At(i, j);
+
 	//M2
 		//A21+A22
 		for (int i=0; i<n; ++i)
@@ -237,7 +261,10 @@ TMatrix<T> StrassenMultiply_for_2(TMatrix<T>& a, TMatrix<T>& b){
 				temp1.At(i,j)=a.At(n+i,j)+a.At(n+i, n+j);
 		//B11
 		b.quater(temp2,1,n);
-	tempMatrix.put_matrix(StrassenMultiply(temp1, temp2),2,n);
+	temp1 = StrassenMultiply_for_2(temp1, temp2);
+	for (int i=0; i<n; ++i)
+		for (int j=0; j<n; ++j)
+			result.At (i+n, j+n) -= (result.At (i+n, j) = temp1.At(i, j));
 	//M3
 		//A11
 		a.quater(temp1,1,n);
@@ -245,7 +272,39 @@ TMatrix<T> StrassenMultiply_for_2(TMatrix<T>& a, TMatrix<T>& b){
 		for (int i=0; i<n; ++i)
 			for (int j=0; j<n; ++j)
 				temp2.At(i,j)=b.At(i,j+n)-b.At(n+i, n+j);
-	tempMatrix.put_matrix(StrassenMultiply(temp1, temp2),3,n);
+	temp1 = StrassenMultiply_for_2(temp1, temp2);
+	for (int i=0; i<n; ++i)
+		for (int j=0; j<n; ++j)
+			result.At (i+n, j+n) += (result.At (i, j+n) = temp1.At(i, j));
+
+	//M4
+		//A22
+		a.quater(temp1, 3, n);
+		//B21-B11
+		for (int i=0; i<n; ++i)
+			for (int j=0; j<n; ++j)
+				temp2.At(i,j)=b.At(i+n,j)-b.At(i, j);
+	temp1 = StrassenMultiply_for_2(temp1, temp2);
+	for (int i=0; i<n; ++i)
+		for (int j=0; j<n; ++j){
+			result.At (i, j) += temp1.At(i, j);
+			result.At (i+n, j) += temp1.At(i, j);
+		}
+
+	//M5
+		//A11+A12
+		for (int i=0; i<n; ++i)
+			for (int j=0; j<n; ++j)
+				temp1.At(i,j)=a.At(i,j)+a.At(i, j+n);
+		//B22
+		b.quater(temp2,3,n);
+	temp1 = StrassenMultiply_for_2(temp1, temp2);
+	for (int i=0; i<n; ++i)
+		for (int j=0; j<n; ++j){
+			result.At (i, j) -= temp1.At(i, j);
+			result.At (i, j+n) += temp1.At(i, j);
+		}
+
 	//M6
 		//A21-A11
 		for (int i=0; i<n; ++i)
@@ -255,38 +314,12 @@ TMatrix<T> StrassenMultiply_for_2(TMatrix<T>& a, TMatrix<T>& b){
 		for (int i=0; i<n; ++i)
 			for (int j=0; j<n; ++j)
 				temp2.At(i,j)=b.At(i,j)+b.At(i, j+n);
-	tempMatrix.put_matrix(StrassenMultiply(temp1, temp2),4,n);
-	//put C22 into result (M1-M2+M3+M6)
-		//1-2-3-6
+	temp1 = StrassenMultiply_for_2(temp1, temp2);
 	for (int i=0; i<n; ++i)
-			for (int j=0; j<n; ++j)
-				result.At(i+n,j+n)=tempMatrix.At(i,j)-tempMatrix.At(i+n, j)+tempMatrix.At(i+n, j+n)+tempMatrix.At(i, j+n);
-	//M4
-		//A22
-		a.quater(temp1, 3, n);
-		//B21-B11
-		for (int i=0; i<n; ++i)
-			for (int j=0; j<n; ++j)
-				temp2.At(i,j)=b.At(i+n,j)-b.At(i, j);
-	tempMatrix.put_matrix(StrassenMultiply(temp1, temp2),4,n);
-	//put C21 into result (M2+M4)
-		//1-2-3-4
-	for (int i=0; i<n; ++i)
-			for (int j=0; j<n; ++j)
-				result.At(i+n,j)=tempMatrix.At(i+n, j)+tempMatrix.At(i, j+n);
-	//M5
-		//A11+A12
-		for (int i=0; i<n; ++i)
-			for (int j=0; j<n; ++j)
-				temp1.At(i,j)=a.At(i,j)+a.At(i, j+n);
-		//B22
-		b.quater(temp2,3,n);
-	tempMatrix.put_matrix(StrassenMultiply(temp1, temp2),2,n);
-	//put C12 into result (M3+M5)
-		//1-5-3-4
-	for (int i=0; i<n; ++i)
-			for (int j=0; j<n; ++j)
-				result.At(i,j+n)=tempMatrix.At(i+n, j+n)+tempMatrix.At(i+n, j);
+		for (int j=0; j<n; ++j){
+			result.At (i+n, j+n) += temp1.At(i, j);
+		}
+	
 	//M7
 		//A12-A22
 		for (int i=0; i<n; ++i)
@@ -296,26 +329,27 @@ TMatrix<T> StrassenMultiply_for_2(TMatrix<T>& a, TMatrix<T>& b){
 		for (int i=0; i<n; ++i)
 			for (int j=0; j<n; ++j)
 				temp2.At(i,j)=b.At(i+n,j)+b.At(i+n, j+n);
-	tempMatrix.put_matrix(StrassenMultiply(temp1, temp2),3,n);
-	//put C11 into result (M1+M4-M5+M7)
-		//1-5-7-4
+	temp1 = StrassenMultiply_for_2(temp1, temp2);
 	for (int i=0; i<n; ++i)
-			for (int j=0; j<n; ++j)
-				result.At(i,j)=tempMatrix.At(i, j)+tempMatrix.At(i, j+n)-tempMatrix.At(i+n, j)+tempMatrix.At(i+n, j+n);
+		for (int j=0; j<n; ++j){
+			result.At (i, j) += temp1.At(i, j);
+		}
 	return result;
 }
 
-
 template <typename T>
 TMatrix <T> StrassenMultiply (TMatrix<T> a, TMatrix<T> b){
+	if(a.get_rows() <= 128){
+		return a*b;
+	}
 	int p2=near_power_2(a.get_cols());
 	if (p2==0)
 		return StrassenMultiply_for_2(a,b);
 	TMatrix<T> temp1(p2, p2);
 	TMatrix<T> temp2(p2, p2);
 	for (int i=0; i<p2; i++)
-		for(int j=0; j<p2; ++j){
-			if (i<a.get_cols() && j<a.get_cols())
+		for(  int j=0; j<p2; ++j){
+			if ((unsigned)i<a.get_cols() && (unsigned)j<a.get_cols())
 				temp1.At(i,j)=a.At(i,j);
 			else if (i==j)
 				temp1.At(i,j)=1;
@@ -324,19 +358,17 @@ TMatrix <T> StrassenMultiply (TMatrix<T> a, TMatrix<T> b){
 		}
 	for (int i=0; i<p2; i++)
 		for(int j=0; j<p2; ++j){
-			if (i<a.get_cols() && j<a.get_cols())
+			if ((unsigned)i<a.get_cols() && (unsigned)j<a.get_cols())
 				temp2.At(i,j)=b.At(i,j);
 			else if (i==j)
 				temp2.At(i,j)=1;
 			else 
 				temp2.At(i,j)=0;
 		}
-	temp1=StrassenMultiply_for_2(temp1, temp2);
+	temp1 = StrassenMultiply_for_2(temp1, temp2);
 	temp1.resize(a.get_cols());
 	return temp1;
 }
-
-
 
 
 template<typename T>
@@ -369,87 +401,94 @@ istream& operator>> (istream& in, TMatrix<T>& matrix){
 	return in;
 }
 
-
-
-int Random() {
-    return rand()%100;
-}
+int random() {  
+	return rand()%10; 
+} 
 
 int main(){
-	{TMatrix<str> a(3,3);
-	for(int i=0; i<3; i++)
-		for(int j=0; j<3; j++)
-			a.At(i,j).p=i+j;
-	}
-	// created!= deleted, because I make one vector and then push_back it. I can create better methods :( There is no leaks of memory. 
-	cout << Created <<endl<< Deleted<<endl;
+	int size = 3;
+	TMatrix <int> test1 (size, size);
+	for ( int i = 0; i < size; ++i)
+		for ( int j = 0; j < size; ++j)
+			test1.At( i, j ) = random();
 
-	//measurments
+	cout << "First Test Matrix:\n" << test1 ;
+
+	TMatrix <int> test2 (size, size);
+	for ( int i = 0; i < size; ++i)
+		for ( int j = 0; j < size; ++j)
+			test2.At( i, j ) = random();
+
+	cout << "Second Test Matrix:\n" << test2 ;
+
+	cout << "First Matrix plus Second Matrix\n" << test1+test2;
+
+	cout << "First Matrix minus Second Matrix\n" << test1-test2;
+
+	cout << "First Matrix multiplied by Second Matrix (usual method)\n" << test1*test2;
+
+	long long int number  = 5;
+
+	cout << "First Matrix multiplied by number \n" << number << (test1 *= number);
+
+	cout << "First Matrix now \n" << test1;
+	TMatrix <int> test3;
+	cout << "Checking operator = \n" << (test3 = test1 = test2);
+	
+	int size_tp = 5;
+	test1.Resize ( size_tp, size_tp );
+	for (  int i = 0; i < size_tp; ++i)
+		for (int j = 0; j < size_tp; ++j)
+			test1.At( i, j ) = random();
+	test2.Resize ( size_tp, size_tp);
+	for (int i = 0; i < size_tp; ++i)
+		for (  int j = 0; j < size_tp; ++j)
+			test2.At( i, j ) = random();
+	cout << "First Test Matrix:\n" << test1 ;
+	cout << "Second Test Matrix:\n" << test2 ;
+	cout << "Strassen Multiply matrices test1 and test2\n" << StrassenMultiply(test1, test2);
+	cout << "Transopsing first test matrix \n" << test1.Transpose();
+	cout << "changing size\n " << test1.Resize (2,1) << test1.Resize (2, 4);
+
+	////measurments
 	//clock_t t;
 	//int n=16;
 	//TMatrix<int> a(n,n);
 	//TMatrix<int> b(n,n);
-	//for (int i=0; i<n; ++i)
+	//TTimePrinter time_tp;
+	//for (int i=0; i<n; ++i){
 	//	for (int j=0; j<n; ++j){
-	//		a.mat[i][j]=Random();
-	//		b.mat[i][j]=Random();
+	//		a.At (i, j)=random();
+	//		b.At (i, j)=random();
+
 	//	}
-	//vector<int> tp;
+	//}
+
 	//for (int k=0; k<10; k++){
-	//vector<int> tp(n*2);
-	//for (int i=n; i<n*2; i++){
-	//	a.mat.push_back(tp);
-	//	b.mat.push_back(tp);
-	//}
-	//for (int i=0; i<n; i++)
-	//	for (int j=n; j<n*2; j++){
-	//		a.mat[i].push_back(Random());
-	//		b.mat[i].push_back(Random());
+	//	n*=2;
+	//	a.Resize ( n, n);
+	//	b.Resize ( n, n);
+	//	for (int i = 0; i < n; i++){
+	//		for (int j = (n/2); j < n; j++){
+	//			a.At( i, j) = random();
+	//			b.At( i, j) = random();
+	//		}
 	//	}
-	//for(int i=n; i<n*2;++i)
-	//	for (int j=0; j<n*2; ++j){
-	//		a.mat[i][j]=Random();
-	//		b.mat[i][j]=Random();
+
+	//	for(int i=n/2; i < n; ++i){
+	//		for (int j = 0 ; j < n/2; ++j){
+	//			a.At( i, j) = random();
+	//			b.At( i, j) = random();
+	//		}
 	//	}
-	//n*=2;
-	//
-	//t=clock();
-	//StrassenMultiply(a,b);
-	//t=clock()-t;
-	//cout << "Strassen method for num="<<n<<" time: "<<(float)t/CLOCKS_PER_SEC<<endl;
-	//t=clock();
-	//a*b;
-	//t=clock()-t;
-	//cout << "Usual method for num="<<n<<" time: "<<(float)t/CLOCKS_PER_SEC<<endl;
+
+	//	time_tp.Reset();
+	//	StrassenMultiply_for_2(a,b);;
+	//	cout << "Strassen method for num="<<n<<" time: " << time_tp.GetTime() <<endl;
+	//	time_tp.Reset();
+	//	a*b;
+	//	cout << "Usual method for num="<<n<<" time: "<< time_tp.GetTime() <<endl;
 	//}
 
-
-	////check all methods
-	//TMatrix <int> a;
-	//TMatrix <int> b;
-	//cin >> a;
-	//cin>> b;
-	//cout<< a*b<<endl;
-	//cout<< a+b<<endl;
-	//cout<< a-b<<endl;
-	//cout<< a*5<<endl;
-	//cout<<a.Transpose()<<endl;
-	//cout<<a.Resize(2,3)<<endl;
-	//cout<< a.Resize(4,3)<<endl;
-
-	////check of Strassen multiply
-	//int n=9;
-	//TMatrix<int> a(n,n);
-	//TMatrix<int> b(n,n);
-	//for(int i=0; i<n; ++i)
-	//	for(int j=0; j<n; ++j){
-	//		a.At(i,j)=Random();
-	//		b.At(i,j)=Random();
-	//	}
-	//cout << a;
-	//cout << b;
-	//cout<< a*b;
-	//cout <<StrassenMultiply(a,b);
-	system("pause");
 	return 0;
 }
