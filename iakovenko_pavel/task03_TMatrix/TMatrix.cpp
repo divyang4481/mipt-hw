@@ -15,7 +15,7 @@ struct str{
 template<typename T>
 class TMatrix{
 private:
-	vector<vector<T>> mat;
+	vector<vector<T> > mat;
 public:
 	TMatrix(){
 	}
@@ -371,9 +371,9 @@ istream& operator>> (istream& in, TMatrix<T>& matrix){
 
 
 
-int random() {  
-	return rand()%100; 
-} 
+int Random() {
+    return rand()%100;
+}
 
 int main(){
 	{TMatrix<str> a(3,3);
@@ -391,8 +391,8 @@ int main(){
 	//TMatrix<int> b(n,n);
 	//for (int i=0; i<n; ++i)
 	//	for (int j=0; j<n; ++j){
-	//		a.mat[i][j]=random();
-	//		b.mat[i][j]=random();
+	//		a.mat[i][j]=Random();
+	//		b.mat[i][j]=Random();
 	//	}
 	//vector<int> tp;
 	//for (int k=0; k<10; k++){
@@ -403,13 +403,13 @@ int main(){
 	//}
 	//for (int i=0; i<n; i++)
 	//	for (int j=n; j<n*2; j++){
-	//		a.mat[i].push_back(random());
-	//		b.mat[i].push_back(random());
+	//		a.mat[i].push_back(Random());
+	//		b.mat[i].push_back(Random());
 	//	}
 	//for(int i=n; i<n*2;++i)
 	//	for (int j=0; j<n*2; ++j){
-	//		a.mat[i][j]=random();
-	//		b.mat[i][j]=random();
+	//		a.mat[i][j]=Random();
+	//		b.mat[i][j]=Random();
 	//	}
 	//n*=2;
 	//
@@ -443,8 +443,8 @@ int main(){
 	//TMatrix<int> b(n,n);
 	//for(int i=0; i<n; ++i)
 	//	for(int j=0; j<n; ++j){
-	//		a.At(i,j)=random();
-	//		b.At(i,j)=random();
+	//		a.At(i,j)=Random();
+	//		b.At(i,j)=Random();
 	//	}
 	//cout << a;
 	//cout << b;
