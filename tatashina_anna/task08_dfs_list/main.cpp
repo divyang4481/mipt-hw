@@ -49,7 +49,6 @@ int main() {
 	for (int i = 0; i < M; ++i) {
         cin >> a >> b;
 		graph_list[a].push_back(b);
-		graph_list[b].push_back(a);
     }
 
     DFS_list(graph_list, 1);
