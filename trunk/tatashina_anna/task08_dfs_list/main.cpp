@@ -6,10 +6,10 @@
 using namespace std;
 enum clr {WHITE, GRAY, BLACK};	
 
-void DFS_Visit(vector < vector <int> >& graph_list, vector <clr>& color, vector <int>& d, vector <int>& p, vector <int>& f, int& time, int& u) {
+void DFS_Visit(vector < vector <size_t> >& graph_list, vector <clr>& color, vector <int>& d, vector <int>& p, vector <int>& f, int& time, size_t& u) {
 	color[u] = GRAY;
 	d[u] = time++;
-	for (int i = 0; i < graph_list[u].size(); ++i) {
+	for (size_t i = 0; i < graph_list[u].size(); ++i) {
 		if (color[graph_list[u][i]] == WHITE) {
 			p[graph_list[u][i]] = u;
 			DFS_Visit(graph_list, color, d, p, f, time, graph_list[u][i]);
@@ -19,22 +19,22 @@ void DFS_Visit(vector < vector <int> >& graph_list, vector <clr>& color, vector 
 	f[u] = time++;
 }
 
-void DFS_list(vector < vector <int> >& graph_matr, int s) {
+void DFS_list(vector < vector <size_t> >& graph_list, int s) {
 
-	vector <clr> color(graph_matr.size());	
+	vector <clr> color(graph_list.size());	
 	vector <int> d, p, f;
-	for (int i = 0; i < graph_matr.size(); ++i) {
+	for (size_t i = 0; i < graph_list.size(); ++i) {
 		d.push_back(-1);
 		p.push_back(-1);
 		f.push_back(-1);
 	}
 	int time = 0;
 
-	for (int i = 1; i < graph_matr.size(); ++i) {
+	for (size_t i = 1; i < graph_list.size(); ++i) {
 		if (color[i] == WHITE)
-			DFS_Visit(graph_matr, color, d, p, f, time, i);
+			DFS_Visit(graph_list, color, d, p, f, time, i);
 	}
-	for (int i = 1; i < graph_matr.size(); ++i)
+	for (size_t i = 1; i < graph_list.size(); ++i)
 		cout << "number: " << i << "  discovered: " << d[i] << " finished: " << f[i] << "  parent: " << p[i] << endl;
 }
 
@@ -44,7 +44,7 @@ int main() {
 	
 	cin >> N >> M; // N - вершины, M - ребра
 
-	vector < vector <int> > graph_list(N + 1);
+	vector < vector <size_t> > graph_list(N + 1);
 
 	for (int i = 0; i < M; ++i) {
         cin >> a >> b;
