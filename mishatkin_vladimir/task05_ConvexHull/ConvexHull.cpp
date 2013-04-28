@@ -36,11 +36,6 @@ double length(pii v)
     return sqrt(1.0*sqr(v.X) + 1.0*sqr(v.Y));
 }
 
-//void updateLast(vector<pii> Q, pii &last)
-//{
-//    last = make_pair(Q[Q.size()-1].X - Q[Q.size()-2].X, Q[Q.size()-1].Y - Q[Q.size()-2].Y);
-//}
-
 pii makeVector(pii From, pii To)
 {
     return make_pair(To.X - From.X, To.Y - From.Y);
@@ -85,9 +80,7 @@ int main(int argc, const char * argv[])
     ConvexHull.push_back(low);
     ConvexHull.push_back(Dot[1].X);
 
-    pii last = make_pair(Dot[1].X.X - low.X, Dot[1].X.Y - low.Y);
-    pii from = Dot[1].X;
-
+    pii last = makeVector(low, Dot[1].X);//make_pair(Dot[1].X.X - low.X, Dot[1].X.Y - low.Y);
     int i = 2;
     while (i < (int)Dot.size())
 	{
@@ -109,13 +102,20 @@ int main(int argc, const char * argv[])
 			}
         }
         else
-        if (Product > 0) {                  // left turn
+        if (Product > 0)
+		{                  // left turn
             ConvexHull.push_back(Dot[i].X);
             updateLast(ConvexHull, last);
         }
         else 
-        if (Product < 0) {                  // right turn
-            ConvexHull.pop_back();
+        if (Product < 0)
+		{                  // right turn
+			while (Product < 0)
+			{
+				ConvexHull.pop_back();
+				updateLast(ConvexHull, last);
+				Product = vectorProduct(last, makeVector(ConvexHull.back(), Dot[i].X));
+			}
             ConvexHull.push_back(Dot[i].X);
             updateLast(ConvexHull, last);
         }
