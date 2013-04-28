@@ -70,7 +70,6 @@ int main()
 	{
 		fscanf(in, "%d %d", &x, &y);
 		g[x-1].push_back(ver[y-1]);
-		g[y-1].push_back(ver[x-1]);
 	}
 	BFS (g, 0);
 	for (int i = 0; i < N; ++i)

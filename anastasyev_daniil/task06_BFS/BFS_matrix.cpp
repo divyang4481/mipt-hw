@@ -72,7 +72,7 @@ int main()
 	for (int i=0; i<M; ++i)
 	{
 		fscanf(in, "%d %d", &x, &y);
-		g[x-1][y-1] = g[y-1][x-1] =  1;
+		g[x-1][y-1] =  1;
 	}
 	BFS (g, 0);
 	fclose(in);
