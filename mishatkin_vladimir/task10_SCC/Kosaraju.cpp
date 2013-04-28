@@ -89,15 +89,15 @@ int main() {
         if (!used[i])
             dfs1(i);
 
-    for (int i = 0; i < order.size() / 2; ++i)
+    for (int i = 0; i < (int)order.size() / 2; ++i)
         swap(order[i], order[ order.size()-1 - i]);
 
     used.reset();
-    for (int i = 0; i < order.size(); ++i)
+    for (int i = 0; i < (int)order.size(); ++i)
         if (!used[i])
 		{
-            dfs2(i);
-            for (int j = 0; j < component.size(); ++j)
+            dfs2(order[i]);
+            for (int j = 0; j < (int)component.size(); ++j)
 			{
                 if (j)
                     printf(" ");
