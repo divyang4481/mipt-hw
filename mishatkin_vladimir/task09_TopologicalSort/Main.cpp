@@ -77,10 +77,7 @@ int main() {
         if (!used[i])
             dfs1(i);
 
-    for (int i = 0; i < order.size() / 2; ++i)
-        swap(order[i], order[ order.size()-1 - i]);
-
-    for (int i = 0; i < order.size(); ++i)
+    for (int i = 0; i < (int)order.size(); ++i)
 	{
         if (i)
             printf(" ");
