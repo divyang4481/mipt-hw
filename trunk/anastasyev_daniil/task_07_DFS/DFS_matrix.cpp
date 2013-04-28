@@ -18,7 +18,7 @@ void DFS_VISIT (vector <vector <bool> > &g, vector <TNode> &v, int s, int &time)
 {
 	v[s].clr = GREY;
 	v[s].open = ++time;
-	for (int i = 1; i < v.size(); ++i)
+	for (int i = 0; i < v.size(); ++i)
 	{
 		if (g[s][i] && v[i].clr == WHITE)
 		{
@@ -29,7 +29,6 @@ void DFS_VISIT (vector <vector <bool> > &g, vector <TNode> &v, int s, int &time)
 	v[s].clr = BLACK;
 	v[s].close = ++time;
 }
-
 
 void DFS (vector <vector <bool> > &g ,  int s)
 {
@@ -72,7 +71,7 @@ int main()
 	for (int i=0; i<M; ++i)
 	{
 		fscanf(in, "%d %d", &x, &y);
-		g[x-1][y-1] = g[y-1][x-1] =  1;
+		g[x-1][y-1] = 1;
 	}
 	DFS (g, 0);
 	fclose(in);
