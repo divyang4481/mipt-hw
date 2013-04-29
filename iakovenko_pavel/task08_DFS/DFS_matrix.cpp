@@ -27,7 +27,7 @@ void DFS_VISIT (vector < TNode >& vec, vector <vector <unsigned char> >& matrix 
 }
 
 
-void DFS (vector < TNode >& vec,  vector <vector <unsigned char> >& matrix, int v){
+void DFS (vector < TNode >& vec,  vector <vector <unsigned char> >& matrix){
 	for (unsigned int i = 0; i < vec.size(); ++i){
 		vec[i].color = 0;
 		vec[i].parent = 0;
@@ -35,7 +35,9 @@ void DFS (vector < TNode >& vec,  vector <vector <unsigned char> >& matrix, int 
 		vec[i].close =0;
 	}
 	time = 0;
-	DFS_VISIT (vec, matrix, v);
+	for ( unsigned int i = 0; i < vec.size(); ++i)
+		if ( vec [i].color == 0)
+			DFS_VISIT (vec, matrix, i+1);
 }
 
 
@@ -66,7 +68,7 @@ int main () {
 		fscanf(f, "%d %d", &from, &to);
 		matrix [from - 1] [to - 1] = 1;
 	}
-	DFS (vec, matrix, 1);
+	DFS (vec, matrix);
 	for (int i = 0; i < n; ++i){
 		cout << "# " << i+1; 
 		cout << "\t open time: " << vec[i].open;
@@ -78,5 +80,4 @@ int main () {
 	}
 	fclose (f);
 	return 0;
-
 }
