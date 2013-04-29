@@ -72,23 +72,14 @@ void Transpose (vector < vector < TNode* > >& vec){
 
 void DFS_VISIT_REVERSE (vector < vector < TNode* > >& vec, vector< TNode* >& temp, TNode* v){
 	int k = search_number(vec, v);
-	bool flag = false;
 	vec[k][0]->color = 1;
 	for ( unsigned int i = 1; i < vec[k].size(); ++i){
-		flag = true;
 		if (vec[k][i]->color == 0){
-			vec[k][i]->achieved = true;
 			DFS_VISIT_REVERSE ( vec, temp, vec[k][i]);
 		}
-		if (vec[k].size() == 2 && vec[k][1]->achieved == false)
-			flag = false;
-		if (vec[k].size() == 2 && vec[k][1] == vec[k][0])
-			flag = true;
 	}
 	vec[k][0]-> color = 2;
-	if (flag){
-		temp.push_back ( vec[k][0]);
-	}
+	temp.push_back ( vec[k][0]);
 }
 
 void DFS_REVERSE (vector < vector < TNode* > >& vec, vector < vector < TNode* > >& result){
