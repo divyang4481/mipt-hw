@@ -33,21 +33,16 @@ bool counter_clockwise (int x1, int y1, int x2, int y2, int x3, int y3) {
 }
 
 class Graham_scan {
-	stack < struct TPoint > st;
+	stack < TPoint > st;
 	vector < TPoint >  arr;
 	vector < TPoint >  arr1;
 	char* name_of_file;
 public:
 
-	Graham_scan (string& name){
-		name_of_file = new char [name.size()+1];
-		for ( unsigned int i = 0; i < name.size(); ++i)
-			name_of_file[i] = name [i];
-		name_of_file[name.size()] = '\0';
+	Graham_scan (){
 	}
 
 	~Graham_scan () {
-		delete [] name_of_file;
 	}
 
 	void lower () {
@@ -79,19 +74,15 @@ public:
 	}
 
 	void main () {
-		FILE* f = fopen ( name_of_file , "r+");
 		int  n;
-		fscanf ( f, "%d", &n);
+		cin >> n;
 		if ( n < 3){
-			fclose (f);
-			f = fopen ( name_of_file , "a");
-			fprintf ( f, "ERROR! NUMBER OF POINTS IS LESS THAN 3!\n");
-			fclose (f);
+			cout << "ERROR! NUMBER OF POINTS IS LESS THAN 3!\n";
 			return;
 		}
 		TPoint tp;
 		for ( int i=0; i < n; ++i){
-			fscanf (f, "%d %d", &tp.x , &tp.y);
+			cin >> tp.x >> tp.y;
 			arr.push_back (tp);
 			arr1.push_back (tp);
 		}
@@ -115,20 +106,20 @@ public:
 			}
 			st.push( arr[i] );
 		}
-		fclose (f);
 	}
 
-	void print_to_file (){
-		FILE* f = fopen("results_iakovenko.txt", "w");
-		unsigned int n = st.size();
-		for ( unsigned int i = 0; i < n; ++i){
-			fprintf ( f, "%d point: (%d; %d)\n", i+1, st.top().x, st.top().y);
-			st.pop();
-		}
-		fclose(f);
-	}
+	//void print_to_file (){
+	//	FILE* f = fopen("results_iakovenko.txt", "w");
+	//	unsigned int n = st.size();
+	//	for ( unsigned int i = 0; i < n; ++i){
+	//		fprintf ( f, "%d point: (%d; %d)\n", i+1, st.top().x, st.top().y);
+	//		st.pop();
+	//	}
+	//	fclose(f);
+	//}
 
 	void print(){
+		cout << "RESULTS \n __________________________________\n";
 		unsigned int n = st.size();
 		for ( unsigned int i = 0; i < n; ++i){
 			printf ("%d point: (%d; %d)\n", i+1, st.top().x, st.top().y);
@@ -141,10 +132,9 @@ public:
 
 
 int main(){
-	string  path_name;
-	getline ( cin, path_name );
-	Graham_scan a (path_name);
+	Graham_scan a;
 	a.main();
-	a.print_to_file();
+	a.print();
 	return 0;
+
 }
