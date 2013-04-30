@@ -178,8 +178,7 @@ Deadline: 2013.05.06
   * int Second () const
   * int `DayOfWeek ()` const
   * time_t `GetUnixTimestamp()` const - возвращает unix timestamp
-  * static TDateTime Now () - статический метод, возвращающий текущую дату-время (локальное время)
-  * static TDateTime `GmNow()` - статический метод, возвращающий текущую дату-время по Гринвичу (GMT)
+  * static TDateTime Now () - статический метод, возвращающий текущую дату-время
   * bool operator<
   * TDateTime operator+ (const TTimeSpan &delta) - возвращает дату-время, смещенную на delta
   * TDateTime operator- (const TTimeSpan &delta) - возвращает дату-время, смещенную на -delta
