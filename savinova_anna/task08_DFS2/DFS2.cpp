@@ -38,7 +38,7 @@ void DFSVisit(const int &u, int& time, vector<Stat> &S, vector< vector<int> > &A
 {
         S[u].Col() = GRAY;
         S[u].D() = time++;
-        for (int i = 0; i < Adm.size(); ++i)
+        for (size_t i = 0; i < Adm.size(); ++i)
         {
                 if (Adm[u][i] && S[i].Col() == WHITE)
                 {
@@ -54,12 +54,12 @@ void DFS(vector< vector<int> > &Adm)
 {
         int time = 0;
         vector<Stat> S(Adm.size());
-        for (int i = 1; i < Adm.size(); ++i)
+        for (size_t i = 1; i < Adm.size(); ++i)
         {
                 if (S[i].Col() == WHITE)
                         DFSVisit(i, time, S, Adm);
         }
-        for (int i = 1; i < S.size(); ++i)
+        for (size_t i = 1; i < S.size(); ++i)
                 cout << i << " Discovered: " << S[i].D() << " Finished: " << S[i].F() << " Parent: " << S[i].P() << endl;
 }
 int main()
