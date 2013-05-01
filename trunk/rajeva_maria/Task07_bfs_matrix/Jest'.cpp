@@ -10,7 +10,7 @@ void BFS(int N,vector<vector<int>>& grafmatr)
 {
 	enum color {white,grey,black};
 	vector <color> clr(N+1);
-	queue <int> qu(N+1); 
+	queue <int> qu; 
 	vector<int> parent(N+1);
 	vector<int> way(N+1);
 	for (int i=2;i<N+1;i++)
@@ -26,7 +26,7 @@ void BFS(int N,vector<vector<int>>& grafmatr)
 	while(!qu.empty())
 	{
 		int v=qu.front();
-		for (int j=1; j<N+1; j++)
+		for (int i=1; i<N+1; i++)
 		{
 			if ((grafmatr[v][i]==1)&&(clr[i]==white))
 			{
@@ -71,8 +71,5 @@ int main()
 
 	BFS(N,grafmatr);
 
-	
-
-
-	return 0;
+    return 0;
 }
