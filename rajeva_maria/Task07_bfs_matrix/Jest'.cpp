@@ -6,21 +6,44 @@ using namespace std;
 
 
 
-void BFS(int N)
+void BFS(int N,vector<vector<int>>& grafmatr)
 {
 	enum color {white,grey,black};
 	vector <color> clr(N+1);
 	queue <int> qu(N+1); 
 	vector<int> parent(N+1);
 	vector<int> way(N+1);
-	for (int i=1;i<N+1;i++)
+	for (int i=2;i<N+1;i++)
 	{
 		clr[i]=white;
 		parent[i]=-1;
-		d[i]=-1;
+		way[i]=-1;
     }
-
-
+	clr[1]=grey;
+	qu.push(1);
+	way[1]=0;
+	parent[1]=0;
+	while(!qu.empty())
+	{
+		int v=qu.front();
+		for (int j=1; j<N+1; j++)
+		{
+			if ((grafmatr[v][i]==1)&&(clr[i]==white))
+			{
+			  clr[i]=grey;
+			  qu.push(i);
+			  way[i]=way[v]+1;
+			  parent[i]=v;
+			}
+		}
+		qu.pop();
+	}
+	for (int i=0; i<N+1;i++)
+	{  if (d(i)==-1)
+      cout<<i<<" distance "<<' '<<" no  parent "<<endl;
+	   else cout<<" distance "<<way[i]<<" parent "<<parent[i]<<endl;
+	   
+	}
 }
 
 int main()
@@ -45,6 +68,10 @@ int main()
 	   cin>>e;
 	   grafmatr[b][e]=1; 
 	}
+
+	BFS(N,grafmatr);
+
+	
 
 
 	return 0;
