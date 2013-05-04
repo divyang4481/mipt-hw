@@ -7,18 +7,18 @@ enum color {BLACK, GREY, WHITE};
 
 struct TNode 
 {
-	int n;
+	size_t n;
 	color clr;
 	int open;
 	int close;
 	TNode* parent;
 };
 
-void DFSVisit(vector < vector < TNode* > > &g, int s, int &time)
+void DFSVisit(vector < vector < TNode* > > &g, size_t s, int &time)
 {
 	g[s][0]->clr = GREY;
 	g[s][0]->open = ++time;
-	for (int i = 1; i < g[s].size(); ++i)
+	for (size_t i = 1; i < g[s].size(); ++i)
 	{
 		if (g[s][i]->clr == WHITE)
 		{
@@ -30,23 +30,23 @@ void DFSVisit(vector < vector < TNode* > > &g, int s, int &time)
 	g[s][0]->close = ++time;
 }
 
-void DFS(vector< vector<TNode*> > &g, int s)
+void DFS(vector< vector<TNode*> > &g)
 {
 	int time = 0;
-	for (int i = 0; i < g.size(); ++i)
+	for (size_t i = 0; i < g.size(); ++i)
 	{
 		g[i][0]->clr = WHITE;
 		g[i][0]->parent = NULL;
 		g[i][0]->open = 0;
 		g[i][0]->close = 0;
 	}
-	for (int i = 0; i < g.size(); ++i)
+	for (size_t i = 0; i < g.size(); ++i)
 	{
 		if (g[i][0]->clr == WHITE)
 			DFSVisit(g, i, time);
 	}
 	
-	for (int i = 0; i < g.size(); ++i)
+	for (size_t i = 0; i < g.size(); ++i)
 	{
 		cout << i+1 << ": open time: " << g[i][0]->open << ";   close time: " << g[i][0]->close;
 		if (g[i][0]->parent)
@@ -59,11 +59,11 @@ void DFS(vector< vector<TNode*> > &g, int s)
 int main()
 {
 	FILE *in = fopen("in.txt","r");
-	int N, M;
+	size_t N, M;
 	fscanf(in, "%d %d", &N, &M);
 	vector<TNode*> ver;
 	vector<vector <TNode*>> g(N);
-	for (int i=0; i<N; ++i)
+	for (size_t i=0; i<N; ++i)
 	{
 		TNode *t = new TNode;
 		t->n = i;
@@ -74,13 +74,13 @@ int main()
 		ver.push_back(t);
 		g[i].push_back(ver[i]);
 	}
-	int x, y;
-	for (int i=0; i<M; ++i)
+	size_t x, y;
+	for (size_t i=0; i<M; ++i)
 	{
 		fscanf(in, "%d %d", &x, &y);
 		g[x-1].push_back(ver[y-1]);
 	}
-	DFS (g, 0);
+	DFS (g);
 	fclose(in);
 	return 0;
 }
