@@ -4,31 +4,53 @@
 using namespace std; 
 enum color{white,grey,black};
 
-void DFSVisit(int u,vector<vector <int>>&grafmatr,vector <color>&clr,vector<int> &time,vector<int>timeover,vector<int>parent,int N,int &t)
+void DFSVisit(int u,vector<vector <int>>&grafmatr,vector <color>&clr,vector<int> &time,vector<int>&timeover,vector<int>&parent,int N,int &t)
 {    
 	clr[u]=grey;
 	t++;
 	time[u]=t;
-
+	for (int i=1;i<N+1;i++)
+	{
+		if (grafmatr[u][i]==1) 
+		{
+			if (clr[i]==white)
+			{
+				parent[i]=u;
+				DFSVisit(i,grafmatr,clr,time,timeover,parent,N,t);
+				
+			}
+		}
+	}
+			clr[u]=black;
+			t++;
+			timeover[u]=t;
+		
+	
 }
 
 void DFS(vector<vector <int>>&grafmatr, int N)
 {   
 	int t=0;
-	vector <color>clr;
-	vector<int> time;
-	vector<int>timeover;
-	vector<int>parent;
-	for (int i=1;i<N+1;i++)
+	vector <color>clr(N+1);
+	vector<int> time(N+1);
+	vector<int>timeover(N+1);
+	vector<int>parent(N+1);
+	for (int i=1;i<N+1;++i)
 	{
-		time[i]=0;
 		clr[i]=white;
-		parent[1]=0;
+		time[i]=0;
+		timeover[i]=0;
+		parent[i]=0;
 	}
+	
 	for (int i=1; i<N+1;i++)
 	{
-		if (clr[i]=white)
+		if (clr[i]==white)
 			DFSVisit(i,grafmatr,clr,time,timeover,parent,N,t);
+	}
+	for (int i=1;i<N+1;++i)
+	{
+		cout<<i<<" parent: "<<parent[i]<<" time otkrytia: "<<time[i]<<" time zakrytia: "<<timeover[i]<<endl; 
 	}
 }
 
@@ -60,5 +82,7 @@ int main()
            cin>>e;
            grafmatr[b][e]=1; 
         }
+		DFS(grafmatr,N);
+		system("pause");
 		return 0;
 }
