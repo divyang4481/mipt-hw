@@ -50,12 +50,13 @@ public:
 	TDateTime (int year, int month, int day) {_time = usual_form(year, month, day);}
 	TDateTime (string str) 
 	{
-		int len = str.length(), mas[7] = {0}, cur(0);
+		int len = str.length(), mas[6] = {0}, cur(0);
 		for (int i = 0; i < len; ++i)
-			if (((str[i]-'0') <= 9) || ((str[i]-'0') >= 0))
+			if (((str[i]-'0') <= 9) && ((str[i]-'0') >= 0))
 				mas[cur] = mas[cur]*10 + (str[i] - '0');
 			else 
 				cur++;
+		_time = usual_form(mas[0], mas[1], mas[2], mas[3], mas[4], mas[5]);
 	}
 	int Year () const { return gmtime(&_time)->tm_year + 1900;}
 	int Month () const { return gmtime(&_time)->tm_mon + 1;}
@@ -110,6 +111,8 @@ int main()
 	TDateTime time3(0);
 	TDateTime time4(1970,1,2);
 	TDateTime time5(2013, 5, 8, 23, 55, 0);
+	TDateTime time6("2013 2 3 12 3 4");
+	cout <<"string "<< time6 <<'\n';
 	cout << time1 - time5 << '\n';
 	cout << time1 << '\n'<< time2 << '\n'<< time3<< '\n'<< time4 <<'\n'<< time5 << '\n';
 	TTimeSpan delta(3600000);
