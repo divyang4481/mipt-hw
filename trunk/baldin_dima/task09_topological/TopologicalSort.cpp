@@ -51,7 +51,7 @@ void dag(vector< vector <int> > &graph,
 		if (color[u] == WHITE) dfs_visit(graph, color, spisok, u);
 
 }
-int to_check(list<int> &spisok, vector< vector <int>> &graph)
+int to_check(list<int> &spisok, vector< vector <int> > &graph)
 {
 	int flag = 0;
 	list<int>::iterator first = spisok.begin();
@@ -66,7 +66,7 @@ int to_check(list<int> &spisok, vector< vector <int>> &graph)
 	}
 	return flag;
 }
-void print_vector(list<int> &spisok, vector <vector<int>> &graph)
+void print_vector(list<int> &spisok, vector <vector<int> > &graph)
 {
 	FILE *f = fopen("output.txt", "w");
 	if (to_check(spisok, graph)) {fprintf(f, "Graph has cycle\n");}
