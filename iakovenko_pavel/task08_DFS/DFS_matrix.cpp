@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 using namespace std;
-int time;
+int Time;
 
 struct TNode {
 	int num;
@@ -15,7 +15,7 @@ struct TNode {
 
 void DFS_VISIT (vector < TNode >& vec, vector <vector <unsigned char> >& matrix ,  int v){
 	vec[v-1].color = 1;
-	vec[v-1].open = ++time;
+	vec[v-1].open = ++Time;
 	for ( unsigned int i = 1; i < vec.size(); ++i){
 		if (matrix[v-1][i] == 1 && vec[i].color == 0 ){
 			vec[i].parent = &vec[v-1];
@@ -23,7 +23,7 @@ void DFS_VISIT (vector < TNode >& vec, vector <vector <unsigned char> >& matrix 
 		}
 	}
 	vec[v-1].color = 2;
-	vec[v-1].close = ++time;
+	vec[v-1].close = ++Time;
 }
 
 
@@ -34,7 +34,7 @@ void DFS (vector < TNode >& vec,  vector <vector <unsigned char> >& matrix){
 		vec[i].open = 0;
 		vec[i].close =0;
 	}
-	time = 0;
+	Time = 0;
 	for ( unsigned int i = 0; i < vec.size(); ++i)
 		if ( vec [i].color == 0)
 			DFS_VISIT (vec, matrix, i+1);
