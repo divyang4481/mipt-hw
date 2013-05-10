@@ -100,15 +100,26 @@ public:
 
 
 int main(){
-	TestClass test;
-	test.test1();
-	test.test2();
-	test.test3();
-	test.test4();
-	test.test5();
+	//TestClass test;
+	//test.test1();
+	//test.test2();
+	//test.test3();
+	//test.test4();
+	//test.test5();
 	//test.TestTTimeSpan();
-	test.test6();
-	test.test7();
-	test.test8();
+	//test.test6();
+	//test.test7();
+	//test.test8();
+
+        TDateTime dt = TDateTime::Now();
+        cout << dt << endl << endl;
+
+        TTimeSpan ts(1, 1, 1);
+        cout << (dt + ts) << endl << endl;
+        dt = dt + ts;
+        cout << dt << endl << endl;
+        dt -= ts;
+        cout << dt << endl << endl;
+
 	return 0;
 }
