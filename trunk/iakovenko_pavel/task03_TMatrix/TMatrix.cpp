@@ -43,7 +43,7 @@ struct str{
 template<typename T>
 class TMatrix{
 private:
-	vector<vector<T>> mat;
+	vector<vector<T> > mat;
 public:
 
 	void quater (TMatrix<T>& result, int number_of_quater, int size){
@@ -401,23 +401,23 @@ istream& operator>> (istream& in, TMatrix<T>& matrix){
 	return in;
 }
 
-int random() {  
-	return rand()%10; 
-} 
+int Random() {
+	return rand()%10;
+}
 
 int main(){
 	int size = 3;
 	TMatrix <int> test1 (size, size);
 	for ( int i = 0; i < size; ++i)
 		for ( int j = 0; j < size; ++j)
-			test1.At( i, j ) = random();
+			test1.At( i, j ) = Random();
 
 	cout << "First Test Matrix:\n" << test1 ;
 
 	TMatrix <int> test2 (size, size);
 	for ( int i = 0; i < size; ++i)
 		for ( int j = 0; j < size; ++j)
-			test2.At( i, j ) = random();
+			test2.At( i, j ) = Random();
 
 	cout << "Second Test Matrix:\n" << test2 ;
 
@@ -439,11 +439,11 @@ int main(){
 	test1.Resize ( size_tp, size_tp );
 	for (  int i = 0; i < size_tp; ++i)
 		for (int j = 0; j < size_tp; ++j)
-			test1.At( i, j ) = random();
+			test1.At( i, j ) = Random();
 	test2.Resize ( size_tp, size_tp);
 	for (int i = 0; i < size_tp; ++i)
 		for (  int j = 0; j < size_tp; ++j)
-			test2.At( i, j ) = random();
+			test2.At( i, j ) = Random();
 	cout << "First Test Matrix:\n" << test1 ;
 	cout << "Second Test Matrix:\n" << test2 ;
 	cout << "Strassen Multiply matrices test1 and test2\n" << StrassenMultiply(test1, test2);
@@ -458,8 +458,8 @@ int main(){
 	//TTimePrinter time_tp;
 	//for (int i=0; i<n; ++i){
 	//	for (int j=0; j<n; ++j){
-	//		a.At (i, j)=random();
-	//		b.At (i, j)=random();
+	//		a.At (i, j)=Random();
+	//		b.At (i, j)=Random();
 
 	//	}
 	//}
@@ -470,15 +470,15 @@ int main(){
 	//	b.Resize ( n, n);
 	//	for (int i = 0; i < n; i++){
 	//		for (int j = (n/2); j < n; j++){
-	//			a.At( i, j) = random();
-	//			b.At( i, j) = random();
+	//			a.At( i, j) = Random();
+	//			b.At( i, j) = Random();
 	//		}
 	//	}
 
 	//	for(int i=n/2; i < n; ++i){
 	//		for (int j = 0 ; j < n/2; ++j){
-	//			a.At( i, j) = random();
-	//			b.At( i, j) = random();
+	//			a.At( i, j) = Random();
+	//			b.At( i, j) = Random();
 	//		}
 	//	}
 
