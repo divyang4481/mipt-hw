@@ -4,7 +4,7 @@
 #include <algorithm>
 #include <queue>
 using namespace std;
-int time;
+int Time;
 
 struct TNode {
 	int num;
@@ -29,7 +29,7 @@ int search_number (vector < vector < TNode* > >& vec, TNode* v){
 
 void DFS_VISIT (vector < vector < TNode* > >& vec, int v){
 	vec[v][0]->color = 1;
-	vec[v][0] -> open = ++time;
+	vec[v][0] -> open = ++Time;
 	for ( unsigned int i = 1; i < vec[v].size(); ++i){
 		if (vec[v][i]->color == 0){
 			vec[v][i]->parent = vec[v][0];
@@ -37,7 +37,7 @@ void DFS_VISIT (vector < vector < TNode* > >& vec, int v){
 		}
 	}
 	vec[v][0]-> color = 2;
-	vec[v][0] -> close = ++time;
+	vec[v][0] -> close = ++Time;
 }
 
 
@@ -48,7 +48,7 @@ void DFS (vector < vector < TNode* > >& vec){
 		vec[i][0]->open = 0;
 		vec[i][0]->close = 0;
 	}
-	time = 0;
+	Time = 0;
 	for ( unsigned int i = 0; i < vec.size(); ++i)
 		if ( vec [i] [0]->color == 0)
 			DFS_VISIT (vec, i);
@@ -87,7 +87,7 @@ void DFS_REVERSE (vector < vector < TNode* > >& vec, vector < vector < TNode* > 
 		vec[i][0]->color = 0;
 		vec[i][0]->achieved = false;
 	}
-	time = 0;
+	Time = 0;
 	sort (vec.begin(), vec.end(), myfunc);
 	vector < TNode* > temp;
 	for ( unsigned int i = 0; i < vec.size(); ++i)
