@@ -302,6 +302,7 @@ istream& operator>> (istream& in, TDateTime& date)
 
 int main()
 {
+        /*
 	TDateTime time1;
 	cout<<"CurTime:  "<<time1<<endl;
 	TDateTime time2(2000, 12, 01);
@@ -324,5 +325,21 @@ int main()
 	cout<<time5<< " - "<< time3 << ":  "<< (time5-time3)<<endl;
 	cout<<sptime2<<" - "<<sptime1<<" :  "<<(sptime2-sptime1)<<endl;
 	cout<<sptime1<<" < "<<sptime2<<" :  "<<(sptime1<sptime2)<<endl;
+        */
+        TDateTime dt = TDateTime::Now();
+        cout << dt << endl;
+
+        TTimeSpan span(1, 1, 1, 0, 0, 0);
+        TDateTime dt2 = dt + span;
+        cout << dt2 << endl;
+
+        cout << (dt + span) << endl;
+
+        dt = dt + span;
+        cout << dt << endl;
+
+        dt = dt - span;
+        cout << dt << endl;
+
 	return 0;
 }
