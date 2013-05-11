@@ -40,12 +40,12 @@ void DFS(vector< vector<TNode*> > &g)
 	}
 }
 
-void Transpose(vector <vector <TNode *>> &g)
+void Transpose(vector <vector <TNode *> > &g)
 {
-	vector <vector <TNode *>> v(g.size());
+	vector <vector <TNode *> > v(g.size());
 	for (unsigned int i=0; i<v.size(); ++i)
 		v[i].push_back(g[i][0]);
-	vector <vector <TNode *>>::iterator it = g.begin();
+	vector <vector <TNode *> >::iterator it = g.begin();
 	for (; it!=g.end(); ++it)
 	{
 		vector <TNode *>::iterator j = ++it->begin();
@@ -84,9 +84,9 @@ void DFSVisitTranspose(vector < vector < TNode* > > &g, vector < TNode* > &v, un
 	g[s][0]->clr = BLACK;
 }
 
-void SCC(vector <vector <TNode *>> &g)
+void SCC(vector <vector <TNode *> > &g)
 {
-	vector <vector <TNode *>> scc(1);
+	vector <vector <TNode *> > scc(1);
 	unsigned int c = 0;
 	DFS(g);
 	Transpose(g);
@@ -120,7 +120,7 @@ int main()
 	unsigned int N, M;
 	fscanf(in, "%d %d", &N, &M);
 	vector<TNode*> ver;
-	vector<vector <TNode*>> g(N);
+	vector<vector <TNode*> > g(N);
 	for (unsigned int i=0; i<N; ++i)
 	{
 		TNode *t = new TNode;
