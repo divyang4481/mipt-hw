@@ -13,7 +13,7 @@ void DFSVisit(int u,vector<vector <int>>&graflist,vector <color>&clr,vector<int>
         time[u]=t; 
        for (int j=1;j<graflist[u].size()+1;j++)
         {       
-			   int i=graflist[u][j];
+			   int i=graflist[u][j]; 
                if (clr[i]==white)
                         {
                                 parent[i]=u; 
@@ -60,7 +60,7 @@ int main()
         cin>>M;
         int a,b;
         vector<vector<int>> graflist(N+1);
-		for (int i=1;i<M+1;++i)
+		for (int i=1;i<N+1;++i)
 			graflist[i][0]=0;
 
         for (int i=1;i<M+1;++i)
@@ -70,8 +70,8 @@ int main()
           graflist[a].push_back(b);
           
         }
-   DFS(graflist,N);
-
+  DFS(graflist,N);
+ 
 		system("pause");
 		return 0;
 }
