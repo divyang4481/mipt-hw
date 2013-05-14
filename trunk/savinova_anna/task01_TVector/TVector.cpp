@@ -57,11 +57,9 @@ public:
                 cout << name << " Create" << endl;
         }*/
         ~TVector(){
-                cout << " Delete" << endl;
                 delete[] Buf;
         }
-	void resize(){
-                cout << " Resize 2 times" << endl;		
+	void resize(){	
                 Capacity *= 2;
 		T* Buf_tmp = new T[Capacity];
 		for (int i = 0; i < Size; ++i)
@@ -101,7 +99,6 @@ public:
                 return Buf[0];
         }
         void push_back(T val){
-                cout << " Push_back: " << val << endl;
                 if (Size == Capacity)
 	                resize();                
                 Buf[Size] = val;
@@ -109,7 +106,6 @@ public:
                 ++End;
         }
         int pop_back(){
-                cout << " Pop_back: " << Buf[Size-1] << endl;
                 --Size;
                 --End;
                 return Buf[Size];
