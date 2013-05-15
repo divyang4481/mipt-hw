@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <stdio.h>
 using namespace std;
 
 enum color {BLACK, GREY, WHITE};
@@ -60,9 +61,9 @@ int main()
 {
 	FILE *in = fopen("in.txt","r");
 	size_t N, M;
-	fscanf(in, "%d %d", &N, &M);
+	fscanf(in, "%lu %lu", &N, &M);
 	vector<TNode*> ver;
-	vector<vector <TNode*>> g(N);
+    vector<vector <TNode*> > g(N);
 	for (size_t i=0; i<N; ++i)
 	{
 		TNode *t = new TNode;
@@ -77,7 +78,7 @@ int main()
 	size_t x, y;
 	for (size_t i=0; i<M; ++i)
 	{
-		fscanf(in, "%d %d", &x, &y);
+		fscanf(in, "%lu %lu", &x, &y);
 		g[x-1].push_back(ver[y-1]);
 	}
 	DFS (g);
