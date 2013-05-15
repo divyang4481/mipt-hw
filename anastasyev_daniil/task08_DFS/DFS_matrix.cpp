@@ -34,7 +34,7 @@ void DFS (vector <vector <bool> > &g ,  size_t s)
 {
 	int time = 0;
 	vector <TNode> v(g.size());
-	for (unsigned int i = 0; i < g.size(); ++i)
+	for (size_t i = 0; i < g.size(); ++i)
 	{
 		v[i].clr = WHITE;
 		v[i].parent = 0;
@@ -60,7 +60,7 @@ int main()
 {
 	FILE *in = fopen("in.txt","r");
 	size_t N, M;
-	fscanf(in, "%d %d", &N, &M);
+	fscanf(in, "%lu %lu", &N, &M);
 	vector < vector <bool> > g(N);
 	for (size_t i=0; i<N; ++i)
 		for (size_t j=0; j<N; ++j) 
@@ -70,7 +70,7 @@ int main()
 	size_t x, y;
 	for (size_t i=0; i<M; ++i)
 	{
-		fscanf(in, "%d %d", &x, &y);
+		fscanf(in, "%lu %lu", &x, &y);
 		g[x-1][y-1] = 1;
 	}
 	DFS (g, 0);

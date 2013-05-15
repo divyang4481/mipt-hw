@@ -2,6 +2,7 @@
 #include <vector>
 #include <queue>
 #include <list>
+#include <stdio.h>
 using namespace std;
 
 enum color {BLACK, GREY, WHITE};
@@ -78,11 +79,11 @@ bool NoCycle(vector< vector<TNode*> > &g)
 
 int main()
 {
-	FILE *in = fopen("in.txt","r");
+	FILE *in = fopen("in1.txt","r");
 	size_t N, M;
-	fscanf(in, "%d %d", &N, &M);
+	fscanf(in, "%lu %lu", &N, &M);
 	vector<TNode*> ver;
-	vector<vector <TNode*>> g(N);
+	vector<vector <TNode*> > g(N);
 	for (size_t i=0; i<N; ++i)
 	{
 		TNode *t = new TNode;
@@ -97,7 +98,7 @@ int main()
 	size_t x, y;
 	for (size_t i=0; i<M; ++i)
 	{
-		fscanf(in, "%d %d", &x, &y);
+		fscanf(in, "%lu %lu", &x, &y);
 		g[x-1].push_back(ver[y-1]);
 	}
 	if (!NoCycle(g))
