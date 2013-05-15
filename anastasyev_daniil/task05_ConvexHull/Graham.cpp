@@ -109,7 +109,6 @@ list <TPoint> Graham(const char* fin)
 int main()
 {
 	list <TPoint> ConvexHull = Graham("in1.txt");
-	FILE * out = fopen("out.txt","w");
 	for (list <TPoint>::iterator it=ConvexHull.begin(); it!=ConvexHull.end(); ++it)
 		cout << it->getX() << " " << it->getY() << endl;
 	return 0;
