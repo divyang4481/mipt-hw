@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <list>
+#include <algorithm>
 using namespace std;
 
 class TPoint
@@ -63,7 +64,7 @@ void SortPoints(vector <TPoint> &points)
 		int j = i;
 		while (j>1 && Rotate(points[0], points[j-1], points[j])<0)
 		{
-			points[j] = points[j-1];
+			swap(points[j], points[j-1]);
 			--j;
 		}
 		points[j] = t;
@@ -99,21 +100,17 @@ list <TPoint> Graham(const char* fin)
 	vector <TPoint> points;
 	ReadPoints(points, in);
 	GetMinPoint(points);
-	SortPoints(points);
 	list <TPoint> ConvexHull;
+	SortPoints(points);
 	ConvexHullBuild(ConvexHull, points);
-	fclose(in);
 	return ConvexHull;
 }
 
 int main()
 {
-	string fin;
-	cin>>fin;
-	list <TPoint> ConvexHull = Graham(fin.c_str());
+	list <TPoint> ConvexHull = Graham("in1.txt");
 	FILE * out = fopen("out.txt","w");
 	for (list <TPoint>::iterator it=ConvexHull.begin(); it!=ConvexHull.end(); ++it)
-		fprintf(out, "%d %d\n", it->getX(), it->getY());
-	fclose(out);
+		cout << it->getX() << " " << it->getY() << endl;
 	return 0;
 }
