@@ -1,4 +1,5 @@
 #include <iostream>
+#include <algorithm>
 using namespace std;
 
 template <typename T>
@@ -10,48 +11,61 @@ class TVector
 public:
     typedef T* iterator;
     typedef const T* const_iterator;
+	static int Created;
+	static int Deleted;
     TVector()
     {
         size = 0;
         cap = 1;
         buf = 0;
+        ++Created;
+        cout << "Creating " << Created << endl;
     }
     TVector(size_t s)
     {
         size = s;
         cap = s;
         buf = new T [s];
+        ++Created;
+        cout << "Creating " << Created << endl;
     }
-    TVector(const TVector &other)
+    TVector(const TVector <T> &other)
     {
-        size = other.Size();
-        cap = other.Capacity();
-        buf = new T[size];
-        memcpy(buf, other.cbegin(), sizeof(T)*size);
+        this->buf = NULL;
+        *this = other;
+        ++Created;
+        cout << "Creating " << Created << endl;        
     }
     ~TVector()
     {
         size = 0;
         cap = 0;
         delete [] buf;
-	}
-    size_t Size()
+        ++Deleted;
+        cout << "Deleting " << Deleted << endl;        
+	}    
+	TVector& operator = (const TVector<T> &other)
     {
-        return size;
+    	if (this == &other)
+    		return *this;
+    	if (this->buf != NULL)
+        	delete [] buf;
+        size = other.Size();
+        cap = other.Capacity();
+        buf = new T[cap];
+        for (size_t i=0; i<size; ++i)
+        	buf[i] = other[i];
+        return *this;
     }
     size_t Size() const
     {
         return size;
     }
-    size_t Capacity()
-    {
-        return cap;
-    }
     size_t Capacity() const
     {
         return cap;
     }
-    bool Empty()
+    bool Empty() const
     {
         return size==0;
     }
@@ -64,7 +78,8 @@ public:
         if (n>cap)
         {
             T* temp = new T[n];
-            memcpy(temp, buf, sizeof(T)*size);
+            for (int i=0; i<size; ++i)
+            	temp[i] = buf[i];
             delete [] buf;
             cap = n;
             buf = temp;
@@ -73,18 +88,12 @@ public:
     void Resize(size_t n)
     {
         if (n>cap)
-        {
             Reserve(n);
-        }
         size=n;
     }
-    void Swap(TVector &other)
+    void Swap(TVector <T> &other)
     {
-        TVector <T> *temp = new TVector <T>(*this);
-        *temp = other;
-        other = *this;
-        *this = *temp;
-        temp->~TVector();
+		swap(other, *this);	
     }
     void Push_back(const T &v)
     {
@@ -106,12 +115,14 @@ public:
 	}
 	void Insert (iterator pos, size_t n, const T& v)
 	{
+		T l = pos - begin();
         while (cap <= size+n)
-        {
             Reserve(cap*2);
-        }
-		for (iterator i=end()+n-1; i!=pos+n-1; --i) *i=*(i-n);
-		for (iterator i=pos+n-1; i>=pos; --i) *i = v;
+        iterator b = begin();
+		for (iterator i=end()+n-1; i!=b+l+n-1; --i)
+			*i=*(i-n);
+		for (iterator i=b+l+n-1; i>=b+l; --i) 
+			*i = v;
 		size+=n;		
 	}
 	iterator Erase (iterator pos)
@@ -137,15 +148,7 @@ public:
         if (n>=0 && n<=size)
             return buf[n];
     }
-    TVector& operator = (const TVector& other)
-    {
-        delete [] buf;
-        size = other.Size();
-        cap = other.Capacity();
-        buf = new T[size];
-        memcpy(buf, other.cbegin(), sizeof(T)*size);
-        return *this;
-    }
+
     iterator begin()
     {
         return buf; 
@@ -154,11 +157,11 @@ public:
     {   
         return buf+size;
     }
-    const_iterator cbegin() const
+    const_iterator begin() const
     {
         return buf;
     }
-    const_iterator cend() const
+    const_iterator end() const
     {
         return buf+size;
     }
@@ -180,20 +183,23 @@ public:
 	}
 };
 
+template<> int TVector<int>::Created=0;
+template<> int TVector<int>::Deleted=0;
+
 int main()
 {
     TVector <int> v(2);
     v[0]=0;
     *(v.begin()+1)=1;
-	cout<<"TVector <int> v(2):";
+	cout<<"TVector <int> v(2): ";
     for(TVector <int>::iterator it=v.begin(); it!=v.end(); ++it) cout <<' '<<*it;
     cout<<endl;
     TVector <int> f(v);
     v.Reserve(5);
-	cout<<"TVector <int> f(v):"<<endl;
+	cout<<"TVector <int> f(v): ";
     for(TVector <int>::iterator it=f.begin(); it!=f.end(); ++it) cout <<' '<<*it;
     cout<<endl;
-    f.Push_back(2);
+    f.Push_back(2);  
     f.Swap(v);
 	cout<<"f.Push_back(2), f.Swap(v):"<<endl;
 	cout<<"v:";
@@ -219,8 +225,8 @@ int main()
 	cout<<"v.Insert(v.begin()+2, 55):"<<endl;
     for(TVector <int>::iterator it=v.begin(); it!=v.end(); ++it) cout <<' '<<*it;  
     cout<<endl;
-	v.Insert(v.begin()+1, 5, 2);
-	cout<<"v.Insert(v.begin()+1, 5, 2):"<<endl;
+	v.Insert(v.begin()+2, 7, 10);
+	cout<<"v.Insert(v.begin()+2, 7, 10):"<<endl;
     for(TVector <int>::iterator it=v.begin(); it!=v.end(); ++it) cout <<' '<<*it;  
     cout<<endl;
 	v.Erase(v.begin()+2);
@@ -234,6 +240,5 @@ int main()
 	cout<<"v.front(): "<<v.front()<<endl<<"v.back(): "<<v.back()<<endl;
 	v.Clear();
 	cout<<"v.Clear:"<<endl;
-    for(TVector <int>::iterator it=v.begin(); it!=v.end(); ++it) cout <<' '<<*it;  
     return 0;
 }

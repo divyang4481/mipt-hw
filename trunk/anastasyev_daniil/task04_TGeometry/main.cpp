@@ -35,6 +35,14 @@ public:
 	{
 		return y;
 	}
+	void setX(const T& a)
+	{
+		this->x = a;
+	}
+	void setY(const T& a)
+	{
+		this->y = a;
+	}	
 	TPoint& operator = (const TPoint <T>& p)
 	{
 		this -> x = p.getX();
@@ -81,10 +89,10 @@ public:
 	}
 	bool HasPoint(const TPoint<T> &p) const
 	{
-		return !PointOnLine(pbeg, pend, p) && (p.getX() >= pbeg.getX() 
+		return !PointOnLine(pbeg, pend, p) && ((p.getX() >= pbeg.getX() 
 			&& p.getY() >= pbeg.getY() && p.getX() <= pend.getX() 
-			&& p.getY() <= pend.getY() || p.getX() >= pbeg.getX() 
-			&& p.getY() >= pbeg.getY() && p.getX() <= pend.getX() && p.getY() <= pend.getY());
+			&& p.getY() <= pend.getY()) || (p.getX() >= pbeg.getX() 
+			&& p.getY() >= pbeg.getY() && p.getX() <= pend.getX() && p.getY() <= pend.getY()));
 	}
 	bool Intersects(const TSegment <T> &s) const
 	{
@@ -109,7 +117,7 @@ public:
 		poly = p;
 		poly.push_back(p[0]);
 	}
-	size_t PolygonSize () const
+	int PolygonSize () const
 	{
 		return poly.size();
 	}
@@ -201,6 +209,9 @@ int main()
 {
         cout << "Point1(-1, 1)" << endl;
         TPoint <int> p1(-1, 1);
+        p1.setX(10);
+        p1.setY(22);
+        cout << p1.getX() << " " << p1.getY() << endl;
         cout << "Point2(1, 1)" << endl;
         TPoint <int> p2(1, 1);
         cout << "Point3(3, 0)" << endl;
@@ -225,7 +236,7 @@ int main()
         cout << "Segment2.Intersects(Segment3): " << s2.Intersects(s3) << endl;
         cout << "Segment2.Intersects(Segment4): " << s2.Intersects(s4) << endl;
         cout << "Segment1.Intersects(Segment4): " << s1.Intersects(s4) << endl;
-		vector <TPoint <int>> a;
+		vector <TPoint <int> > a;
 		a.push_back(p1); a.push_back(p2); a.push_back(p3); a.push_back(p4); a.push_back(p1);
 		TPolygon <int> Poly1(a);
 		cout << "Polygon1(Point1, Point2, Point3, Point4, Point1)" << endl;
