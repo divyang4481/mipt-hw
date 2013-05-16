@@ -17,11 +17,12 @@ struct TPoint {
 		angel = a.angel;
 		return *this;
 	}
-	bool operator< (TPoint a) {
-		return (angel < a.angel);
-	}
 
 }point;
+
+bool funct (const TPoint a, const TPoint b){
+	return (a.angel < b.angel);
+}
 
 
 int triangle_area_2 (int x1, int y1, int x2, int y2, int x3, int y3) {
@@ -35,7 +36,6 @@ bool counter_clockwise (int x1, int y1, int x2, int y2, int x3, int y3) {
 class Graham_scan {
 	stack < TPoint > st;
 	vector < TPoint >  arr;
-	vector < TPoint >  arr1;
 	char* name_of_file;
 public:
 
@@ -61,9 +61,9 @@ public:
 		for ( unsigned int i = 1; i < arr.size(); ++i ){
 			arr[i].angel = atan2( arr[i].y - arr[0].y , arr[i].x - arr[0].x);
 		}
-		sort (arr.begin()+1, arr.end());
+		sort (arr.begin()+1, arr.end(), funct);
 		for ( unsigned int i = 2; i < arr.size(); ++i ){
-			if ( arr[i-1].angel - 0.001 <= arr[i].angel && arr[i-1].angel >= arr[i].angel- 0.001 ){
+			if ( arr[i-1].angel- 0.000001 <= arr[i].angel && arr[i-1].angel >= arr[i].angel- 0.000001 ){
 			//if (arr[i-1].angel == arr[i].angel){
 				if ( (sqrt ( static_cast <double> (arr[i-1].x * arr[i-1].x + arr[i-1].y * arr[i-1].y))) <= (sqrt (static_cast <double> (arr[i].x * arr[i].x + arr[i].y * arr[i].y)))) 
 					arr.erase ( arr.begin() + i - 1);
@@ -75,16 +75,17 @@ public:
 
 	void main () {
 		int  n;
+		cout << "Enter number of points:";
 		cin >> n;
 		if ( n < 3){
 			cout << "ERROR! NUMBER OF POINTS IS LESS THAN 3!\n";
 			return;
 		}
 		TPoint tp;
+		cout << "Enter points:" << endl;
 		for ( int i=0; i < n; ++i){
 			cin >> tp.x >> tp.y;
 			arr.push_back (tp);
-			arr1.push_back (tp);
 		}
 		points_sort();
 		st.push (arr [0]);
@@ -122,7 +123,7 @@ public:
 		cout << "RESULTS \n __________________________________\n";
 		unsigned int n = st.size();
 		for ( unsigned int i = 0; i < n; ++i){
-			printf ("%d point: (%d; %d)\n", i+1, st.top().x, st.top().y);
+			cout <<"point: "<< i+1<< " " << st.top().x << " " <<  st.top().y<< endl;
 			st.pop();
 		}
 	}
@@ -136,5 +137,4 @@ int main(){
 	a.main();
 	a.print();
 	return 0;
-
 }
