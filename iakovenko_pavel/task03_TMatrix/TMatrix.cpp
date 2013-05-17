@@ -43,7 +43,7 @@ struct str{
 template<typename T>
 class TMatrix{
 private:
-	vector<vector<T> > mat;
+	vector< vector<T> > mat;
 public:
 
 	void quater (TMatrix<T>& result, int number_of_quater, int size){
@@ -161,20 +161,20 @@ public:
 		return *this;
 	}
 
-	TMatrix<T> operator*=(long long a){
+	TMatrix<T> operator*=(T a){
 		for (unsigned int i=0; i<get_rows(); ++i)
 			for (unsigned int j=0; j<get_cols(); ++j)
 				mat[i][j]*=a;
 		return *this;
 	}
 
-	bool  operator== ( TMatrix<T>& another){
+	bool  operator== ( TMatrix<T> another){
 		if (mat.size() != another.mat.size() || mat[0].size() != another.mat.size())
 			return false;
 		for (unsigned int i = 0; i < another.mat.size(); ++i)
 			for (unsigned int j = 0; j < another.mat[i].size(); ++j)
 				if (mat[i][j] != another.mat[i][j] )
-					return true;
+					return false;
 		return true;
 	}
 
@@ -225,7 +225,8 @@ public:
 
 int near_power_2 (int size){
 	int tp=size;
-	while (1){
+	bool flag = true;
+	while (flag){
 		if(tp==1)
 			return 0;
 		if (tp%2==1)
@@ -527,7 +528,6 @@ TMatrix <T> ShownStrassenMultiply (TMatrix<T>& a, TMatrix<T>& b){
 	temp1 = ShownStrassenMultiplyFor2(temp1, temp2);
 	temp1.resize(a.get_cols());
 	return temp1;
-
 }
 
 
@@ -561,23 +561,23 @@ istream& operator>> (istream& in, TMatrix<T>& matrix){
 	return in;
 }
 
-int Random() {
-	return rand()%10;
-}
+int random() {  
+	return rand()%10; 
+} 
 
 int main(){
 	int size = 3;
 	TMatrix <int> test1 (size, size);
 	for ( int i = 0; i < size; ++i)
 		for ( int j = 0; j < size; ++j)
-			test1.At( i, j ) = Random();
+			test1.At( i, j ) = random();
 
 	cout << "First Test Matrix:\n" << test1 ;
 
 	TMatrix <int> test2 (size, size);
 	for ( int i = 0; i < size; ++i)
 		for ( int j = 0; j < size; ++j)
-			test2.At( i, j ) = Random();
+			test2.At( i, j ) = random();
 
 	cout << "Second Test Matrix:\n" << test2 ;
 
@@ -587,7 +587,7 @@ int main(){
 
 	cout << "First Matrix multiplied by Second Matrix (usual method)\n" << test1*test2;
 
-	long long int number  = 5;
+	int number  = 5;
 
 	cout << "First Matrix multiplied by number \n" << number << (test1 *= number);
 
@@ -599,11 +599,11 @@ int main(){
 	test1.Resize ( size_tp, size_tp );
 	for (  int i = 0; i < size_tp; ++i)
 		for (int j = 0; j < size_tp; ++j)
-			test1.At( i, j ) = Random();
+			test1.At( i, j ) = random();
 	test2.Resize ( size_tp, size_tp);
 	for (int i = 0; i < size_tp; ++i)
 		for (  int j = 0; j < size_tp; ++j)
-			test2.At( i, j ) = Random();
+			test2.At( i, j ) = random();
 	cout << "First Test Matrix:\n" << test1 ;
 	cout << "Second Test Matrix:\n" << test2 ;
 	cout << "Strassen Multiply matrices test1 and test2\n" << StrassenMultiply(test1, test2);
@@ -637,8 +637,8 @@ int main(){
 	//TTimePrinter time_tp;
 	//for (int i=0; i<n; ++i){
 	//	for (int j=0; j<n; ++j){
-	//		a.At (i, j)=Random();
-	//		b.At (i, j)=Random();
+	//		a.At (i, j)=random();
+	//		b.At (i, j)=random();
 
 	//	}
 	//}
@@ -649,15 +649,15 @@ int main(){
 	//	b.Resize ( n, n);
 	//	for (int i = 0; i < n; i++){
 	//		for (int j = (n/2); j < n; j++){
-	//			a.At( i, j) = Random();
-	//			b.At( i, j) = Random();
+	//			a.At( i, j) = random();
+	//			b.At( i, j) = random();
 	//		}
 	//	}
 
 	//	for(int i=n/2; i < n; ++i){
 	//		for (int j = 0 ; j < n/2; ++j){
-	//			a.At( i, j) = Random();
-	//			b.At( i, j) = Random();
+	//			a.At( i, j) = random();
+	//			b.At( i, j) = random();
 	//		}
 	//	}
 
