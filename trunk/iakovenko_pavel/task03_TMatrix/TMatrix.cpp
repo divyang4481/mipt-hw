@@ -381,154 +381,7 @@ TMatrix <T> StrassenMultiply (TMatrix<T> a, TMatrix<T> b){
 	return temp1;
 }
 
-template <typename T>
-TMatrix <T> ShownStrassenMultiplyFor2 (TMatrix<T>& a, TMatrix<T>& b){
-	if(a.get_rows() <= 2){
-		return a*b;
-	}
-	TMatrix <T> result (a.get_cols(), a.get_rows());
-	int n=a.get_cols()/2;
-	TMatrix <T> temp1 (n,n);
-	TMatrix <T> temp2 (n,n);
 
-	// Matrix M1
-		//A11+A22
-		for (int i=0; i<n; ++i)
-			for (int j=0; j<n; ++j)
-				temp1.At(i,j)=a.At(i,j)+a.At(n+i, n+j);
-		//B11+B22
-		for (int i=0; i<n; ++i)
-			for (int j=0; j<n; ++j)
-				temp2.At(i,j)=b.At(i,j)+b.At(n+i, n+j);
-	cout << "(Part of Strassen multiply) Multiplication of this matrices:\n" << temp1 << temp2 << endl;
-	temp1 = StrassenMultiply_for_2(temp1, temp2);
-	for (int i=0; i<n; ++i)
-		for (int j=0; j<n; ++j)
-			result.At (i, j) = result.At (i+n, j+n) = temp1.At(i, j);
-
-	//M2
-		//A21+A22
-		for (int i=0; i<n; ++i)
-			for (int j=0; j<n; ++j)
-				temp1.At(i,j)=a.At(n+i,j)+a.At(n+i, n+j);
-		//B11
-		b.quater(temp2,1,n);
-	cout << "(Part of Strassen multiply) Multiplication of this matrices:\n" << temp1 << temp2 << endl;
-	temp1 = StrassenMultiply_for_2(temp1, temp2);
-	for (int i=0; i<n; ++i)
-		for (int j=0; j<n; ++j)
-			result.At (i+n, j+n) -= (result.At (i+n, j) = temp1.At(i, j));
-	//M3
-		//A11
-		a.quater(temp1,1,n);
-		//B12-B22
-		for (int i=0; i<n; ++i)
-			for (int j=0; j<n; ++j)
-				temp2.At(i,j)=b.At(i,j+n)-b.At(n+i, n+j);
-	cout << "(Part of Strassen multiply) Multiplication of this matrices:\n" << temp1 << temp2 << endl;
-	temp1 = StrassenMultiply_for_2(temp1, temp2);
-	for (int i=0; i<n; ++i)
-		for (int j=0; j<n; ++j)
-			result.At (i+n, j+n) += (result.At (i, j+n) = temp1.At(i, j));
-
-	//M4
-		//A22
-		a.quater(temp1, 3, n);
-		//B21-B11
-		for (int i=0; i<n; ++i)
-			for (int j=0; j<n; ++j)
-				temp2.At(i,j)=b.At(i+n,j)-b.At(i, j);
-	cout << "(Part of Strassen multiply) Multiplication of this matrices:\n" << temp1 << temp2 << endl;
-	temp1 = StrassenMultiply_for_2(temp1, temp2);
-	for (int i=0; i<n; ++i)
-		for (int j=0; j<n; ++j){
-			result.At (i, j) += temp1.At(i, j);
-			result.At (i+n, j) += temp1.At(i, j);
-		}
-
-	//M5
-		//A11+A12
-		for (int i=0; i<n; ++i)
-			for (int j=0; j<n; ++j)
-				temp1.At(i,j)=a.At(i,j)+a.At(i, j+n);
-		//B22
-		b.quater(temp2,3,n);
-	cout << "(Part of Strassen multiply) Multiplication of this matrices:\n" << temp1 << temp2 << endl;
-	temp1 = StrassenMultiply_for_2(temp1, temp2);
-	for (int i=0; i<n; ++i)
-		for (int j=0; j<n; ++j){
-			result.At (i, j) -= temp1.At(i, j);
-			result.At (i, j+n) += temp1.At(i, j);
-		}
-
-	//M6
-		//A21-A11
-		for (int i=0; i<n; ++i)
-			for (int j=0; j<n; ++j)
-				temp1.At(i,j)=a.At(i+n,j)-a.At(i, j);
-		//B11+B12
-		for (int i=0; i<n; ++i)
-			for (int j=0; j<n; ++j)
-				temp2.At(i,j)=b.At(i,j)+b.At(i, j+n);
-	cout << "(Part of Strassen multiply) Multiplication of this matrices:\n" << temp1 << temp2 << endl;
-	temp1 = StrassenMultiply_for_2(temp1, temp2);
-	for (int i=0; i<n; ++i)
-		for (int j=0; j<n; ++j){
-			result.At (i+n, j+n) += temp1.At(i, j);
-		}
-	
-	//M7
-		//A12-A22
-		for (int i=0; i<n; ++i)
-			for (int j=0; j<n; ++j)
-				temp1.At(i,j)=a.At(i,j+n)-a.At(i+n, j+n);
-		//B21+B22
-		for (int i=0; i<n; ++i)
-			for (int j=0; j<n; ++j)
-				temp2.At(i,j)=b.At(i+n,j)+b.At(i+n, j+n);
-	cout << "(Part of Strassen multiply) Multiplication of this matrices:\n" << temp1 << temp2 << endl;
-	temp1 = StrassenMultiply_for_2(temp1, temp2);
-	for (int i=0; i<n; ++i)
-		for (int j=0; j<n; ++j){
-			result.At (i, j) += temp1.At(i, j);
-		}
-	return result;
-}
-
-template <typename T>
-TMatrix <T> ShownStrassenMultiply (TMatrix<T>& a, TMatrix<T>& b){
-	if(a.get_rows() <= 2){
-		return a*b;
-	}
-	int p2=near_power_2(a.get_cols());
-	if (p2==0){
-		return ShownStrassenMultiplyFor2(a,b);
-	}
-	TMatrix<T> temp1(p2, p2);
-	TMatrix<T> temp2(p2, p2);
-	for (int i=0; i<p2; i++)
-		for(  int j=0; j<p2; ++j){
-			if ((unsigned)i<a.get_cols() && (unsigned)j<a.get_cols())
-				temp1.At(i,j)=a.At(i,j);
-			else if (i==j)
-				temp1.At(i,j)=1;
-			else 
-				temp1.At(i,j)=0;
-		}
-	for (int i=0; i<p2; i++)
-		for(int j=0; j<p2; ++j){
-			if ((unsigned)i<a.get_cols() && (unsigned)j<a.get_cols())
-				temp2.At(i,j)=b.At(i,j);
-			else if (i==j)
-				temp2.At(i,j)=1;
-			else 
-				temp2.At(i,j)=0;
-		}
-	cout << "Matrices to multiply:\n" <<temp1 << temp2 << endl;
-	temp1 = ShownStrassenMultiplyFor2(temp1, temp2);
-	temp1.resize(a.get_cols());
-	return temp1;
-}
 
 
 template<typename T>
@@ -561,23 +414,23 @@ istream& operator>> (istream& in, TMatrix<T>& matrix){
 	return in;
 }
 
-int Random() {  
+int random() {  
 	return rand()%10; 
 } 
 
 int main(){
-	int size = 3;
+	/*int size = 3;
 	TMatrix <int> test1 (size, size);
 	for ( int i = 0; i < size; ++i)
 		for ( int j = 0; j < size; ++j)
-			test1.At( i, j ) = Random();
+			test1.At( i, j ) = random();
 
 	cout << "First Test Matrix:\n" << test1 ;
 
 	TMatrix <int> test2 (size, size);
 	for ( int i = 0; i < size; ++i)
 		for ( int j = 0; j < size; ++j)
-			test2.At( i, j ) = Random();
+			test2.At( i, j ) = random();
 
 	cout << "Second Test Matrix:\n" << test2 ;
 
@@ -599,11 +452,11 @@ int main(){
 	test1.Resize ( size_tp, size_tp );
 	for (  int i = 0; i < size_tp; ++i)
 		for (int j = 0; j < size_tp; ++j)
-			test1.At( i, j ) = Random();
+			test1.At( i, j ) = random();
 	test2.Resize ( size_tp, size_tp);
 	for (int i = 0; i < size_tp; ++i)
 		for (  int j = 0; j < size_tp; ++j)
-			test2.At( i, j ) = Random();
+			test2.At( i, j ) = random();
 	cout << "First Test Matrix:\n" << test1 ;
 	cout << "Second Test Matrix:\n" << test2 ;
 	cout << "Strassen Multiply matrices test1 and test2\n" << StrassenMultiply(test1, test2);
@@ -617,57 +470,67 @@ int main(){
 		TMatrix <int> test4 (k, k);
 		for ( int i = 0; i < k; ++i)
 			for ( int j = 0; j < k; ++j)
-				test4.At( i, j ) = Random();
+				test4.At( i, j ) = random();
 		TMatrix <int> test5 (k, k);
 		for ( int i = 0; i < k; ++i)
 			for ( int j = 0; j < k; ++j)
-				test5.At( i, j ) = Random();
+				test5.At( i, j ) = random();
 		cout << "Multiplication using Strassen multiply:" << endl;
 		cout << "Result is:\n" << ShownStrassenMultiply(test4, test5) << endl;
 		cout << "Multiplication using usual method:" << endl;
 		cout << test4*test5 << endl;
 		cout <<( ((test4*test5) ==  StrassenMultiply( test4, test5))? "Matrices are equal\n": "Matrices are not equal\n")<< endl;
+	}*/
+
+	//measurments
+	clock_t t;
+	int n=16;
+	TMatrix<int> a(n,n);
+	TMatrix<int> b(n,n);
+	TTimePrinter time_tp;
+	for (int i=0; i<n; ++i){
+		for (int j=0; j<n; ++j){
+			a.At (i, j)=random();
+			b.At (i, j)=random();
+
+		}
 	}
+	TMatrix <int> temp_matrix1 (n,n);
+	TMatrix <int> temp_matrix2 (n,n);
+	for (int k=0; k < 7; k++){
+		n*=2;
+		cout << "N = " << n << endl;
+		a.Resize ( n, n);
+		b.Resize ( n, n);
+		for (int i = 0; i < n; i++){
+			for (int j = (n/2); j < n; j++){
+				a.At( i, j) = random();
+				b.At( i, j) = random();
+			}
+		}
 
-	////measurments
-	//clock_t t;
-	//int n=16;
-	//TMatrix<int> a(n,n);
-	//TMatrix<int> b(n,n);
-	//TTimePrinter time_tp;
-	//for (int i=0; i<n; ++i){
-	//	for (int j=0; j<n; ++j){
-	//		a.At (i, j)=Random();
-	//		b.At (i, j)=Random();
+		for(int i=n/2; i < n; ++i){
+			for (int j = 0 ; j < n/2; ++j){
+				a.At( i, j) = random();
+				b.At( i, j) = random();
+			}
+		}
 
-	//	}
-	//}
-
-	//for (int k=0; k<10; k++){
-	//	n*=2;
-	//	a.Resize ( n, n);
-	//	b.Resize ( n, n);
-	//	for (int i = 0; i < n; i++){
-	//		for (int j = (n/2); j < n; j++){
-	//			a.At( i, j) = Random();
-	//			b.At( i, j) = Random();
-	//		}
-	//	}
-
-	//	for(int i=n/2; i < n; ++i){
-	//		for (int j = 0 ; j < n/2; ++j){
-	//			a.At( i, j) = Random();
-	//			b.At( i, j) = Random();
-	//		}
-	//	}
-
-	//	time_tp.Reset();
-	//	StrassenMultiply_for_2(a,b);;
-	//	cout << "Strassen method for num="<<n<<" time: " << time_tp.GetTime() <<endl;
-	//	time_tp.Reset();
-	//	a*b;
-	//	cout << "Usual method for num="<<n<<" time: "<< time_tp.GetTime() <<endl;
-	//}
+		time_tp.Reset();
+		StrassenMultiply_for_2(a,b);
+		double tp_time = time_tp.GetTime();
+		cout << "Strassen method for num="<<n<<" time: " << tp_time <<endl;
+		time_tp.Reset();
+		a*b;
+		tp_time = time_tp.GetTime();
+		cout << "Usual method for num="<<n<<" time: "<< tp_time <<endl;
+		if ((a*b) ==  StrassenMultiply( a, b))
+			cout <<"Matrices are equal\n" << endl;
+		else {
+			cout << "Achtung!" << endl;
+			return 0;
+		}
+	}
 
 	return 0;
 }
