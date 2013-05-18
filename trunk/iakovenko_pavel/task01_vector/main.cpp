@@ -7,11 +7,17 @@ class TVector{
 public:
 	class iterator{
 		friend class TVector;
-		iterator(T *t):el(t){}
 	public:
+		iterator(T* t):el(t){}
 		iterator():el(0){
 		};
-
+		iterator (iterator& another){
+			el = another.el;
+		}
+		iterator& operator= (iterator& another){
+			el = another.el;
+			return *this;
+		}
 		void operator++(){
 			el++;
 		};
@@ -24,11 +30,11 @@ public:
 			return *el;
 		}
 
-		bool operator == (iterator& i){
+		bool operator== (iterator& i){
 			return (el == i.el ? true:false);
 		}
 
-		bool operator != (iterator& i){
+		bool operator!= (iterator& i){
 			return !(*this == i);
 		}
 
@@ -52,38 +58,101 @@ public:
 	private:
 		T* el;
 	};
+	class const_iterator{
+		friend class TVector;
+	public:
+		const_iterator(T *t):el(t){}
+		const_iterator():el(0){
+		};
+
+		void operator++(){
+			el++;
+		};
+
+		void operator --(){
+			el--;
+		}
+
+		const T& operator *()const {
+			return *el;
+		}
+		const_iterator (const_iterator& another){
+			el = another.el;
+		}
+		const_iterator& operator= (const_iterator& another){
+			el = another.el;
+			return *this;
+		}
+
+		bool operator == (const_iterator& i){
+			return (el == i.el ? true:false);
+		}
+
+		bool operator != (const_iterator& i){
+			return !(*this == i);
+		}
+
+		T* get(){
+			return el;
+		}
+
+		int operator-(const_iterator tp){
+			T* t=el;
+			int i=0;
+			for(; t!=tp.get(); t++, i++);
+			return i;
+		}
+
+		const_iterator operator+(int n){
+			for (int i=0; i<n; ++i)
+				++*this;
+			return *this;
+		}
+
+	private:
+		T* el;
+	};
+private:
+	int position(iterator pos){
+		T* tp=arr;
+		unsigned int i;
+		for(i=0; tp!=pos.get(); ++tp, ++i);
+		return i;
+	}
 public:
-	static int Created;
-	static int Deleted;
+
+
 	TVector(){
 		tsize=0;
 		tcapacity=10;
 		arr=new T [tcapacity];
-		rehersal();
-		++Created;
 	};
 
-	void rehersal (){
-		beg=arr;
-		ed=arr+tcapacity;
-		Begin=iterator(beg);
-		End=iterator(ed);
-	}
 
 	TVector(unsigned int f_cap){
 		tsize=0;
 		tcapacity=f_cap;
 		arr=new T [tcapacity];
-		beg=arr;
-		ed=arr+tcapacity;
-		Begin=iterator(beg);
-		End=iterator(ed);
-		++Created;
 	};
+
+	TVector(int n, T value){
+		tsize=n;
+		tcapacity=n;
+		arr=new T [tcapacity];
+		for (int i = 0;  i < n; ++i)
+			arr[i] = value;
+	}
+
+	TVector ( iterator  beg, iterator  end){
+		tsize = 0;
+		tcapacity = 10;
+		arr = new T[tcapacity];
+		for (;beg!= end; ++beg)
+			push_back(*beg);
+	}
 
 	~TVector(){
 		delete[] arr;
-		++Deleted;
 	};
 
 	void push_back(T n){
@@ -99,11 +168,23 @@ public:
 	};
 
 	iterator begin(){
-		return Begin;
+		iterator pos (arr);
+		return pos;
 	}
 
 	iterator end(){
-		return End;
+		iterator pos (arr + tsize);
+		return pos;
+	}
+
+	const_iterator cbegin(){
+		const_iterator pos (arr);
+		return pos;
+	}
+
+	const_iterator cend(){
+		const_iterator pos (arr +  tsize);
+		return pos;
 	}
 
 	T pop_back(){
@@ -116,10 +197,9 @@ public:
 	};
 
 	void swap(TVector& temp){
-		TVector tp;
-		tp=*this;
-		*this=temp;
-		temp=tp;
+		std::swap(arr, temp.arr);
+		std::swap(tcapacity, temp.tcapacity);
+		std::swap(tsize, temp.tsize);
 		return;
 	}
 
@@ -132,17 +212,14 @@ public:
 		delete[] arr;
 		arr=tp;
 		tcapacity=ncap;
-		rehersal();
 		return;
 	}
 
 	T& operator[](unsigned int n){ //как сделать так, чтобы записывать?
-		if (n>=tsize)
-			cout << "error!\n";   //как вывести здесь ошибку? как это сделать красиво?
 		return arr[n];
 	};
 
-	TVector& operator=(TVector& temp){
+	TVector& operator=(const TVector& temp){
 		if(temp.size()> tcapacity){
 			while(temp.size()> tcapacity)
 				tcapacity*=2;
@@ -152,7 +229,6 @@ public:
 		for (unsigned int i=0; i<temp.size(); i++)
 			arr[i]=temp[i];
 		tsize=temp.size();
-		rehersal();
 		return *this;
 	};
 
@@ -171,23 +247,12 @@ public:
 	};
 
 	T& back(){
-		if (tsize==0)
-			cout << "error!"<< endl;
 		return arr[tsize-1];
 	};
 
 	T& front(){
-		if (tsize==0)
-			cout << "error!"<< endl;
 		return arr[0];
 	};
-
-	int position(iterator pos){
-		T* tp=arr;
-		unsigned int i;
-		for(i=0; tp!=pos.get(); ++tp, ++i);
-		return i;
-	}
 
 	void resize(unsigned int n){
 		if(n==tsize)
@@ -215,35 +280,42 @@ public:
 				for (unsigned int i=tsize; i<n; i++)
 					arr[i]=0;
 		tsize=n;
-		rehersal();
 		return;
 	};
-	
-	void erase(iterator pos){ // ак это сделать красивее? ¬ычитать!
+
+	iterator erase(iterator pos){ // ак это сделать красивее? ¬ычитать!
 		T* tp=arr;
 		unsigned int i;
 		for(i=0; tp!=pos.get(); ++tp, ++i);
 		tsize-=1;
+		++pos;
 		for(unsigned int k=i;k<tsize; k++){
 			arr[k]=arr[k+1];
 		}
+		return pos;
 	}
 
-	void erase(iterator beg, iterator end){ 
+	iterator erase(iterator beg, iterator end){ 
 		T* tp=arr;
 		int i;
 		for(i=0; tp!=beg.get(); ++tp, ++i);
 		int k;
 		for(k=0; tp!=end.get(); ++tp, ++k);
-		unsigned int p=0;
-		for(unsigned int j=i, p=0; (k+p-1)<tsize; j++, p++)
+		unsigned int p = 0;
+		for(unsigned int j=i; (k+p-1)<tsize; j++){
 			arr[j]=arr[k+p-1];
+			++p;
+		}
 		tsize=tsize-k+i+1;
+		++end;
+		return end;
 	}
 
-	void insert(iterator it, int n, T val){
+	iterator insert(iterator it, int n, T val){
 		insert(position(it), n, val);
-		return;
+		for (int i=0; i<n; ++i)
+			--it;
+		return it;
 	}
 
 	void insert(int p, int n, T val){
@@ -257,46 +329,43 @@ public:
 		return;
 	}
 
-	void insert(iterator pos, iterator beg, iterator end){ //что происходит с другим вектором? 
+	iterator insert(iterator pos, iterator beg, iterator end){ 
 		int p=position(pos);
 		--end;
-		for (; beg!=end; --end)
+		for (; beg!=end; --end,--pos)
 			insert(p, 1, *end);
 		insert(p,1,*beg);
-		return;
+		return --pos;
 	}
 
-	void insert(iterator pos, T* beg, T* end){
+	iterator insert(iterator pos, T* beg, T* end){
 		int p=position(pos);
 		--end;
-		for (; beg!=end; --end)
+		for (; beg!=end; --end, --pos)
 			insert(p, 1, *end);
 		insert(p,1,*beg);
-		return;
-	}
-
-	void show(){
-		for (unsigned int i=0; i<tsize; i++)
-			cout<< "a["<<i<<"]="<<arr[i]<<endl;
-		cout<<"-----------------------------------------"<< endl;
-		return;
+		return --pos;
 	}
 
 private:
-	T *beg;
-	T *ed;
 	unsigned int tsize;
 	unsigned int tcapacity;
 	T* arr;
-	iterator Begin;
-	iterator End;
+	friend void show();
 };
 
-int TVector<int>:: Created=0;
-int TVector<int>:: Deleted=0;
+
+template <typename T>
+void show(TVector<T>& a){
+		TVector <T> :: const_iterator pos = a.cbegin();
+		for (int i=0; pos!=a.cend(); ++pos, ++i)
+			cout<< "a["<<i<<"]="<<*pos<<endl;
+		cout<<"-----------------------------------------"<< endl;
+}
+
 
 int main(){
-	{TVector<int>a,b;
+	TVector<int>a,b;
 	for (int i=0; i<10; i++)
 		a.push_back(i);
 	for (int i=9; i>=0; i--)
@@ -305,30 +374,28 @@ int main(){
 	int ab;
 	for(int i=9; i>=6; i--)
 		ab=a.pop_back();
-	a.show();
 	cout << a.size()<<endl;
 	a.clear();
 	cout<< a.empty()<< endl;
-	a.show();
+	show(a);
 	a.swap(b);
-	a.show();
-	b.show();
+	show(a);
+	show(b);
 	a.resize(8);
-	a.show();
+	show(a);
 	a.reserve(5);
-	a.show();
+	show(a);
 	a.reserve(25);
-	a.show();
-	for (pos=a.begin(); pos!=a.end(); ++pos)
-		*pos=5.0;
-	a.show();
+	show(a);
+	TVector<int>::iterator end=a.end();
+	for (pos=a.begin(); pos!=end; ++pos)
+		*pos=5;
+	show(a);
 	cout << a.front()-a.back()<<endl;
 	a.insert(a.begin()+7, 5, 100);
-	a.show();
+	show(a);
 	a.erase(a.begin(), a.begin()+3);
-	a.show();
-	}
-	cout << TVector<int>::Created<<endl<<TVector<int>::Deleted<<endl;
-	system("pause");
+	show(a);
 	return 0;
+
 }
