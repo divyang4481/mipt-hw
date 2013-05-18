@@ -1,8 +1,9 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <string>
 #include <stack>
 #include <vector>
-#include <math.h>
+#include <cmath>
 #include <stdio.h>
 #include <algorithm>
 using namespace std;
@@ -11,6 +12,7 @@ struct TPoint
 {
 	int x,y;
 	double angle;
+
 	TPoint operator = (TPoint &a)
 	{
 		x = a.x;
@@ -18,7 +20,7 @@ struct TPoint
 		angle = a.angle;
 		return *this;
 	}
-	bool operator == (TPoint &a)
+	bool operator == (TPoint a)
 	{
 		return (abs(angle - a.angle) < e);
 	}
@@ -35,47 +37,50 @@ bool cw(TPoint &a, TPoint &b, TPoint &c)
 {
 	return (((b.x - a.x)*(c.y - a.y) - (c.x - a.x)*(b.y - a.y)) > 0);
 }
-
+bool compare(TPoint a, TPoint b)
+{
+    return (a.angle<b.angle);
+}
 class GrahamScan
 {
 	vector< TPoint > points;
 	stack < TPoint > my_stack;
-	string filename;
+
 public:
-	GrahamScan(string &name)
-	{
-		filename = name;
-		//freopen ("1.txt", "r", stdin);
-		
-	}
+	GrahamScan()
+	{}
 	void ToRead()
 	{
-		FILE* f = fopen(filename.c_str(), "r");
 		size_t n;
-		fscanf(f, "%d", &n);
-		points.resize(n);
+		cin >> n;
+
+		TPoint a;a.angle = 0.0;
 		for (size_t i = 0; i < n; ++i)
 		{
-			fscanf(f, "%d %d", &points[i].x, &points[i].y);
+
+
+			cin >> a.x >> a.y;
+			points.push_back(a);
+
 		}
-		fclose(f);
+
 	}
 	void LowestPoint()
 	{
-		
+
 		for (size_t i = 1; i < points.size(); ++i)
 			if ((points[i].y < points[0].y)||
 				((points[i].y == points[0].y)&&
 				(points[i].x < points[0].x)))
 				swap(points[0], points[i]);
 	}
-	
+
 	void PointsSort()
 	{
 		LowestPoint();
 		for (size_t i = 1; i < points.size(); ++i)
 			points[i].angle = atan2((double)points[i].y - points[0].y, (double)points[i].x - points[0].x);
-		sort(points.begin() + 1, points.end()); 
+		sort((++points.begin()), points.end(),compare);
 		for (size_t i = 2; i < points.size(); ++i)
 			if (points[i - 1] == points[i])
 			{
@@ -110,22 +115,22 @@ public:
 			my_stack.push(points[i]);
 		}
 	}
-	void ToPrint(string &name)
+	void ToPrint()
 	{
-		FILE *f = fopen(name.c_str(), "w");
+
 		size_t n = my_stack.size();
 		for (size_t i = 0; i < n; ++i)
 		{
-			 fprintf ( f, "%d point: (%d; %d)\n", i+1, my_stack.top().x, my_stack.top().y);
-                        my_stack.pop();
+			cout << (i+1) << " point: (" << my_stack.top().x << "; " << my_stack.top().y << ")" << endl;
+			my_stack.pop();
 		}
 	}
 
 };
 int main()
 {
-	GrahamScan a((string)"input.txt");
+	GrahamScan a;
 	a.scan();
-	a.ToPrint((string)"output.txt");
+	a.ToPrint();
 	return 0;
 }
