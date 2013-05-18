@@ -168,23 +168,19 @@ public:
 	};
 
 	iterator begin(){
-		iterator pos (arr);
-		return pos;
+		return iterator(arr);
 	}
 
 	iterator end(){
-		iterator pos (arr + tsize);
-		return pos;
+		return 	iterator(arr + tsize);
 	}
 
 	const_iterator cbegin(){
-		const_iterator pos (arr);
-		return pos;
+		return const_iterator(arr);
 	}
 
 	const_iterator cend(){
-		const_iterator pos (arr +  tsize);
-		return pos;
+		return const_iterator(arr +  tsize);
 	}
 
 	T pop_back(){
