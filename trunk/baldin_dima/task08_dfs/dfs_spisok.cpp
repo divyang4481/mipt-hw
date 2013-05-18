@@ -1,11 +1,13 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <stdio.h>
 
 using namespace std;
 
 enum clr {WHITE, GRAY,BLACK};
-int kol = 0;
+
 void read_graph(vector< vector <int> > &graph,
 	vector < clr > &color,
 	vector < int > &parent,
@@ -13,21 +15,20 @@ void read_graph(vector< vector <int> > &graph,
 	vector < int > &timeout
 	)
 {
-	FILE *f = fopen("input.txt", "r");
 	size_t n,m;
-	fscanf(f, "%d %d", &n, &m);
+	scanf("%u %u", &n, &m);
 	graph.resize(n);
 	color.resize(n, WHITE);
 	parent.resize(n,-1);
 	timein.resize(n,0);
 	timeout.resize(n,0);
-	int a,b;
+	size_t a,b;
 	for ( size_t i = 0; i < m; ++i)
 	{
-		fscanf(f, "%d %d", &a, &b);
+		scanf("%u %u", &a, &b);
 		graph[a-1].push_back(b-1);
 	}
-	fclose(f);
+
 }
 void dfs_visit(vector< vector <int> > &graph,
 	vector < clr > &color,
@@ -36,17 +37,16 @@ void dfs_visit(vector< vector <int> > &graph,
 	vector < int > &timeout,
 	int &time, int u)
 {
-	++kol;
 	color[u] = GRAY;
 	timein[u] = time++;
 	for (size_t i = 0; i < graph[u].size(); ++i)
 	{
-		if (color[graph[u][i]] == WHITE) { parent[graph[u][i]] = u; 
+		if (color[graph[u][i]] == WHITE) { parent[graph[u][i]] = u;
 		                          dfs_visit(graph, color, parent, timein, timeout, time, graph[u][i]);}
 	}
 	color[u] = BLACK;
 	timeout[u] = time++;
-	
+
 }
 void dfs(vector< vector <int> > &graph,
 	vector < clr > &color,
@@ -65,12 +65,12 @@ void print_vector(vector< vector <int> > &graph,
 	vector < int > &timein,
 	vector < int > &timeout)
 {
-	FILE *f = fopen("output.txt", "w");
+
 	for (size_t i = 0; i < parent.size(); ++i)
 	{
-		fprintf(f,"vertex %d parent %d timein %d timeout %d\n", i + 1, parent[i] + 1, timein[i], timeout[i]);
+		printf("vertex %u parent %d timein %d timeout %d\n", i + 1, parent[i] + 1, timein[i], timeout[i]);
 	}
-	fclose(f);
+
 }
 int main()
 {
@@ -82,4 +82,5 @@ int main()
 	read_graph(graph, color, parent, timein, timeout);
 	dfs(graph, color, parent, timein, timeout);
 	print_vector(graph, parent, timein, timeout);
+	return 0;
 }

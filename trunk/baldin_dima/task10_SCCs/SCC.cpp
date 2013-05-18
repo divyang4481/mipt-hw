@@ -7,7 +7,7 @@
 using namespace std;
 
 enum clr {WHITE, GRAY,BLACK};
-int kol = 0;
+
 void read_graph(vector< vector <int> > &graph,
 	vector< vector <int> > &graphT,
 	vector < clr > &color,
@@ -15,21 +15,21 @@ void read_graph(vector< vector <int> > &graph,
 
 	)
 {
-	
+
 	size_t n,m;
-	scanf("%d %d", &n, &m);
+	scanf("%u %u", &n, &m);
 	graph.resize(n);
 	graphT.resize(n);
 	color.resize(n, WHITE);
 	links.resize(n,0);
-	int a,b;
+    size_t a,b;
 	for ( size_t i = 0; i < m; ++i)
 	{
-		scanf( "%d %d", &a, &b);
+		scanf( "%u %u", &a, &b);
 		graph[a-1].push_back(b-1);
 		graphT[b-1].push_back(a-1);
 	}
-	
+
 }
 void dfs_visit(vector< vector <int> > &graph,
 	vector < clr > &color,
@@ -37,7 +37,6 @@ void dfs_visit(vector< vector <int> > &graph,
 	int T, int u, size_t &number,
 	vector<int> &f, int &last_f)
 {
-	++kol;
 	color[u] = GRAY;
 	for (size_t i = 0; i < graph[u].size(); ++i)
 	{
@@ -68,14 +67,14 @@ void scc(vector< vector <int> > &graph,
 }
 void print_vector(vector <size_t> &links, size_t number)
 {
-	
+
 	for (size_t i = 1; i <= number; ++i)
 	{
 		for (size_t j = 0; j < links.size(); ++j)
-			if (links[j] == i) printf("%d ", j + 1);
+			if (links[j] == i) printf("%u ", j + 1);
 		printf( "\n");
 	}
-	
+
 }
 int main()
 {

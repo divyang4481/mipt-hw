@@ -1,7 +1,8 @@
+#define _CRT_NO_SECURE_WARNINGS
 #include <iostream>
 #include <vector>
 #include <queue>
-
+#include <stdio.h>
 using namespace std;
 
 enum clr {WHITE, GRAY,BLACK};
@@ -11,20 +12,19 @@ void read_graph(vector< vector <int> > &graph,
 	vector < int > &parent,
 	vector < int > &length)
 {
-	FILE *f = fopen("input.txt", "r");
 	size_t n,m;
-	fscanf(f, "%d %d", &n, &m);
+	scanf("%u %u", &n, &m);
 	graph.resize(n);
 	colour.resize(n, WHITE);
 	parent.resize(n,-1);
 	length.resize(n,-1);
-	int a,b;
+	size_t a,b;
 	for ( size_t i = 0; i < m; ++i)
 	{
-		fscanf(f, "%d %d", &a, &b);
+		scanf("%u %u", &a, &b);
 		graph[a-1].push_back(b-1);
 	}
-	fclose(f);
+
 }
 void bfs(vector< vector <int> > &graph,
 	vector < clr > &colour,
@@ -57,12 +57,12 @@ void print_vector(vector< vector <int> > &graph,
 	vector < int > &parent,
 	vector < int > &length)
 {
-	FILE *f = fopen("output.txt", "w");
+
 	for (size_t i = 0; i < parent.size(); ++i)
 	{
-		fprintf(f,"vertex %d parent %d length %d\n", i + 1, parent[i] + 1, (parent[i] == -1) ? length[i]: length[i] + 1);
+		printf("vertex %u parent %d length %d\n", i + 1, parent[i] + 1, (parent[i] == -1) ? length[i]: length[i] + 1);
 	}
-	fclose(f);
+
 }
 int main()
 {
@@ -73,4 +73,5 @@ int main()
 	read_graph(graph, colour, parent, length);
 	bfs(graph, colour, parent, length);
 	print_vector(graph, parent, length);
+	return 0;
 }
