@@ -32,9 +32,8 @@ public:
 	}
 	bool HasPoint(const TPoint <T> &p) const
 	{
-		if ((x == p.GetX()) && (y == p.GetY()))
-		return true;
-		else return false;
+		return ((x == p.GetX()) && (y == p.GetY()));
+		
 	
 	}
 	bool Intersects(const TSegment <T> &s) const
@@ -110,14 +109,29 @@ public:
 	bool HasPoint(const TPoint <T> &p) const
 	{
 		
-		if (Area(beginning, ending, p))
-			return false;
-		else return true;
+		return (!Area(beginning, ending, p));
+			
 		
 	}
+	bool Intersect_1 (const TSegment<T> &y) const
+	{
+		T ax = GetBeg().GetX();
+		T ay = GetBeg().GetY();
+		T bx = GetEnd().GetX();
+		T by = GetEnd().GetY();
+		T cx = y.GetBeg().GetX();
+		T cy = y.GetBeg().GetY();
+		T dx = y.GetEnd().GetX();
+		T dy = y.GetEnd().GetY();
+		if (ax > bx) swap(ax, bx);
+		if (cx > dx) swap(cx, dx);
+		if (ay > by) swap(ay, by);
+		if (cy > dy) swap(cy, dy);
+		return ((max(ax, cx) <= min (bx, dx)) && (max(ay, cy) <= min (by, dy)));
+}
 	bool Intersects(const TSegment <T> &s) const
 	{
-		return Intersect_1(*this, s) && 
+		return Intersect_1(s) && 
 		Area(GetBeg(), GetEnd(), s.GetBeg()) * Area(GetBeg(), GetEnd(), s.GetEnd()) <= 0
 		&&
 		Area(s.GetBeg(), s.GetEnd(), GetBeg()) * Area(s.GetBeg(), s.GetEnd(), GetEnd()) <= 0;
@@ -262,23 +276,7 @@ T Area (const TPoint<T> &a, const TPoint<T> &b, const TPoint<T> &c)
 	return (b.GetX() - a.GetX()) * (c.GetY() - a.GetY())
 		- (b.GetY() - a.GetY()) * (c.GetX() - a.GetX());
 }
-template <typename T>
-bool Intersect_1 (const TSegment<T> &x, const TSegment<T> &y)
-{
-	T ax = x.GetBeg().GetX();
-	T ay = x.GetBeg().GetY();
-	T bx = x.GetEnd().GetX();
-	T by = x.GetEnd().GetY();
-	T cx = y.GetBeg().GetX();
-	T cy = y.GetBeg().GetY();
-	T dx = y.GetEnd().GetX();
-	T dy = y.GetEnd().GetY();
-	if (ax > bx) swap(ax, bx);
-	if (cx > dx) swap(cx, dx);
-	if (ay > by) swap(ay, by);
-	if (cy > dy) swap(cy, dy);
-	return ((max(ax, cx) <= min (bx, dx)) && (max(ay, cy) <= min (by, dy)));
-}
+
 
 
 
@@ -287,50 +285,52 @@ int main()
 {
 	
 	vector<TPoint<int> > p;
-	TPoint<int> *a = new TPoint<int> (-2,3);
-	p.push_back(*a);
-	TPoint<int> *b = new TPoint<int> (-4,1);
-	p.push_back(*b);
-	TPoint<int> *c = new TPoint<int> (0,-2);
-	p.push_back(*c);
-	TPoint<int> *d = new TPoint<int> (4,1);
-	p.push_back(*d);
-	TPoint<int> *e = new TPoint<int> (2,3);
-	p.push_back(*e);
+	TPoint<int> a(-2,3);
+	p.push_back(a);
+	TPoint<int> b(-4,1);
+	p.push_back(b);
+	TPoint<int> c(0,-2);
+	p.push_back(c);
+	TPoint<int> d(4,1);
+	p.push_back(d);
+	TPoint<int> e(2,3);
+	p.push_back(e);
 	cout << "Create Polygon with vertices((-2,3),(-4,1),(0,-2),(4,1),(2,3))" << endl;
-	TPolygon<int> *pol = new TPolygon<int> (p);
-	TPoint<int> *f = new TPoint<int> (-2,3);
-	TPoint<int> *g = new TPoint<int> (0,0);
+	TPolygon<int> pol(p);
+	TPoint<int> f(-2,3);
+	TPoint<int> g(0,0);
 	cout << "Check one of the vertices (-2,3)" << endl;
-	cout << pol ->HasPoint(*f)<< endl;
-	f ->ChangeCoord(0,0);
+	cout << pol.HasPoint(f)<< endl;
+	f.ChangeCoord(0,0);
 	cout << "Check point inside (0,0)" << endl;
-	cout << pol ->HasPoint(*f) << endl;
-	f ->ChangeCoord(4,0);
+	cout << pol.HasPoint(f) << endl;
+	f.ChangeCoord(4,0);
 	cout << "Check point outside (4,0)" << endl;
-	cout << pol ->HasPoint(*f) << endl;
-	TSegment<int> * fg = new TSegment<int>(*f, *g);
+	cout << pol.HasPoint(f) << endl;
+	TSegment<int> fg(f,g);
 	cout << "Check segment intersecting ((0,0),(4,0))" << endl;
-	cout << pol ->Intersects(*fg) << endl;
-	g ->ChangeCoord(0,-3);
-	fg = new TSegment<int>(*f, *g);
+	cout << pol.Intersects(fg) << endl;
+	g.ChangeCoord(0,-3);
+	fg = TSegment<int>(f, g);
 	cout << "Check segment not intersecting ((0,-3),(4,0))" << endl;
-	cout << pol ->Intersects(*fg) << endl;
+	cout << pol.Intersects(fg) << endl;
 	cout << "Create circle center (0,0), radius = 3" << endl;
-	f ->ChangeCoord(0,0);
-	TCircle<int> *w = new TCircle<int>(*f,3);
+	f.ChangeCoord(0,0);
+	TCircle<int> w (f,3);
 	cout << "Check point inside (0,0)" << endl;
-	cout << w->HasPoint(*f) << endl;
+	cout << w.HasPoint(f) << endl;
 	cout<< "Check point outside (4,0)" << endl;
-	f ->ChangeCoord(4,0);
-	cout << w ->HasPoint(*f) << endl;
-	TSegment<int> *ab = new TSegment<int> (*a,*b);
+	f.ChangeCoord(4,0);
+	cout << w.HasPoint(f) << endl;
+	TSegment<int> ab(a,b);
 	cout << "Check segment not intersecting ((-2,3),(-4,1))" << endl;
-	cout << w ->Intersects(*ab) << endl;
-	TSegment<int> *cd = new TSegment<int> (*c,*d);
+	cout << w .Intersects(ab) << endl;
+	
 	cout << "Check segment intersecting ((0,-2),(4,1))" << endl;
-	cout << w ->Intersects(*ab) << endl;
+	cout << w.Intersects(ab) << endl;
+	
 
 	system("pause");
+	return 0;
 
 }
