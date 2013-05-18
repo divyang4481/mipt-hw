@@ -16,13 +16,13 @@ void read_graph(vector< vector <int> > &graph,
 {
 
 	size_t n,m;
-	scanf("%d %d", &n, &m);
+	scanf("%u %u", &n, &m);
 	graph.resize(n);
 	color.resize(n,WHITE);
-	int a,b;
+	size_t a,b;
 	for ( size_t i = 0; i < m; ++i)
 	{
-		scanf("%d %d", &a, &b);
+		scanf("%u %u", &a, &b);
 		graph[a-1].push_back(b-1);
 	}
 
@@ -74,7 +74,7 @@ void print_vector(list<int> &spisok, vector <vector<int> > &graph)
 {
 	for (list<int>::iterator it = spisok.begin(); it != spisok.end(); ++it)
 	{
-		printf("vertex %d\n", (*it)+1);
+		printf("vertex %u\n", (*it)+1);
 	}
 }
 int main()
