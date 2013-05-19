@@ -1,6 +1,39 @@
 #include <iostream>
 using namespace std;
 
+struct TFoo {
+    int Value;
+    TFoo() : Value(0) { ++Created; }
+    TFoo(const TFoo &other) : Value(other.Value) { ++Created; }
+    ~TFoo() { ++Deleted; }
+    bool operator< (const TFoo& other)
+    {
+        return Value < other.Value;
+    }
+
+	bool operator< (const TFoo& other) const 
+    {
+        return Value < other.Value;
+    }
+    bool operator<= (const TFoo& other)
+    {
+        return Value <= other.Value;
+    }
+    static int Created;
+    static int Deleted;
+    static void PrintStats() {
+        cout << "TFoo::Created = " << Created << endl
+            << "TFoo::Deleted = " << Deleted << endl;
+    }
+	bool operator== (const TFoo& a){
+		return ( Value == a.Value);
+	}
+};
+
+
+int TFoo::Created = 0;
+int TFoo::Deleted = 0;
+
 
 template <typename T>
 class TVector{
@@ -11,12 +44,9 @@ public:
 		iterator(T* t):el(t){}
 		iterator():el(0){
 		};
-		iterator (iterator& another){
+	
+		void operator= (iterator another){
 			el = another.el;
-		}
-		iterator& operator= (iterator& another){
-			el = another.el;
-			return *this;
 		}
 		void operator++(){
 			el++;
@@ -76,12 +106,9 @@ public:
 		const T& operator *()const {
 			return *el;
 		}
-		const_iterator (const_iterator& another){
+	
+		void operator= (const_iterator another){
 			el = another.el;
-		}
-		const_iterator& operator= (const_iterator& another){
-			el = another.el;
-			return *this;
 		}
 
 		bool operator == (const_iterator& i){
@@ -129,7 +156,7 @@ public:
 	};
 
 
-	TVector(unsigned int f_cap){
+	explicit TVector(unsigned int f_cap){
 		tsize=0;
 		tcapacity=f_cap;
 		arr=new T [tcapacity];
@@ -168,19 +195,23 @@ public:
 	};
 
 	iterator begin(){
-		return iterator(arr);
+		iterator pos_tp (&arr[0]);
+		return pos_tp;
 	}
 
 	iterator end(){
-		return 	iterator(arr + tsize);
+		iterator pos_tp (&arr[tsize]);
+		return 	pos_tp;
 	}
 
 	const_iterator cbegin(){
-		return const_iterator(arr);
+		const_iterator pos_tp (&arr[0]);
+		return pos_tp;
 	}
 
 	const_iterator cend(){
-		return const_iterator(arr +  tsize);
+		const_iterator pos_tp (&arr[tsize]);
+		return 	pos_tp;
 	}
 
 	T pop_back(){
@@ -267,17 +298,38 @@ public:
 				T* tptr=new T[tcapacity];
 				for(unsigned int i=0; i<tsize; i++)
 					tptr[i]=arr[i];
-				for (unsigned int i=tsize; i<n; i++)
-					tptr[i]=0;
 				delete[] arr;
 				arr=tptr;
 			}
-			else
-				for (unsigned int i=tsize; i<n; i++)
-					arr[i]=0;
 		tsize=n;
 		return;
-	};
+	}
+
+	void resize(unsigned int n, T val){
+		if(n==tsize)
+			return;
+		else if (n<tsize){
+			unsigned int i=tsize;
+			for (;i>n; i--){
+				tsize--;	
+			}
+		}
+		else if (n>tsize)
+			if(n>tcapacity){
+				while (n>tcapacity){
+					tcapacity*=2;
+				}
+				T* tptr=new T[tcapacity];
+				for(unsigned int i=0; i<tsize; i++)
+					tptr[i]=arr[i];
+				for (unsigned int i=tsize; i<n; i++)
+					tptr[i]=val;
+				delete[] arr;
+				arr=tptr;
+			}
+		tsize=n;
+		return;
+	}
 
 	iterator erase(iterator pos){ //Как это сделать красивее? Вычитать!
 		T* tp=arr;
@@ -347,27 +399,34 @@ private:
 	unsigned int tsize;
 	unsigned int tcapacity;
 	T* arr;
-	friend void show();
 };
 
 
-template <typename T>
-void show(TVector<T>& a){
-		TVector <T> :: const_iterator pos = a.cbegin();
-		for (int i=0; pos!=a.cend(); ++pos, ++i)
-			cout<< "a["<<i<<"]="<<*pos<<endl;
+void show(TVector<TFoo>& a){
+		TVector<TFoo>:: const_iterator pos_tp; 
+		pos_tp = a.cbegin();
+		TVector<TFoo>:: const_iterator end_tp;
+		end_tp = a.cend();
+		for (int i=0; pos_tp!= end_tp; ++pos_tp, ++i)
+			cout<< "a["<<i<<"]="<<(*pos_tp).Value<<endl;
 		cout<<"-----------------------------------------"<< endl;
 }
 
 
 int main(){
-	TVector<int>a,b;
-	for (int i=0; i<10; i++)
-		a.push_back(i);
-	for (int i=9; i>=0; i--)
-		b.push_back(i);
-	TVector<int>::iterator pos;
-	int ab;
+	{
+	TVector<TFoo>a,b;
+	TFoo temp;
+	for (int i=0; i<10; i++){
+		temp.Value = i;
+		a.push_back(temp);
+	}
+	for (int i=9; i>=0; i--){
+		temp.Value = i;
+		b.push_back(temp);
+	}
+	TVector<TFoo>::iterator pos;
+	TFoo ab;
 	for(int i=9; i>=6; i--)
 		ab=a.pop_back();
 	cout << a.size()<<endl;
@@ -383,15 +442,15 @@ int main(){
 	show(a);
 	a.reserve(25);
 	show(a);
-	TVector<int>::iterator end=a.end();
-	for (pos=a.begin(); pos!=end; ++pos)
-		*pos=5;
+	TVector<TFoo>::iterator end;
+	end = a.end();
 	show(a);
-	cout << a.front()-a.back()<<endl;
-	a.insert(a.begin()+7, 5, 100);
+	temp.Value = 100;
+	a.insert(a.begin()+7, 5, temp);
 	show(a);
 	a.erase(a.begin(), a.begin()+3);
 	show(a);
+	}
+	TFoo::PrintStats();
 	return 0;
-
 }
