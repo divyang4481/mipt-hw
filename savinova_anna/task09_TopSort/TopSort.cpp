@@ -39,7 +39,7 @@ void DFSVisit(const int &u, int& time, vector<Stat> &S, vector< vector<int> > &A
 {
         S[u].Col() = GRAY;
         S[u].D() = time++;
-        for (int i = 0; i < Adj[u].size(); ++i)
+        for (size_t i = 0; i < Adj[u].size(); ++i)
         {
                 if (S[Adj[u][i]].Col() == GRAY)
                 {
@@ -61,7 +61,7 @@ void DFS(vector< vector<int> > &Adj, list<int> &L)
 {
         int time = 0;
         vector<Stat> S(Adj.size());
-        for (int i = 1; i < Adj.size(); ++i)
+        for (size_t i = 1; i < Adj.size(); ++i)
         {
                 if (Adj[0].size() != 0)
                         return;
