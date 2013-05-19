@@ -38,12 +38,7 @@ public:
 	}
 	bool Intersects(const TSegment <T> &s) const
 	{
-		 
-		
-		if (Area(s.GetBeg(), s.GetEnd(), *this))
-			return true;
-		else return false;
-		
+		return (Area(s.GetBeg(), s.GetEnd(), *this));
 	}
     
 	T GetX() const 
@@ -252,10 +247,11 @@ public:
 	}
 	bool Intersects(const TSegment <T> &s) const
 	{
+		TSegment<T> a;
 		for (size_t i = 1; i < this ->PolygonSize(); ++i)
 		{
-			TSegment<T> *a = new TSegment<T>(pol[i - 1], pol[i]);
-			if (a ->Intersects(s)) return true;
+			a = TSegment<T>(pol[i - 1], pol[i]);
+			if (a.Intersects(s)) return true;
 			
 		}
 		return false;
