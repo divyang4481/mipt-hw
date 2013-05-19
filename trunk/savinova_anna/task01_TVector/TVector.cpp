@@ -6,14 +6,11 @@ template <typename T>
 class TVector
 {        
         T* Buf;
-        //int name;
         size_t Size;
-        size_t Capacity;  
+        size_t Capacity;
 public:        
 	typedef T* iterator;
         typedef const T* const_iterator;
-        iterator Begin;
-        iterator End;
         size_t size() const{
                 return Size;
         }
@@ -21,21 +18,21 @@ public:
                 return Capacity;
         }
         iterator begin(){
-                return Begin;
+                return Buf;
         }
-        const_iterator cbegin() const{
-                return Begin;
+        const_iterator begin() const{
+                return Buf;
         }
         iterator end(){
-                return End;
+                return (Buf + Size);
         }
-        const_iterator cend() const{
-                return End;
+        const_iterator end() const{
+                return (Buf + Size);
         }
-        void PrintStat(int name){
-                cout << name << " Size: " << Size << " Capacity: " << Capacity << " Is empty: " << empty() << endl;
+        void PrintStat(char name){
+                cout << name << ": Size: " << Size << " Capacity: " << Capacity << " Is empty: " << empty() << endl;
                 cout << "Elements: ";
-                for (int i = 0; i < Size; ++i)
+                for (size_t i = 0; i < Size; ++i)
                         cout << Buf[i] << " ";
                 cout << endl;
         }
@@ -43,51 +40,48 @@ public:
                 Capacity = 16;        
                 Size = 0;
                 Buf = new T[Capacity];
-                Begin = Buf;
-                End = Begin;
-                cout << " Create" << endl;
         }
-        /*TVector(int val){
-                Capacity = 16;        
+        TVector(TVector<T> & oth){
+                Capacity = oth.Capacity;        
                 Size = 0;
-                name = val;
                 Buf = new T[Capacity];
-                Begin = Buf;
-                End = Begin;
-                cout << name << " Create" << endl;
-        }*/
+                for (size_t i = 0; i < oth.Size; ++i)
+                        push_back(oth[i]);
+        }
         ~TVector(){
                 delete[] Buf;
         }
-	void resize(){	
-                Capacity *= 2;
-		T* Buf_tmp = new T[Capacity];
-		for (int i = 0; i < Size; ++i)
-			Buf_tmp[i] = Buf[i];
-		delete[] Buf;
-		Buf = Buf_tmp;
-                Begin = Buf_tmp;
-                End = Buf + Size;
+	void resize(size_t n){
+		if (n > Size)
+                        reserve(n);
+                Size = n;
 	}
         bool empty() const{
                 return (Size == 0);
         }
         void clear(){
-                cout << " Clear" << endl;
                 Size = 0;
-                End = Begin + 1;
         }
-        void swap(int a, int b){
-                cout << " Swap " << a << " " << b << endl;
-                T tmp = Buf[a];
-                Buf[a] = Buf[b];
-                Buf[b] = tmp;
+        void swap(TVector<T>& b){
+                TVector<T> tmp = *this;
+                *this = b;
+                b = tmp;
         }
         void reserve(size_t n){
-            while (Capacity < n)
-                resize();
+                while (Capacity < n)
+                {           
+                        Capacity *= 2;
+		        T* Buf_tmp = new T[Capacity];
+                        for (size_t i = 0; i < Size; ++i)
+			        Buf_tmp[i] = Buf[i];
+		        delete[] Buf;
+                        Buf = Buf_tmp;
+                }
         }
-        T operator [](int index){
+        T& operator [](int index){
+                return Buf[index];
+        }
+        const T& operator [](int index) const{
                 return Buf[index];
         }
         T& back()
@@ -98,80 +92,124 @@ public:
         {
                 return Buf[0];
         }
+        const T& back() const
+        {
+                return Buf[Size-1];
+        }
+        const T& front() const
+        {
+                return Buf[0];
+        }
         void push_back(T val){
                 if (Size == Capacity)
-	                resize();                
+	                reserve(Size + 1);
                 Buf[Size] = val;
                 ++Size;
-                ++End;
         }
         int pop_back(){
                 --Size;
-                --End;
                 return Buf[Size];
         }
         iterator insert (iterator pos, const T& val){
                 if (Size == Capacity)
-                        resize();
-                for (iterator i = End; i > pos; --i)
+                        reserve(Size + 1);
+                for (iterator i = end(); i > pos; --i)
                         *i = *(i - 1);
                 *(pos + 1) = val;
-                ++End;
                 ++Size;
                 return ++pos;
         }
         void erase(iterator element){
-                for (iterator i = element; i != End - 1; ++i)
+                for (iterator i = element; i != end() - 1; ++i)
                         *i = *(i + 1);
                 pop_back();        
         }
         TVector<T>& operator = (TVector<T>& oth){
                 clear();
-                Begin = oth.begin();
-                for (int i = 0; i < oth.Size; ++i)
+                for (size_t i = 0; i < oth.Size; ++i)
                         push_back(oth[i]);
                 return *this;
         }
 };
 
+struct S
+{
+        int val;
+        static size_t Created;
+        static size_t Deleted;
+        S()
+        {
+                val = 0;
+                ++Created;
+        }
+        S(S& oth)
+        {
+                val = oth.val;
+                ++Created;
+        }
+        ~S()
+        {
+                ++Deleted;
+        }
+};
+
+size_t S::Created = 0;
+size_t S::Deleted = 0;
+
 int main()
 {
+        cout << "Create A" << endl;
         TVector<int> A;
-        A.PrintStat(1);
-        for (int i = 0; i < 35; ++i)
+        A.PrintStat('A');
+        cout << "Filling A" << endl;
+        for (size_t i = 0; i < 35; ++i)
                 A.push_back(i);
-        A.PrintStat(1);        
-        TVector<int> B;
-        B = A;
-        B.PrintStat(2);
+        A.PrintStat('A');
+        cout << "Create B = A" << endl;
+        TVector<int> B = A;
+        B.PrintStat('B');
         for (int i = 0; i < 5; ++i)
-                A.pop_back();
-        A.PrintStat(1);
-        B = A;
-        B.PrintStat(2);
-        A.swap(5,6);
-        A.PrintStat(1);
-        cout << "Test []:" << endl;
-        for (int i = 0; i < A.size(); ++i)
-                cout << A[i] << " ";
-        cout << endl;
+        {
+                int tmp = A.pop_back();
+                cout << "Pop_back: " << tmp << endl;
+        }
+        A.PrintStat('A');
+        cout << "Swap A, B" << endl;
+        A.swap(B);
+        A.PrintStat('A');
+        B.PrintStat('B');
+        cout << "Test [] A[6] = 1003" << endl;
+        A[6] = 1003;
+        A.PrintStat('A');
+        cout << "Clear A" << endl;
         A.clear();
-	A.PrintStat(1);
+	A.PrintStat('A');
+        cout << "A = B" << endl;
         A = B;
-        A.PrintStat(1);
+        A.PrintStat('A');
+        cout << "Reserve 65" << endl;
         B.reserve(65);
-        B.PrintStat(2);
+        B.PrintStat('B');
+        cout << "Test iterator" << endl;
         TVector<int>::iterator i = A.begin();
         cout << *i << endl;
-        for (TVector<int>::const_iterator i = A.cbegin(); i != A.cend(); ++i)
+        for (TVector<int>::const_iterator i = A.begin(); i != A.end(); ++i)
                 cout << *i << " ";
         cout << endl;
+        cout << "Test back() = 5" << endl;
         A.back() = 5;
-        cout << A.back() << endl;
-        A.PrintStat(1);
+        cout << "A.back() = " << A.back() << endl;
+        A.PrintStat('A');
+        cout << "Test insert insert(A.begin() + 5, 71)" << endl;
         A.insert(A.begin() + 5, 71);
-        A.PrintStat(1);
+        A.PrintStat('A');
+        cout << "Test erase(A.begin() + 7)" << endl;
         A.erase(A.begin() + 7);
-        A.PrintStat(1);
+        A.PrintStat('A');
+        cout << "Memory test" << endl;
+        {
+                TVector<S> C;
+        };
+        cout << "Created: "<< S::Created << " Deleted: "<< S::Deleted << endl;        
         return 0;
 }
