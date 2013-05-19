@@ -12,18 +12,18 @@ void read_graph(vector< vector <int> > &graph,
 	vector < int > &length)
 {
 	
-	size_t n,m;
-	scanf("%u %u", &n, &m);
+	int n,m;
+	scanf("%d %d", &n, &m);
 	graph.resize(n);
 	for (vector< vector <int> >::iterator it = graph.begin(); it < graph.end(); ++it)
 		(*it).resize(n,0);
 	colour.resize(n, WHITE);
 	parent.resize(n,-1);
 	length.resize(n,-1);
-	size_t a,b;
+	int a,b;
 	for ( size_t i = 0; i < m; ++i)
 	{
-		scanf("%u %u", &a, &b);
+		scanf("%d %d", &a, &b);
 		graph[a-1][b-1] = 1;
 	}
 	
