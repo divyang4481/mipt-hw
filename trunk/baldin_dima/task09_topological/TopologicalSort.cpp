@@ -15,14 +15,14 @@ void read_graph(vector< vector <int> > &graph,
 	)
 {
 
-	size_t n,m;
-	scanf("%u %u", &n, &m);
+	int n,m;
+	scanf("%d %d", &n, &m);
 	graph.resize(n);
 	color.resize(n,WHITE);
-	size_t a,b;
+	int a,b;
 	for ( size_t i = 0; i < m; ++i)
 	{
-		scanf("%u %u", &a, &b);
+		scanf("%d %d", &a, &b);
 		graph[a-1].push_back(b-1);
 	}
 
