@@ -123,10 +123,6 @@ public:
 	}
 
 	TMatrix<T> operator*(const TMatrix& a){
-		if (get_cols()!=a.get_rows()){
-			cerr << "Error!"<<endl;
-			return *this;
-		}
 		TMatrix<T> result(get_rows(), a.get_cols());
 		for (unsigned int i=0; i<get_rows(); ++i)
 			for (unsigned int j=0; j<a.get_cols(); ++j)
@@ -149,16 +145,13 @@ public:
 		return *this;
 	}
 
-	TMatrix<T> operator*=(const TMatrix& a){
-		T temp;
+	void operator*=(const TMatrix& a){
+		TMatrix<T> result(get_rows(), a.get_cols());
 		for (unsigned int i=0; i<get_rows(); ++i)
-			for (unsigned int j=0; j<a.get_cols(); ++j){
-				temp = 0;
+			for (unsigned int j=0; j<a.get_cols(); ++j)
 				for (unsigned int k=0; k<get_cols(); ++k)
-					temp+=(mat[i][k]*a.mat[k][j]);
-				mat[i][j] = temp;
-			}
-		return *this;
+					result.mat[i][j]+=(mat[i][k]*a.mat[k][j]);
+		*this = result;
 	}
 
 	TMatrix<T> operator*=(T a){
