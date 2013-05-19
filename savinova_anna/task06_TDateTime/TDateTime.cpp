@@ -280,6 +280,7 @@ istream& operator >> (istream& in, TTimeSpan& tts)
 
 int main ()
 {
+        /*
         TDateTime T1;
         cout << "T1: " << T1;
         TDateTime T2(2001, 2, 3, 4, 5, 6);
@@ -293,6 +294,22 @@ int main ()
         TTimeSpan S2;
         cin >> S2;
         cout << "T1 + S2 = " << T1 + S2;
+        */
+
+        TDateTime dt1 = TDateTime::Now();
+        cout << dt1 << endl;
+
+        TTimeSpan sp(1, 1, 1, 1, 1);
+
+        TDateTime dt2 = dt1 + sp;
+        dt1 = dt1 + sp;
+        TDateTime dt3 = dt2 - p;
+        dt1 = dt1 - sp;
+
+        cout << dt1 << endl;
+        cout << dt2 << endl;
+        cout << dt3 << endl;
+
         return 0;
 }
 
