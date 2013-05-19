@@ -8,14 +8,37 @@
 
 using namespace std;
 
+typedef long long i64;
+  i64 GetClock() {
+       return clock() * 1000 / CLOCKS_PER_SEC;
+  } 
+class TTimePrinter {
+      i64 Start;
+  public:
+      TTimePrinter()
+          : Start(GetClock()) {
+      }
+  
+      double Print() const {
+          return this->GetTime() ;
+      }
+  
+      double GetTime() const {
+          return (GetClock() - Start) * 0.001;
+      }
+
+      void Reset() {
+          Start = GetClock();
+      }
+  };
 template <typename T>
 class TMatrix
 {
-private:
+public:
         vector<vector<T> > m;
-    void Separate (TMatrix &matr,TMatrix &a,TMatrix &b,TMatrix &c,TMatrix &d)
+    void Separate (const TMatrix &matr,TMatrix &a,TMatrix &b,TMatrix &c,TMatrix &d, size_t size)
         {
-                size_t size = matr.rows()/2;
+                
                 for (size_t i = 0; i < size; ++i)
                         for (size_t j = 0; j < size; ++j)
                         {
@@ -25,7 +48,7 @@ private:
                                 d.m[i][j] = matr.m[size + i][size +j];
                         }
         }
-        TMatrix Merge (TMatrix &R, TMatrix &S, TMatrix &L, TMatrix &U, bool flag)
+        TMatrix Merge (const TMatrix &R,const TMatrix &S, const TMatrix &L, const TMatrix &U)
         {
                 size_t size = R.rows();
                 size_t bigsize = 2 * size;
@@ -38,16 +61,13 @@ private:
                                 help.m[i + size][j] = L.m[i][j];
                                 help.m[i + size][j + size] = U.m[i][j];
                         }
-                //if (flag)
-                        //help.Resize( bigsize - 1, bigsize - 1);
                 
-                //cout << R.rows() << endl;
                 return help;
         }
-        TMatrix _MulShtrass (TMatrix& a, TMatrix& b)
+        TMatrix _MulShtrass (const TMatrix& a, const TMatrix& b)
         {
                 //to return
-                if (a.m.size() <= 32)
+                if (a.m.size() <= 128)
                 {
                         TMatrix<T> help;
                         help = a*b;
@@ -55,47 +75,36 @@ private:
                 }
                 else
                 {
-                        size_t size = a.rows();
-                        bool flag = false;
-                        if (size%2 != 0)
-                        {
-                                a.Resize(size+1,size+1);
-                                b.Resize(size+1, size+1);
-                                flag = true;
-                                a.m[size][size] = 1;
-                                b.m[size][size] = 1;
-                                size += size%2;
-                        }
-                        size_t s = size / 2;
+                       
+					    size_t size = a.cols();
+						size_t s = size / 2;
 						TMatrix A(s, s);
                         TMatrix B(s, s);
                         TMatrix C(s, s);
                         TMatrix D(s, s);
-                        Separate(a,A,B,C,D);
+                        Separate(a,A,B,C,D, a.rows()/2);
                         TMatrix E(s, s);
                         TMatrix F(s, s);
                         TMatrix G(s, s);
                         TMatrix H(s, s);
-                        Separate(b,E,G,F,H);
+						Separate(b,E,G,F,H, b.rows()/2);
                         TMatrix P1,P2,P3,P4,P5,P6,P7;
-                        P1 = MulShtrass(A, G - H);
-                        P2 = MulShtrass(A + B, H);
-                        P3 = MulShtrass(C + D, E);
-                        P4 = MulShtrass(D, F - E);
-                        P5 = MulShtrass(A + D, E + H);
-                        P6 = MulShtrass(B - D, F + H);
-                        P7 = MulShtrass(A - C, E + G);
-                        /*if (flag)
-                        {
-                                size_t s = size - 1;
-                                P1.Resize(s,s);
-                                P2.Resize(s,s);
-                                P3.Resize(s,s);
-                                P4.Resize(s,s);
-                                P5.Resize(s,s);
-                                P6.Resize(s,s);
-                                P7.Resize(s,s);
-                        }*/
+                        P1 = _MulShtrass(A, G - H);
+                        P2 = _MulShtrass(A + B, H);
+                        P3 = _MulShtrass(C + D, E);
+                        P4 = _MulShtrass(D, F - E);
+                        P5 = _MulShtrass(A + D, E + H);
+                        P6 = _MulShtrass(B - D, F + H);
+                        P7 = _MulShtrass(A - C, E + G);
+                       /* A.Resize(size, size);
+						B.Resize(size, size);
+						C.Resize(size, size);
+						D.Resize(size, size);
+						E.Resize(size, size);
+						F.Resize(size, size);
+						G.Resize(size, size);
+						H.Resize(size, size);*/
+						
                         TMatrix R,S,L,U;
                         R = P5 + P4 - P2 + P6;
                         S = P1 + P2;
@@ -103,7 +112,7 @@ private:
                         U = P5 + P1 - P3 - P7;
                         //Merge(R,S,L,U,flag);
 
-                        return Merge(R,S,L,U,flag);
+                        return Merge(R,S,L,U);
                 }
         }
 public:
@@ -111,15 +120,7 @@ public:
         {}
         TMatrix(const TMatrix<T>& matr)
         {
-                size_t rowCount = matr.rows(), colCount = matr.cols();
-                m.resize(rowCount);
-                for (size_t i = 0; i < rowCount; ++i)
-                        m[i].resize(colCount);
-                for (size_t i = 0; i < rowCount; ++i)
-            {
-                   for (size_t j = 0; j < colCount; ++j)
-                          m[i][j] = matr.m[i][j];
-                }
+                *this = matr;
        
         }
         TMatrix(size_t rowCount, size_t colCount)
@@ -157,75 +158,94 @@ public:
         }
         TMatrix operator+ (const TMatrix<T> &matr)
         {
-                TMatrix<T> help(*this);
-                for (size_t i = 0; i < help.rows(); ++i)
-            {
-                   for (size_t j = 0; j < help.cols(); ++j)
-                          help.m[i][j] = help.m[i][j] + matr.m[i][j];
-                }
-        return help;
+               TMatrix<T> help(*this);
+               help+=matr;
+			   return help;
         }
         TMatrix& operator+= (const TMatrix<T> &matr)
         {
-                
-                *this = *this + matr;
-                return *this;
+			for (size_t i = 0; i < matr.rows(); ++i)
+            {
+				for (size_t j = 0; j < matr.cols(); ++j)
+                     m[i][j] += matr.m[i][j];
+            }
+			return *this;
         }
         TMatrix operator- (const TMatrix<T> &matr)
         {
-                size_t rowCount = rows(), colCount = cols();
-                TMatrix<T> help(*this);
-                for (size_t i = 0; i < rowCount; ++i)
-            {
-                   for (size_t j = 0; j < colCount; ++j)
-                          help.m[i][j] = help.m[i][j] - matr.m[i][j];
-                }
-        return help;
+              TMatrix<T> help(*this);
+              help-=matr;
+			  return help;
         }
         TMatrix& operator-= (const TMatrix<T> &matr)
         {
-                
-                *this = *this - matr;
-        return *this;
-        }
-        TMatrix operator* (const TMatrix<T>& matr)
+            for (size_t i = 0; i < matr.rows(); ++i)
+            {
+				for (size_t j = 0; j < matr.cols(); ++j)
+                     m[i][j] -= matr.m[i][j];
+            }
+			return *this;  
+		}        
+        TMatrix operator* (const TMatrix<T>& matr) const
         {
             
-                size_t rowCount = rows(), colCount = cols(),
-                mulCount = m[0].size();
-                TMatrix<T> help(rowCount, colCount);
-                for (size_t i = 0; i < rowCount; ++i)
-                        for (size_t j = 0; j < colCount; ++j)
-                                for (size_t k = 0; k < mulCount; ++k)
+                TMatrix<T> help(*this);
+				size_t rowCount = rows(), colCount = cols();
+                TMatrix<T> h(rowCount, colCount);
+				size_t mulCount = m[0].size();
+                //TTimePrinter t; 
+				for (size_t i = 0; i < rowCount; ++i)
+				 {   
+					// t.Reset();
+					 for (size_t j = 0; j < colCount; ++j)
+                                
+						{
+							  
+							  for (size_t k = 0; k < mulCount; ++k)
                                 {
-                                        help.m[i][j] += m[i][k]*matr.m[k][j];
+                                        h.m[i][j] += m[i][k] * matr.m[k][j];
                                 }
-                return help;
+							  
+						}
+					// cout << t.Print() << ' '<< i << endl ;
+				 }
+				
+                return h;
     }
         TMatrix& operator*= (const TMatrix<T>& matr)
         {
                 *this = *this * matr;
-                return *this;
-    }
+			   
+				return *this;
+        }
         TMatrix& operator*= (int a)
         {
-                *this = *this * a;
-                return *this;
+                
+			
+			    size_t rowCount = rows(), colCount = cols();
+                for (size_t i = 0; i <rowCount; ++i)
+                        for (size_t j = 0; j < colCount; ++j)
+                                m[i][j] *= a;
+				return *this;
 
         }
         TMatrix operator* (int a) const
         {
                 
-                size_t rowCount = rows(), colCount = cols();
                 TMatrix<T> help(*this);
-                for (size_t i = 0; i <rowCount; ++i)
-                        for (size_t j = 0; j < colCount; ++j)
-                                help.m[i][j] *= a;
+				help *= a;
                 return help;
 
         }
 
-        
+        bool operator == (const TMatrix<T> &a) const
+		{
+			
+			for (size_t i = 0; i < a.rows(); ++i)
+				for (size_t j = 0; j < a.cols(); ++j)
+					if (m[i][j] != a.m[i][j]) { return false;}
+			return true;
+		}
         
         void Resize(size_t rowCount, size_t colCount)
         {
@@ -245,7 +265,11 @@ public:
         TMatrix MulShtrass(TMatrix& a, TMatrix& b)
         {
                 size_t size = a.rows();
-                TMatrix help = _MulShtrass(a,b);
+                size_t i = 1;
+				for (;size > i; i*=2);
+				a.Resize(i,i);
+				b.Resize(i,i);
+				TMatrix help = _MulShtrass(a,b);
                 help.Resize(size,size);
                 a.Resize(size,size);
                 b.Resize(size,size);
@@ -293,6 +317,16 @@ TMatrix<T> operator* (int a, const TMatrix<T>& matr)
         return matr*a;
 }
 
+TMatrix<int> GenerateMatrix(size_t n)
+{
+       
+        TMatrix<int> help(n, n);
+        for (size_t i = 0; i < help.rows(); ++i)
+                for (size_t j = 0; j < help.cols(); ++j)
+                        help.At(i,j) = rand() % 1000;
+        return help;
+
+}
 template <typename T>
 void InOutTest(TMatrix<T> &matr1,TMatrix<T> &matr2)
 {
@@ -301,69 +335,78 @@ void InOutTest(TMatrix<T> &matr1,TMatrix<T> &matr2)
         cout << "matr1" << endl << matr1 << endl << "matr2" << endl << matr2 << endl;
 }
 
-template <typename T>
-void DoSwap(TMatrix<T> &matr1,TMatrix<T> &matr2)
+
+void DoSwap()
 {
-        cout << "enter two matrix - matr1 and matr2" << endl;
-        cin >> matr1 >> matr2;
-        cout << "swap" << endl;
-        TMatrix<T> help;
-        help = matr1;
+        TMatrix<int> matr1 = GenerateMatrix(10);
+		TMatrix<int> matr2 = GenerateMatrix(10);
+		cout << "swap_test is " << endl;
+        TMatrix<int> help, matr11, matr21;
+        matr11 = matr1; matr21 = matr2;
+		help = matr1;
         matr1 = matr2;
         matr2 = help;
-        cout << "matr1" << endl << matr1 << endl << "matr2" << endl << matr2 << endl;
+        if ((matr1 == matr21)&&(matr2 == matr11)) cout << "success" << endl;
+		else cout << "unsuccess" << endl;
 
 }
-template <typename T>
-void DoPlus(TMatrix<T> &matr1, TMatrix<T> &matr2)
+
+void DoPlus()
 {
-        cout << "enter two matrix - matr1 and matr2" << endl;
-        cin >> matr1 >> matr2;
-        cout << "plus +" << endl;
-        TMatrix<T> help = matr1 + matr2;
-        cout << "result of +" << endl;
-        cout << help << endl;
-        cout << "plus +=" << endl;
-        help = matr1;
-        help += matr2;
-        cout << help << endl;
-}
-template <typename T>
-void DoMinus(TMatrix<T> &matr1, TMatrix<T> &matr2)
-{
-        cout << "enter two matrix - matr1 and matr2" << endl;
-        cin >> matr1 >> matr2;
-        cout << "minus -" << endl;
-        TMatrix<T> help = matr1 - matr2;
-        cout << "result of -" << endl;
-        cout << help << endl;
-        cout << "minus -=" << endl;
-        help = matr1;
-        help -= matr2;
-        cout << help << endl;
-}
-template <typename T>
-void DoTranspose(TMatrix<T> &matr1)
-{
-        cout << "enter matrix" << endl;
-        cin >> matr1;
-        cout << "transposed matrix" << endl;
-        matr1.Transpose();
-        cout << matr1;
-}
-template <typename T>
-void DoMul(TMatrix<T> &matr1, TMatrix<T> &matr2)
-{
+        TMatrix<int> matr1 = GenerateMatrix(10);
+		TMatrix<int> matr2 = GenerateMatrix(10);
+		cout << "{We use + and +=}  plus_test is " << endl;
+		TMatrix<int> help = matr1 + matr2;
+        TMatrix<int> help1 = matr1;
+        help1 += matr2;
+		if (help == help1) cout << "success" << endl;
+		else cout << "unsuccess" << endl;
         
-        //freopen("input.txt", "r", stdin);
-        cout << "enter 2 matrix - matr1 and matr2, correct to mul" << endl;
-        cin >> matr1 >> matr2;
-        cout << " 3 * matr1" << endl << 3*matr1 << endl;
-        cout << " matr2 * 5 " << endl << matr2*5 << endl;
-        cout << " matr1 * matr2 " << endl << matr1*matr2 << endl;
-        cout << " matr1 * matr2 Shtrass " << endl << matr1.MulShtrass(matr1,matr2);
-        matr1 *= matr2;
-        cout << " matr1*=matr2 " << endl << matr1 << endl;
+}
+
+void DoMinus()
+{
+        TMatrix<int> matr1 = GenerateMatrix(10);
+		TMatrix<int> matr2 = GenerateMatrix(10);
+		cout << "{We use - and -=}  minus_test is " << endl;
+		TMatrix<int> help = matr1 - matr2;
+        TMatrix<int> help1 = matr1;
+        help1 -= matr2;
+		if (help == help1) cout << "success" << endl;
+		else cout << "unsuccess" << endl;
+}
+void DoMul()
+{
+        TMatrix<int> matr1 = GenerateMatrix(10);
+		TMatrix<int> matr2 = GenerateMatrix(10);
+		cout << "{We use * and *=}  mul_test is " << endl;
+		TMatrix<int> help = matr1 * matr2;
+        TMatrix<int> help1 = matr1;
+        help1 *= matr2;
+		if (help == help1) cout << "success" << endl;
+		else cout << "unsuccess" << endl;
+}
+void DoTranspose()
+{
+        TMatrix<int> matr1 = GenerateMatrix(3);
+		/*matr1.At(0,0) = 1;
+		matr1.At(0,1) = 2;
+		matr1.At(0,2) = 3;
+		matr1.At(1,0) = 4;
+		matr1.At(1,1) = 5;
+		matr1.At(1,2) = 6;
+		matr1.At(2,0) = 7;
+		matr1.At(2,1) = 8;
+		matr1.At(2,2) = 9;*/
+		cout << "transpose_test is " << endl;
+		TMatrix<int> help(matr1);
+		help.Transpose();
+		bool f = true;
+		for (size_t i = 0; i < help.rows(); ++i)
+			for (size_t j = 0; j < help.cols(); ++j)
+				if (matr1.At(i,j) != help.At(j,i)) f = false;
+		if (f == true) cout << "success" << endl;
+		else cout << "unsuccess" << endl;
 }
 struct myint
 {
@@ -385,42 +428,48 @@ struct myint
                 ++Deleted;
         
         }
+		myint operator+(myint a)
+		{
+			myint b;
+			b.x = a.x + x ;
+			return b;
+		}
+		myint& operator+=(myint a)
+		{
+			x += a.x;
+			return *this;
+		}
 };
 int myint::Created = 0;
 int myint::Deleted = 0;
 
 void CheckMemory()
 {
-        TMatrix<myint> matr1(2,2);
+	{
+		TMatrix<myint> matr1(10,10);
+		for (int i = 0; i < 10; ++i)
+			for (int j = 0;  j < 10; ++j)
+				matr1.At(i,j).x = rand() % 1000;
         TMatrix<myint> matr2(matr1);
-        TMatrix<myint> matr3(10, 10);
-        matr2 = matr1;
-    matr1 = matr2;
+        TMatrix<myint> matr3 = matr1 +matr2;
+		cout << "memory_test is " << endl;
+	}	
+		if (myint::Created == myint::Deleted) cout << "success" << endl;
+		else cout << "unsuccess" << endl;
 }
 //template <typename T>
-TMatrix<int> GenerateMatrix(size_t n)
-{
-        srand(time(NULL));
-        TMatrix<int> help(n, n);
-        for (size_t i = 0; i < help.rows(); ++i)
-                for (size_t j = 0; j < help.cols(); ++j)
-                        help.At(i,j) = rand()%1000000000;
-        return help;
 
-}
 template <typename T>
-void MulTime(TMatrix<T> &matr1, TMatrix<T> &matr2)
+void _MulTime(TMatrix<T> &matr1, TMatrix<T> &matr2)
 {
         TMatrix<T> help1(matr1.rows(), matr1.cols());
-        size_t t = clock();
+        TTimePrinter t;
         help1 = matr1* matr2;
-        size_t t1 = clock();
-        cout << "time of matr1* matr2 = " << (((t1-t)*1000)/CLOCKS_PER_SEC) << " ms" << endl;
+		cout << "time of matr1* matr2 = " << t.Print() << " sec" << endl;
         TMatrix<T> help2(matr1.rows(), matr1.cols());
-        t = clock();
+		t.Reset();
         help2 = help2.MulShtrass(matr1, matr2);
-        t1 = clock();
-        cout << "time of MulShtrass(matr1, matr2) = " << (((t1-t)*1000)/CLOCKS_PER_SEC) << " ms" << endl;
+		cout << "time of MulShtrass(matr1, matr2) = " << t.Print() << " sec" << endl;
         //Check
         for (size_t i = 0; i < help1.rows(); ++i)
                 for (size_t j = 0; j < help1.cols(); ++j)
@@ -431,22 +480,35 @@ void MulTime(TMatrix<T> &matr1, TMatrix<T> &matr2)
                                 };
         cout << "true" << endl;
 }
+void MulTime()
+{
+		
+		for (int i = 0, j = 32; i < 8; ++i, j*=2)
+		{
+			//int j = 1024;
+			TMatrix<int> matr1 = GenerateMatrix(j);
+			TMatrix<int> matr2 = GenerateMatrix(j);
+			cout << "N = " << j << endl;
+			_MulTime(matr1,matr2);
+		}
+}
 int main()
 {
-        TMatrix<int> matr1;
-        TMatrix<int> matr2;
-        //tests
+        srand((unsigned int)time(NULL));
+
+		
+		
+
+		
+		//tests
         //InOutTest(matr1, matr2);
-        //DoSwap(matr1, matr2);
-        //DoPlus(matr1, matr2);
-        //DoMinus(matr1, matr2);
-        //DoTranspose(matr1);
-        //DoMul(matr1,matr2); 
-        //CheckMemory();
-        //cout << myint::Created <<endl << myint::Deleted << endl;
-        //size_t n = 101;
-        //TMatrix<int> help = GenerateMatrix(n);
-        //MulTime(help, help);
+        DoSwap();
+        DoPlus();
+        DoMinus();
+        DoMul();
+		DoTranspose();
+        CheckMemory();
+        //MulTime();
 
 		system("pause");
         return 0;
