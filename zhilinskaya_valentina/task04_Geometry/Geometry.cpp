@@ -47,20 +47,7 @@ public :
 	{
 		cout <<'(' << x << ',' << y << ')' << endl;
 	}
-	//friend istream& operator >> (istream &is, point &a);
-	//friend ostream& operator << (ostream &os, const point &a);
 };
-/*template <typename T>
-istream& operator >> (istream &is, point<T> &a) 
-{
-	is>> a.x >> a.y;
-	return is;
-}
-template <typename T>
-ostream& operator << (ostream &os, const point<T> &a) 
-{
-	return os<<'(' << a.x << ',' << a.y << ')' << endl;
-}*/
 
 template <typename T>
 double length (point<T> a, point<T> b)
@@ -164,21 +151,7 @@ public:
 			a.print();
 			cout << "R = " << r <<'\n';
 		}
-		//friend istream& operator >> (istream& is, circle &a);
-		//friend ostream& operator << (ostream& os, const circle &a );
 };
-/*template <typename T>
-ostream& operator << (ostream& os, const circle &a )
-{
-	os << (const point &)a;
-	os << "r=" << a.r;
-	return os;
-}
-template <typename T>
-istream& operator >> (istream& is, circle &a)
-{
-	return is >> (point &)a >> a.r;
-}*/
 template <typename T>
 double multiplication1 (point<T> a, point<T> b, point<T> c, point<T> d)
 {
@@ -260,20 +233,6 @@ public:
 		if (k == 0) return false;
 		else return true;
 	}
-/*	polygon<T>& operator= (const polygon<T>& from)
-	{
-		if (this == &from) return *this;
-		delete [] this;
-		arr = new point<T> [n = from.n];
-		for (int i = 0; i < n; i++)
-			arr[i] = from.arr[i];
-		return *this;
-	}
-	point<T>& operator[](int c)
-	{
-		if (c < 0 || c >= n) exit(1);
-		else return arr[c];
-	}*/
 	bool Intersects (const segment<T>& c) const
 	{
 		bool b = false;
