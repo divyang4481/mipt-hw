@@ -470,14 +470,16 @@ public:
 };
 
 
-template <typename T>
-void show (TList<T>& a){
-		auto pos = a.cbegin();
+
+void show (TList<TFoo>& a){
+		TList<TFoo> :: const_iterator pos_tp = a.cbegin();
+		TList<TFoo> :: const_iterator end_tp = a.cend();
 		if (!a.empty())
-			for (int i=1; pos != a.cend(); ++pos, i++ )
-				cout << "Element "<<i<< " : "<< (*pos).Value <<endl;
+			for (int i=1; pos_tp != end_tp; ++pos_tp, i++ )
+				cout << "Element "<<i<< " : "<< (*pos_tp).Value <<endl;
 		cout <<"________________________________________________"<<endl;
-	};
+
+	}
 
 int main(){
 	{TList <TFoo> a,b;
