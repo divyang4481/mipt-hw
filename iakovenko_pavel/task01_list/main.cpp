@@ -70,16 +70,32 @@ public:
 		iterator():el(0){
 		};
 
-		void operator++(){
+		iterator& operator++(){
 			el=el->next;
+			return *this;
+		};
+		
+		iterator& operator++(int){
+			el=el->next;
+			return *this;
 		};
 
-		void operator --(){
+		iterator& operator --(){
 			el=el->prev;
+			return *this;
 		}
 
-		T operator *(){
-			return el->val;;
+		iterator& operator --(int){
+			el=el->prev;
+			return *this;
+		}
+
+		T& operator *(){
+			return el->val;
+		}
+
+		T* operator->()const{
+			return &(el->val);
 		}
 
 		bool operator == (iterator& i){
@@ -99,26 +115,6 @@ public:
 			return el;
 		}
 
-		bool Last(){
-			if (el->next==0)
-				return true;
-			return false;
-		}
-
-		bool First (){
-			if (el->prev==0)
-				return true;
-			return false;
-		}
-
-		iterator operator+(int n){
-			if (el->next==0)
-				return *this;
-			for (int i=0; i<n; ++i)
-				++*this;
-			return *this;
-		}
-
 	private:
 		node* el;
 	};
@@ -130,16 +126,30 @@ public:
 		const_iterator():el(0){
 		};
 
-		void operator++(){
+		const_iterator& operator++(){
 			el=el->next;
+			return *this;
 		};
-
-		void operator --(){
+		const_iterator& operator++(int){
+			el=el->next;
+			return *this;
+		};
+		const_iterator& operator --(){
 			el=el->prev;
+			return *this;
+		}
+		
+		const_iterator& operator --(int){
+			el=el->prev;
+			return *this;
 		}
 
 		const T& operator *() const{
-			return el->val;;
+			return el->val;
+		}
+
+		const T* operator->()const{
+			return &(el->val);
 		}
 
 		bool operator == (const_iterator& i){
@@ -169,14 +179,6 @@ public:
 			if (el->prev==0)
 				return true;
 			return false;
-		}
-
-		const_iterator operator+(int n){
-			if (el->next==0)
-				return *this;
-			for (int i=0; i<n; ++i)
-				++*this;
-			return *this;
 		}
 
 	private:
@@ -294,11 +296,11 @@ public:
 		return iterator(limit);
 	}
 
-	const_iterator cbegin(){
+	const_iterator cbegin() const {
 		return const_iterator(first);
 	}
 
-	const_iterator cend (){
+	const_iterator cend() const {
 		return const_iterator(limit);
 	}
 
@@ -390,10 +392,9 @@ public:
 	};
 
 	void swap(TList& temp){
-		TList tp;
-		tp=*this;
-		*this=temp;
-		temp=tp;
+		std::swap(first, temp.first);
+		std::swap(last, temp.last);
+		std::swap(limit, temp.limit);
 		return;
 	}
 	
@@ -434,18 +435,27 @@ public:
 	}
 
 	void splice (iterator pos, TList& lt){
-		iterator tp=lt.end();
-		iterator beg=lt.begin();
-		--tp;
-		for (; tp!=beg; --pos){
-			insert(pos,*tp);
-			iterator t=tp;
-			--tp;
-			lt.erase(t);
+		if ( empty()){
+			iterator beg=lt.begin();
+			iterator tp=lt.end();
+			for (; beg!=tp; ++beg){
+				push_back(*beg);
+			}
 		}
-		insert(pos,*tp);
-		lt.erase(tp);
-		return;
+		else {
+			iterator tp=lt.end();
+			iterator beg=lt.begin();
+			--tp;
+			for (; tp!=beg; --pos){
+				insert(pos,*tp);
+				iterator t=tp;
+				--tp;
+				lt.erase(t);
+			}
+			insert(pos,*tp);
+			lt.erase(tp);
+			return;
+		}
 	}
 
 	void splice (iterator pos, TList& lt, iterator it){
@@ -471,12 +481,12 @@ public:
 
 
 
-void show (TList<TFoo>& a){
+void show (const TList<TFoo>& a){
 		TList<TFoo> :: const_iterator pos_tp = a.cbegin();
 		TList<TFoo> :: const_iterator end_tp = a.cend();
 		if (!a.empty())
 			for (int i=1; pos_tp != end_tp; ++pos_tp, i++ )
-				cout << "Element "<<i<< " : "<< (*pos_tp).Value <<endl;
+				cout << "Element "<<i<< " : "<< pos_tp->Value <<endl;
 		cout <<"________________________________________________"<<endl;
 
 	}
@@ -525,16 +535,16 @@ int main(){
 	a.insert(a.begin(), b.begin(), b.end());
 	show(a);
 	show(a);
-	a.erase(a.begin()+1);
+	a.erase(a.begin());
 	show(a);
-	a.erase(a.begin()+3, a.end());
+	a.erase(a.begin(), a.end());
 	show(a);
-	a.splice(a.begin()+1, b);
+	a.splice(a.begin(), b);
 	show(a);
-	b.splice(b.begin(), a, a.begin()+3);
+	b.splice(b.begin(), a, a.begin());
 	show(b);
 	show(a);
-	b.splice(b.begin(), a, a.begin()+3, a.begin()+6);
+	b.splice(b.begin(), a, a.begin(), a.end());
 	show(b);
 	show(a);}
 	TFoo :: PrintStats();
