@@ -171,8 +171,8 @@ public:
 	{
 		n = 3;
 		arr = new point<T> [n];
-		point<T> P0(0,0), P1(1,0), P2(0,1);
-		arr[0] = P0; arr[1] = P1; arr[2] = P2;
+		point<T> P0(0,0);
+		arr[0] = P0; arr[1] = P0; arr[2] = P0;
 	}
 	polygon (int k, point<T> *a)
 	{
@@ -263,6 +263,12 @@ public:
 			arr[i] = from.arr[i];
 		return *this;
 	}
+	void set_cor(int k, point<T>& a)
+	{
+		if (k > n) n = k;
+		arr[k] = a;
+	}
+	int get_cor(){return n;}
 };
 
 template<typename T>
@@ -384,6 +390,12 @@ int main ()
 	cout << "Does our poligon intersect the segment? ";
 	if (Pol.Intersects(S)) cout << "yes\n";
 	else cout << "no\n";
+	polygon<double> ppp;
+	P1.SetX(0); P1.SetY(0); ppp.set_cor(0, P1);
+	P1.SetX(1); P1.SetY(0); ppp.set_cor(1, P1);
+	P1.SetX(0); P1.SetY(1); ppp.set_cor(2, P1);
+	ppp.print();
+	cout<< "number of cor = " << ppp.get_cor();
 	//POLIGON----------------------------------------------------POLIGON
 	system ("pause");
     return 0;
