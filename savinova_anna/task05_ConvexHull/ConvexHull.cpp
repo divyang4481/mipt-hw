@@ -69,20 +69,20 @@ bool Comp(TPoint a, TPoint b)
 }
 void Graham(vector<TPoint> &p, vector<TPoint> &h)
 {
-        for (int i = 1; i < p.size(); ++i)
+        for (size_t i = 1; i < p.size(); ++i)
         {
                 if ((p[0].Y() > p[i].Y()) || (p[0].Y() == p[i].Y() && p[0].X() > p[i].X()))
                         swap(p[0], p[i]);
         }
         h.push_back(p[0]);
-        for (int i = 1; i < p.size(); ++i)
+        for (size_t i = 1; i < p.size(); ++i)
         {
                 p[i].VX() = p[i].X() - p[0].X();
                 p[i].VY() = p[i].Y() - p[0].Y();
         }
         sort(p.begin() + 1, p.end(), &Comp);
         h.push_back(p[1]);
-        for (int i = 2; i < p.size(); ++i)
+        for (size_t i = 2; i < p.size(); ++i)
         {
                 while (MultP(h[h.size() - 2], h[h.size() - 1], p[i]) > 0)
                         h.pop_back();
@@ -103,7 +103,7 @@ int main()
                 p.push_back(tmp);
         }
         Graham(p, h);
-        for (int i = 0; i < h.size(); ++i)
+        for (size_t i = 0; i < h.size(); ++i)
                 cout << h[i].X() << '\t' << h[i].Y() << endl;
         return 0;
 }
