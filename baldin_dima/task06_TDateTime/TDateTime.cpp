@@ -250,12 +250,46 @@ istream& operator >> (istream& in, TTimeSpan& a)
 
 int main()
 {
-	TDateTime Date1("12:00:00 11.11.2011");
+	/*TDateTime Date1("12:00:00 11.11.2011");
 	TDateTime Date2("12:00:00 14.11.2011");
 	cout << "Date1: "<< 
 		Date1 << endl 
 		<< "Date2: " << Date2 << endl;
 	TTimeSpan a = Date1 - Date2;
-	cout << "Date1 - Date2: " << a << endl;
+	cout << "Date1 - Date2: " << a << endl;*/
+	
+	
+	
+	/*TDateTime dt1 = TDateTime::Now();
+    cout << dt1 << endl;
+
+    TTimeSpan sp(1, 1, 1, 1, 1);
+
+    TDateTime dt2 = dt1 + sp;
+    dt1 = dt1 + sp;
+    TDateTime dt3 = dt2 - sp;
+    dt1 = dt1 - sp;
+
+    cout << dt1 << endl;
+    cout << dt2 << endl;
+    cout << dt3 << endl;*/
+
+
+	/*TDateTime dt = TDateTime::Now();
+    cout << dt << endl;
+
+    TTimeSpan span(1, 1, 1, 0, 0, 0);
+    TDateTime dt2 = dt + span;
+    cout << dt2 << endl;
+
+    cout << (dt + span) << endl;
+
+    dt = dt + span;
+    cout << dt << endl;
+
+    dt = dt - span;
+    cout << dt << endl;*/
+	
+	
 	return 0;
 }
