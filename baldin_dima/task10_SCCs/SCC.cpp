@@ -16,16 +16,16 @@ void read_graph(vector< vector <int> > &graph,
 	)
 {
 
-	size_t n,m;
-	scanf("%u %u", &n, &m);
+	int n,m;
+	scanf("%d %d", &n, &m);
 	graph.resize(n);
 	graphT.resize(n);
 	color.resize(n, WHITE);
 	links.resize(n,0);
-    size_t a,b;
+        int a,b;
 	for ( size_t i = 0; i < m; ++i)
 	{
-		scanf( "%u %u", &a, &b);
+		scanf( "%d %d", &a, &b);
 		graph[a-1].push_back(b-1);
 		graphT[b-1].push_back(a-1);
 	}
@@ -71,7 +71,7 @@ void print_vector(vector <size_t> &links, size_t number)
 	for (size_t i = 1; i <= number; ++i)
 	{
 		for (size_t j = 0; j < links.size(); ++j)
-			if (links[j] == i) printf("%u ", j + 1);
+			if (links[j] == i) printf("%d ", j + 1);
 		printf( "\n");
 	}
 
