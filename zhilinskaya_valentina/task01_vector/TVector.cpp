@@ -16,8 +16,8 @@ template <class T>
 class TVector
 {
 private:
-	int _size;//вектор
-    int _capacity;//буфер
+	int _size;
+    int _capacity;
     T* _array;
 public:
 
@@ -39,7 +39,7 @@ public:
             _array[i]=array2[i];
     }
 
-    TVector (const T &a, int N=0)//конструктор по умолчанию. размера N с элементами a
+    TVector (const T &a, int N=0)
     {
         _size=N;
         _capacity=N;
@@ -261,7 +261,7 @@ public:
 
 int main()
 {
-    TVector<int> array1;
+/*    TVector<int> array1;
     array1.push_back(2);		//2 
     array1.push_back(4);		//24 
     array1.push_back(3);		//243 
@@ -300,10 +300,83 @@ int main()
 	cout << "\n first \n";
 	for (int i = 0; i<array1.size(); ++i) cout<<array1[i]<<" ";
 	cout << "\n second\n";
-	for (int i = 0; i<array2.size(); ++i) cout<<array2[i]<<" ";
-
-	{TVector<leak> array3;}
-	cout << "\n Created: " << leak::Created <<"\n Deleted: "<<leak::Deleted <<'\n'; 
+	for (int i = 0; i<array2.size(); ++i) cout<<array2[i]<<" ";*/
+	//---------------------------------------------------------------------------------------------------------LEAK
+	{	
+		cout << "\n push_back + def.constr.";
+		TVector<leak> array3;
+		leak z;
+		for (int i = 0; i< 5; ++i)
+			array3.push_back(z);
+	}cout << "\n Created: " << leak::Created <<"\n Deleted: "<<leak::Deleted <<"\n\n";
+	{	
+		cout << "\n push_back + pop_back + def.constr.";
+		TVector<leak> array3;
+		leak z;
+		for (int i = 0; i< 10; ++i)
+			array3.push_back(z);
+		for (int i = 0; i< 6; ++i)
+			array3.pop_back();
+	}cout << "\n Created: " << leak::Created <<"\n Deleted: "<<leak::Deleted <<"\n\n";
+	{	
+		cout << "\n constr. + size + empty + capacity + back + front + [] + end + begin (dont change (except constr.))";
+		leak z;
+		TVector<leak> array3(z, 12);
+		array3.size();
+		array3.capacity();
+		array3.empty();
+		z = array3.back();
+		z = array3.front();
+		z = array3[2];
+		array3.end(); array3.begin();
+	}cout << "\n Created: " << leak::Created <<"\n Deleted: "<<leak::Deleted <<"\n\n";
+	{
+		cout << "\n constr.cop. + swap";
+		leak z;
+		TVector<leak> array3(z, 5);
+		TVector<leak> array4(array3);
+		array3.swap(array4);
+	}cout << "\n Created: " << leak::Created <<"\n Deleted: "<<leak::Deleted <<"\n\n";
+	{
+		cout << "\n constr. + clear";
+		leak z;
+		TVector<leak> array3(z, 5);
+		array3.clear();
+	}cout << "\n Created: " << leak::Created <<"\n Deleted: "<<leak::Deleted <<"\n\n";
+	{
+		cout << "\n constr. + resize";
+		leak z;
+		TVector<leak> array3(z, 5);
+		array3.resize(19);
+	}cout << "\n Created: " << leak::Created <<"\n Deleted: "<<leak::Deleted <<"\n\n";
+	{
+		cout << "\n constr. + reserve";
+		leak z;
+		TVector<leak> array3(z, 5);
+		array3.reserve(15);
+	}cout << "\n Created: " << leak::Created <<"\n Deleted: "<<leak::Deleted <<"\n\n";
+	{
+		cout << "\n constr. + insert";
+		leak z;
+		TVector<leak> array3(z, 5);
+		array3.insert(array3.begin(), z);
+		array3.insert(array3.begin(), z);
+		array3.insert(array3.begin(), z);
+	}cout << "\n Created: " << leak::Created <<"\n Deleted: "<<leak::Deleted <<"\n\n";
+	{
+		cout << "\n constr. + erase";
+		leak z;
+		TVector<leak> array3(z, 20);
+		array3.erase(array3.begin());
+		array3.erase(array3.begin());
+	}cout << "\n Created: " << leak::Created <<"\n Deleted: "<<leak::Deleted <<"\n\n";
+	{
+		cout << "\n constr. + op=";
+		leak z;
+		TVector<leak> array3(z, 5);
+		TVector<leak> array4(z, 9);
+		array4 = array3;
+	}cout << "\n Created: " << leak::Created <<"\n Deleted: "<<leak::Deleted <<"\n\n";
 	system("pause");
 	return 0;
 }
