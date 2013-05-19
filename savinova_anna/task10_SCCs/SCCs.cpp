@@ -39,7 +39,7 @@ void DFSVisit(const int &u, int& time, vector<Stat> &S, vector< vector<int> > &A
 {
         S[u].Col() = GRAY;
         S[u].D() = time++;
-        for (int i = 0; i < Adj[u].size(); ++i)
+        for (size_t i = 0; i < Adj[u].size(); ++i)
         {
                 if (S[Adj[u][i]].Col() == WHITE)
                 {
@@ -56,7 +56,7 @@ void DFS(vector< vector<int> > &Adj, list<int> &L)
 {
         vector<Stat> S(Adj.size());
         int time = 0;
-        for (int i = 1; i < Adj.size(); ++i)
+        for (size_t i = 1; i < Adj.size(); ++i)
         {
                 if (S[i].Col() == WHITE)
                         DFSVisit(i, time, S, Adj, L);
@@ -67,7 +67,7 @@ void DFSVisitAdjT(const int &u, int& time, vector<Stat> &S, vector< vector<int> 
 {
         S[u].Col() = GRAY;
         S[u].D() = time++;
-        for (int i = 0; i < Adj[u].size(); ++i)
+        for (size_t i = 0; i < Adj[u].size(); ++i)
         {
                 if (S[Adj[u][i]].Col() == WHITE)
                 {
@@ -96,8 +96,8 @@ void DFSAdjT(vector< vector<int> > &Adj, list<int> &L)
 
 void Transpose(vector< vector<int> > &Adj, vector< vector<int> > &AdjT)
 {
-        for (int i = 1; i < Adj.size(); ++i)
-                for (int j = 0; j < Adj[i].size(); ++j)
+        for (size_t i = 1; i < Adj.size(); ++i)
+                for (size_t j = 0; j < Adj[i].size(); ++j)
                         AdjT[Adj[i][j]].push_back(i);
 }
 void SCCs(vector< vector<int> > &Adj)
