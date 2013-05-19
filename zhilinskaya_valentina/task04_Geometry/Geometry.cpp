@@ -52,7 +52,8 @@ public :
 template <typename T>
 double length (point<T> a, point<T> b)
 {
-        return sqrt((a.getX() - b.getX())*(a.getX() - b.getX()) + (a.getY() - b.getY())*(a.getY() - b.getY()));
+		double sq = sqrt((a.getX() - b.getX())*(a.getX() - b.getX()) + (a.getY() - b.getY())*(a.getY() - b.getY()));
+        return sq;
 }
 template <typename T>
 double multiplicationV (point<T> a, point<T> b, point<T> c, point<T> d)
@@ -115,7 +116,8 @@ public :
 template <typename T>
 double distance (segment<T> s)
 {
-    return sqrt((s.getA().getX() - s.getB().getX()) * (s.getA().getX()  s.getB().getX()) + (s.getA().getY() - s.getB().getY()) * (s.getA().getY() - s.getB().getY()));
+	double sq = sqrt((s.getA().getX() - s.getB().getX()) * (s.getA().getX()  s.getB().getX()) + (s.getA().getY() - s.getB().getY()) * (s.getA().getY() - s.getB().getY()));
+    return sq;
 }
 
 template <typename T>
@@ -183,7 +185,8 @@ public:
 	~polygon () {delete [] arr;}
 	polygon (const polygon<T>&  q)
 	{
-		arr = new point [n = q.n];
+		n = q.n; 
+		arr = new point<T> [n];
 		for (int i = 0; i < n; i++)
 			arr[i] = q.arr[i];
 	}
@@ -250,6 +253,16 @@ public:
 		}
 		return b;
 	}
+	polygon<T>& operator= (const polygon<T>& from)
+	{
+		if (this == &from) return *this;
+		delete[] arr;
+		n = from.n;
+		arr = new point<T> [n];
+		for (int i = 0; i < n; i++)
+			arr[i] = from.arr[i];
+		return *this;
+	}
 };
 
 template<typename T>
@@ -281,8 +294,8 @@ int main ()
 	P2 = 5;
 	cout << "P2 = 5 "; P2.print();
 	cout << "move point: x + 10; y + 5: \n";
-	P2.print(); P2.move(10,5); P2.print();
-*/	//-------------------------------------------------------------POINT
+	P2.print(); P2.move(10,5); P2.print();*/
+	//-------------------------------------------------------------POINT
 	//SEGMENT----------------------------------------------------SEGMENT
 /*	cout << "SEGMENT\n";
 	double x, y, a, b;
@@ -309,7 +322,7 @@ int main ()
 	if (S2.Intersects(S)) cout << "yes\n";
 	else cout << "no\n";
 */  //SEGMENT----------------------------------------------------SEGMENT
-	//CIRCLE
+	//CIRCLE------------------------------------------------------CIRCLE
 /*	cout << "CIRCLE\n";
 	double x, y, R, a, b;
 	cout << "center and R:\n";
@@ -332,8 +345,8 @@ int main ()
 	cout << "Does circle intersect the segment? ";
 	if (C.Intersects(S)) cout << "yes\n";
 	else cout << "no\n";
-*/	//SEGMENT----------------------------------------------------SEGMENT
-/*	//POLIGON----------------------------------------------------POLIGON
+*/	//CIRCLE------------------------------------------------------CIRCLE
+	//POLIGON----------------------------------------------------POLIGON
 	cout << "POLYGON\n";
     int n;
 	double x, y, a, b;
@@ -349,6 +362,13 @@ int main ()
 		arr[i] = P;
 	}
 	polygon<double> Pol(n, arr);
+	polygon<double> Pol2(Pol);
+	polygon<double> Pol3;
+	cout << "Pol2(Pol);: \n";
+	Pol2.print();
+	cout << "Pol3 = Pol: \n";
+	Pol3 = Pol;
+	Pol3.print();
 	cout << "Our polygon: \n";
 	Pol.print();
 	cout << "(method N) corners = " << Pol.N();
@@ -364,7 +384,7 @@ int main ()
 	cout << "Does our poligon intersect the segment? ";
 	if (Pol.Intersects(S)) cout << "yes\n";
 	else cout << "no\n";
-*/	//POLIGON----------------------------------------------------POLIGON
+	//POLIGON----------------------------------------------------POLIGON
 	system ("pause");
     return 0;
 }
