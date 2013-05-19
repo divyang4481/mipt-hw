@@ -63,9 +63,9 @@ public:
                 Size = 0;
         }
         void swap(TVector<T>& b){
-                TVector<T> tmp = *this;
-                *this = b;
-                b = tmp;
+                std::swap(Size, b.Size);
+                std::swap(Capacity, b.Capacity);
+                std::swap(Buf, b.Buf);
         }
         void reserve(size_t n){
                 while (Capacity < n)
