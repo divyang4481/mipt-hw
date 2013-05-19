@@ -1,16 +1,72 @@
 #include <iostream>
 #include <vector>
 using namespace std;
-// Должна ли возвращать erase какой-то оператор?
+
+
+struct TFoo {
+    int Value;
+    TFoo() : Value(0) { ++Created; }
+    TFoo(const TFoo &other) : Value(other.Value) { ++Created; }
+    ~TFoo() { ++Deleted; }
+    bool operator< (const TFoo& other)
+    {
+        return Value < other.Value;
+    }
+
+	bool operator< (const TFoo& other) const 
+    {
+        return Value < other.Value;
+    }
+    bool operator<= (const TFoo& other)
+    {
+        return Value <= other.Value;
+    }
+    static int Created;
+    static int Deleted;
+    static void PrintStats() {
+        cout << "TFoo::Created = " << Created << endl
+            << "TFoo::Deleted = " << Deleted << endl;
+    }
+	bool operator== (const TFoo& a){
+		return ( Value == a.Value);
+	}
+};
+
+
+int TFoo::Created = 0;
+int TFoo::Deleted = 0;
 
 template <typename T>
 class TList{
-	struct node{};
+	struct node{
+		friend class TList;
+		node(T& a): val(a){
+		}
+		node(){
+			prev=0;
+			next=0;
+		}
+
+		~node(){
+		}
+		T val;
+		node* next;
+		node* prev;
+		bool operator== (node& another){
+			return (val == another.val && next == another.next && prev == another.prev);
+		}
+		bool operator!= (node& another){
+			return !(*this == another);
+		}
+	};
+	node* first;
+	node* last;
+	node* limit;
 public:
 	class iterator{
 		friend class TList;
-		iterator(node *t):el(t){}
 	public:
+		iterator(node *t):el(t){}
 		iterator():el(0){
 		};
 
@@ -66,139 +122,67 @@ public:
 	private:
 		node* el;
 	};
-public:
-	TList(){
-		first=last=0;
-		rehersal();
-	}
 
-	TList (T val){
-		node* t=new node;
-		t->val=val;
-		t->prev=t->next=0;
-		first=last=t;
-		rehersal();
-	}
+	class const_iterator{
+		friend class TList;
+	public:
+		const_iterator(node *t):el(t){}
+		const_iterator():el(0){
+		};
 
-	void rehersal(){
-		Begin=iterator(first);
-		End=iterator(last);
-	}
+		void operator++(){
+			el=el->next;
+		};
 
-	~TList(){
-		while(first){
-		last=first->next;
-		delete first;
-		first=last;
-	}
-	}
-
-	iterator begin(){
-		Begin=iterator(first);
-		return Begin;
-	}
-
-	iterator end (){
-		End=iterator(last);
-		return End;
-	}
-
-	bool empty (){
-		return first==0? true:false;
-	}
-
-	void clear (){
-		while(first){
-		last=first->next;
-		delete first;
-		first=last;
-	}
-		first=last=0;
-	}
-
-	void push_back (T val) {
-		node* tp=new node;
-		tp->val=val;
-		tp->next=0;
-		if(first==0)
-		{tp->prev=0;
-		first=last=tp;	
+		void operator --(){
+			el=el->prev;
 		}
-		else {
-			tp->prev=last;
-			last->next=tp;
-			last=tp;
+
+		const T& operator *() const{
+			return el->val;;
 		}
-	}
 
-	void push_front(T val){
-		node* tp=new node;
-		tp->val=val;
-		tp->prev=0;
-		if (last==0)
-		{last=first=tp;
-		tp->next=0;
+		bool operator == (const_iterator& i){
+			return (el == i.el ? true:false);
 		}
-		else{
-			tp->next=first;
-			first->prev=tp;
-			first=tp;
+
+		bool operator != (const_iterator& i){
+			return !(*this == i);
 		}
-		return;
-	}
 
-	T pop_back(){
-		T tp=last->val;
-		last=last->prev;
-		delete last->next;
-		last->next=0;
-		return tp;
-	}
-
-	T pop_front () {
-		T tp=first->val;
-		first=first->next;
-		delete first->prev;
-		first->prev=0;
-		return tp;
-	}
-
-	T& front (){
-		if (first!=0)
-			cout <<"Error!"<<endl;
-		return first->val;
-	}
-
-	T& back () {
-		if (last!=0)
-			cout <<"Error!"<<endl;
-		return last->val;
-	}
-
-	TList& operator=( TList &other){
-		if(this!=&other){
-			clear();
-			first=0;
-			last=0;
-			node* temp;
-			temp=other.first;
-			while(temp!=other.last){
-				push_back(temp->val);
-				temp=temp->next;
-			}
-			push_back(temp->val);
+		void operator=(const_iterator tp){
+			el=tp.get();
+			return;
 		}
-		return *this;
+
+		node* get(){
+			return el;
+		}
+
+		bool Last(){
+			if (el->next==0)
+				return true;
+			return false;
+		}
+
+		bool First (){
+			if (el->prev==0)
+				return true;
+			return false;
+		}
+
+		const_iterator operator+(int n){
+			if (el->next==0)
+				return *this;
+			for (int i=0; i<n; ++i)
+				++*this;
+			return *this;
+		}
+
+	private:
+		node* el;
 	};
-
-	void swap(TList& temp){
-		TList tp;
-		tp=*this;
-		*this=temp;
-		temp=tp;
-		return;
-	}
-	
+private:
 	void Insert(node* where, T val){
 		node* n=new node;
 		n->val=val;
@@ -234,28 +218,7 @@ public:
 			other.first=0;
 			other.last=0;
 		}
-	};		
-
-
-	void insert(iterator pos, T val){
-		Insert(pos.get(),val);
-		return;
-	}
-
-	void insert (iterator pos, int n, T val){
-		for (int i=0; i<n; i++)
-			Insert(pos.get(), val);
-		return;
-	}
-
-	void insert (iterator pos, iterator beg, iterator end){
-		if (!end.Last())
-			--end;
-		for (; beg!=end; --end, --pos)
-			Insert(pos.get(), *end);
-		Insert(pos.get(), *end);
-		return;
-	}
+	};
 
 	void Extract(node* tnode){
 		if(tnode==first && tnode==last){
@@ -296,25 +259,185 @@ public:
 		return;
 	};
 
-	void erase(iterator pos){
-		Extract(pos.get());
+
+public:
+	TList(){
+		first=last=0;
+		limit = new node;
+		limit->next = 0;
+		limit-> prev = 0;
+	}
+
+	TList ( TList<T>& another){
+		*this = another;
+	}
+
+	TList (T val, int n){
+		first=last=0;
+		limit = new node;
+		limit->next = 0;
+		limit-> prev = 0;
+		for(int i=0; i<n; ++i)
+			push_back(val);
+	}
+
+	~TList(){
+		clear();
+		delete limit;
+	}
+
+	iterator begin(){
+		return iterator(first);
+	}
+
+	iterator end (){
+		return iterator(limit);
+	}
+
+	const_iterator cbegin(){
+		return const_iterator(first);
+	}
+
+	const_iterator cend (){
+		return const_iterator(limit);
+	}
+
+	bool empty () const {
+		return first==0? true:false;
+	}
+
+	void clear (){
+		while( first != 0 && *first != *limit ){
+			last=first->next;
+			delete first;
+			first=last;
+		}
+		first=last=0;
+	}
+
+	void push_back (T val) {
+		node* tp=new node;
+		tp->val=val;
+		tp->next=limit;
+		if(first==0){
+			tp->prev=limit;
+			limit->prev = tp;
+			first=last=tp;	
+		}
+		else {
+			tp->prev=last;
+			last->next=tp;
+			last=tp;
+			limit->prev = tp;
+		}
+	}
+
+	void push_front(T val){
+		node* tp=new node;
+		tp->val=val;
+		tp->prev=limit;
+		if (last==0)
+		{last=first=tp;
+		tp->next=limit;
+		}
+		else{
+			tp->next=first;
+			first->prev=tp;
+			first=tp;
+		}
 		return;
 	}
 
-	void erase (iterator beg, iterator end){ //бег просидяет. Не переходит на следующий элемент.
+	T pop_back(){
+		T tp=last->val;
+		last=last->prev;
+		delete last->next;
+		last->next=limit;
+		limit->prev = last;
+		return tp;
+	}
+
+	T pop_front () {
+		T tp=first->val;
+		first=first->next;
+		delete first->prev;
+		first->prev=limit;
+		return tp;
+	}
+
+	T& front (){
+		return first->val;
+	}
+
+	T& back () {
+		return last->val;
+	}
+
+	TList& operator=( TList &other){
+		if(this!=&other){
+			clear();
+			first=0;
+			last=0;
+			node* temp;
+			temp=other.first;
+			while(temp!=other.last){
+				push_back(temp->val);
+				temp=temp->next;
+			}
+			push_back(temp->val);
+		}
+		return *this;
+	};
+
+	void swap(TList& temp){
+		TList tp;
+		tp=*this;
+		*this=temp;
+		temp=tp;
+		return;
+	}
+	
+
+
+	void insert(iterator pos, T val){
+		Insert(pos.get(),val);
+		return;
+	}
+
+	void insert (iterator pos, int n, T val){
+		for (int i=0; i<n; i++)
+			Insert(pos.get(), val);
+		return;
+	}
+
+	void insert (iterator pos, iterator beg, iterator end){
+		--end;
+		for (; beg!=end; --end, --pos)
+			Insert(pos.get(), *end);
+		Insert(pos.get(), *end);
+		return;
+	}
+
+	
+	iterator erase(iterator pos){
+		Extract(pos.get(), pos);
+		return pos;
+	}
+
+	iterator erase (iterator beg, iterator end){ 
 		for (;beg!=end;){
 			iterator tp=beg;
 			++beg;
 			Extract(tp.get());
 		}
-		if (end.get()==last)
-			Extract(end.get());
-		return;
+		return end;
 	}
 
 	void splice (iterator pos, TList& lt){
 		iterator tp=lt.end();
-		for (; tp!=lt.begin(); --pos){
+		iterator beg=lt.begin();
+		--tp;
+		for (; tp!=beg; --pos){
 			insert(pos,*tp);
 			iterator t=tp;
 			--tp;
@@ -333,8 +456,7 @@ public:
 	
 	void splice (iterator pos, TList& lt, iterator first, iterator last){
 		iterator tp=last;
-		if (tp.get()!=lt.last)
-			--tp;
+		--tp;
 		for (; tp!=first; --pos){
 			insert(pos,*tp);
 			iterator t=tp;
@@ -345,93 +467,74 @@ public:
 		lt.erase(tp);
 		return;
 	}
+};
 
 
-
-	void show (){
-		node* temp=first;
-		for (int i=1; temp!=0; temp=temp->next, i++ )
-			cout << "Element "<<i<< " : "<< temp->val <<endl;
+template <typename T>
+void show (TList<T>& a){
+		auto pos = a.cbegin();
+		if (!a.empty())
+			for (int i=1; pos != a.cend(); ++pos, i++ )
+				cout << "Element "<<i<< " : "<< (*pos).Value <<endl;
 		cout <<"________________________________________________"<<endl;
 	};
 
-	static int Created;
-	static int Deleted;
-private:
-	struct node{
-		friend class TList;
-		node(T& a): val(a){
-		}
-		node(){
-			prev=0;
-			next=0;
-			val=0;
-			++Created;
-		}
-		~node(){
-			++Deleted;
-		}
-		T val;
-		node* next;
-		node* prev;
-	};
-	node* first;
-	node* last;
-	iterator Begin;
-	iterator End;
-};
-
-int TList<int>:: Created=0;
-int TList<int>:: Deleted=0;
-
 int main(){
-	{TList <int> a,b;
-	for (int i=0; i<10; i++)
-		a.push_back(i);
-	for (int i=0; i<10; i++)
-		b.push_front(i);
+	{TList <TFoo> a,b;
+	TList<TFoo> aa;
+	TList<TFoo>  bb;
+	show(bb);
+	for (int i=0; i<10; i++){
+		TFoo temp;
+		temp.Value = i;
+		a.push_back(temp);
+	}
+	for (int i=0; i<10; i++){
+		TFoo temp;
+		temp.Value = i;
+		b.push_front(temp);
+	}
 	if (a.empty())
 	cout <<"true\n";
 	else 
 	cout << "false\n";
 	b=a;
-	b.show();
+	show(b);
 	a.swap(b);
-	a.show();
-	b.show();
-	int p;
-	b.show();
+	show(a);
+	show(b);
+	TFoo p;
+	show(b);
 	for (int i=0; i<5; i++)
 		p=a.pop_front();
-	a.show();
-	a.front() -= a.back();
-	cout << "mylist.front() is now " << a.front() << '\n';
+	show(a);
 	a.clear();
 	if (a.empty())
 	cout <<"true\n";
 	else 
 	cout << "false\n";
-	a.show();
-	a.insert(a.begin(), 20);
-	a.show();
-	a.insert(a.begin(), 2, 100);
-	a.show();
+	show(a);
+	TFoo temp;
+	temp.Value = 20;
+	a.insert(a.begin(), temp);
+	show(a);
+	a.insert(a.begin(), 2, temp);
+	show(a);
 	a.insert(a.begin(), b.begin(), b.end());
-	a.show();
-	a.show();
+	show(a);
+	show(a);
 	a.erase(a.begin()+1);
-	a.show();
+	show(a);
 	a.erase(a.begin()+3, a.end());
-	a.show();
+	show(a);
 	a.splice(a.begin()+1, b);
-	a.show();
+	show(a);
 	b.splice(b.begin(), a, a.begin()+3);
-	b.show();
-	a.show();
+	show(b);
+	show(a);
 	b.splice(b.begin(), a, a.begin()+3, a.begin()+6);
-	b.show();
-	a.show();}
-	cout << TList<int>::Created<<endl<<TList<int>::Deleted<<endl;
-	system("pause");
+	show(b);
+	show(a);}
+	TFoo :: PrintStats();
 	return 0;
 }
