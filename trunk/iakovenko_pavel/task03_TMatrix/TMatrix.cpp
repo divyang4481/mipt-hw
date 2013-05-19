@@ -476,10 +476,10 @@ int main(){
 	}*/
 
 	//measurments
-	clock_t t;
 	int n=16;
 	TMatrix<int> a(n,n);
 	TMatrix<int> b(n,n);
+	a*=b;
 	TTimePrinter time_tp;
 	for (int i=0; i<n; ++i){
 		for (int j=0; j<n; ++j){
