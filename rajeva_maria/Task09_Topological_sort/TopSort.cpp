@@ -11,7 +11,7 @@ void DFSVisit(int u,vector<vector <int>>&graflist,vector <color>&clr,vector<int>
        clr[u]=grey;
         t++;
        time[u]=t; 
-      for (int j=1;j<graflist[u].size();j++)
+      for (size_t j=1;j<graflist[u].size();j++)
         {       
 			   int i=graflist[u][j]; 
               if (clr[i]==white)
@@ -57,7 +57,7 @@ void DFS(vector<vector <int>>&graflist, int N)
                        DFSVisit(i,graflist,clr,time,timeover,parent,N,t,sort,con);
 			   if (con==1) break;
 			   }
-		if (con==1) {cout<<"net recheniy";}
+		if (con==1) {cout<<"net recheniy"<<endl;}
 		else {
         for (int i=sort.size()-1;i>0;--i)
         {       
