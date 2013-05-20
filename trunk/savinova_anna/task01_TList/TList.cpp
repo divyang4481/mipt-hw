@@ -294,7 +294,7 @@ public:
                         push_back(*it);
                 return *this;
         }
-        void PrintStat(char name)
+        void PrintStat(char name) const
         {
                 cout << name << ": Empty: " << empty() << endl << "Elements: ";
                 for (const_iterator it = begin(); it != end(); ++it)
@@ -357,7 +357,7 @@ int main()
         cout << "begin() + 4 = 17" << endl;
         *(i + 4) = 17;
         A.PrintStat('A');        
-        for (TList<int>::const_iterator i = A.begin(); i != A.end(); ++i)
+        for (TList<int>::iterator i = A.begin(); i != A.end(); ++i)
                 cout << *i << " ";
         cout << endl;
         cout << "Test back() = 5" << endl;
