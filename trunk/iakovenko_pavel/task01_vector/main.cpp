@@ -45,19 +45,39 @@ public:
 		iterator():el(0){
 		};
 	
-		void operator= (iterator another){
+		iterator& operator= (iterator another){
 			el = another.el;
+			return *this;
 		}
-		void operator++(){
-			el++;
-		};
 
-		void operator --(){
+		iterator& operator++(){
+			el++;
+			return *this;
+		}
+
+		iterator& operator++(int){
+			T* temp = el;
+			el++;
+			return iterator(temp);
+		}
+
+		iterator& operator--(){
 			el--;
+			return *this;
+		}
+
+		iterator& operator--(int){
+			T* temp = el;
+			el--;
+			return iterator(temp);
 		}
 
 		T& operator *(){
 			return *el;
+		}
+
+		T* operator->(){
+			return el;
 		}
 
 		bool operator== (iterator& i){
@@ -95,27 +115,45 @@ public:
 		const_iterator():el(0){
 		};
 
-		void operator++(){
+		const_iterator& operator++(){
 			el++;
+			return *this;
 		};
 
-		void operator --(){
+		const_iterator& operator++(int){
+			T* temp = el;
+			el++;
+			return const_iterator(temp);
+		};
+
+		const_iterator& operator--(){
 			el--;
+			return *this;
 		}
 
+		const_iterator& operator--(int){
+			T* temp = el;
+			el--;
+			return const_iterator(temp);
+		}
+
+		const T* operator->(){
+			return el;
+		}
 		const T& operator *()const {
 			return *el;
 		}
 	
-		void operator= (const_iterator another){
+		const_iterator& operator= (const_iterator another){
 			el = another.el;
+			return *this;
 		}
 
-		bool operator == (const_iterator& i){
+		bool operator== (const_iterator& i){
 			return (el == i.el ? true:false);
 		}
 
-		bool operator != (const_iterator& i){
+		bool operator!= (const_iterator& i){
 			return !(*this == i);
 		}
 
@@ -180,7 +218,7 @@ public:
 
 	~TVector(){
 		delete[] arr;
-	};
+	}
 
 	void push_back(T n){
 		if (tsize==tcapacity){
@@ -192,7 +230,7 @@ public:
 		}
 		arr[tsize]=n;
 		tsize++;
-	};
+	}
 
 	iterator begin(){
 		iterator pos_tp (&arr[0]);
@@ -204,12 +242,12 @@ public:
 		return 	pos_tp;
 	}
 
-	const_iterator cbegin(){
+	const_iterator begin() const {
 		const_iterator pos_tp (&arr[0]);
 		return pos_tp;
 	}
 
-	const_iterator cend(){
+	const_iterator end() const {
 		const_iterator pos_tp (&arr[tsize]);
 		return 	pos_tp;
 	}
@@ -220,14 +258,12 @@ public:
 
 	void clear(){
 		tsize=0;
-		return;
 	};
 
 	void swap(TVector& temp){
 		std::swap(arr, temp.arr);
 		std::swap(tcapacity, temp.tcapacity);
 		std::swap(tsize, temp.tsize);
-		return;
 	}
 
 	void reserve (unsigned int ncap){
@@ -239,10 +275,13 @@ public:
 		delete[] arr;
 		arr=tp;
 		tcapacity=ncap;
-		return;
 	}
 
 	T& operator[](unsigned int n){ //как сделать так, чтобы записывать?
+		return arr[n];
+	}
+
+	const T& operator[](unsigned int n) const { //как сделать так, чтобы записывать?
 		return arr[n];
 	};
 
@@ -263,7 +302,15 @@ public:
 		return tsize;
 	};
 
+	unsigned int size() const {
+		return tsize;
+	};
+
 	unsigned int capacity(){
+		return tcapacity;
+	};
+
+	unsigned int capacity() const {
 		return tcapacity;
 	};
 
@@ -273,11 +320,25 @@ public:
 		return false;
 	};
 
+	bool empty ()const {
+		if (tsize==0)
+			return true;
+		return false;
+	};
+
 	T& back(){
 		return arr[tsize-1];
 	};
 
+	const T& back() const {
+		return arr[tsize-1];
+	};
+
 	T& front(){
+		return arr[0];
+	};
+
+	const T& front() const {
 		return arr[0];
 	};
 
@@ -302,7 +363,6 @@ public:
 				arr=tptr;
 			}
 		tsize=n;
-		return;
 	}
 
 	void resize(unsigned int n, T val){
@@ -328,7 +388,6 @@ public:
 				arr=tptr;
 			}
 		tsize=n;
-		return;
 	}
 
 	iterator erase(iterator pos){ // ак это сделать красивее? ¬ычитать!
@@ -374,7 +433,6 @@ public:
 			arr[i]=arr[i-n];
 		for(int i=p; i<p+n; ++i)
 			arr[i]=val;
-		return;
 	}
 
 	iterator insert(iterator pos, iterator beg, iterator end){ 
@@ -402,11 +460,11 @@ private:
 };
 
 
-void show(TVector<TFoo>& a){
+void show(const TVector<TFoo>& a){
 		TVector<TFoo>:: const_iterator pos_tp; 
-		pos_tp = a.cbegin();
+		pos_tp = a.begin();
 		TVector<TFoo>:: const_iterator end_tp;
-		end_tp = a.cend();
+		end_tp = a.end();
 		for (int i=0; pos_tp!= end_tp; ++pos_tp, ++i)
 			cout<< "a["<<i<<"]="<<(*pos_tp).Value<<endl;
 		cout<<"-----------------------------------------"<< endl;
@@ -441,9 +499,6 @@ int main(){
 	a.reserve(5);
 	show(a);
 	a.reserve(25);
-	show(a);
-	TVector<TFoo>::iterator end;
-	end = a.end();
 	show(a);
 	temp.Value = 100;
 	a.insert(a.begin()+7, 5, temp);
