@@ -76,8 +76,10 @@ public:
 		};
 		
 		iterator& operator++(int){
+			node* temp;
+			temp = el;
 			el=el->next;
-			return *this;
+			return iterator(temp);
 		};
 
 		iterator& operator --(){
@@ -85,9 +87,10 @@ public:
 			return *this;
 		}
 
-		iterator& operator --(int){
+		iterator& operator--(int){
+			node* temp = el;
 			el=el->prev;
-			return *this;
+			return  iterator(temp);
 		}
 
 		T& operator *(){
@@ -106,9 +109,9 @@ public:
 			return !(*this == i);
 		}
 
-		void operator=(iterator tp){
+		iterator& operator=(iterator& tp){
 			el=tp.get();
-			return;
+			return *this;
 		}
 
 		node* get(){
@@ -131,8 +134,10 @@ public:
 			return *this;
 		};
 		const_iterator& operator++(int){
+			node* temp;
+			temp = el;
 			el=el->next;
-			return *this;
+			return const_iterator(temp);
 		};
 		const_iterator& operator --(){
 			el=el->prev;
@@ -140,8 +145,9 @@ public:
 		}
 		
 		const_iterator& operator --(int){
+			node* temp = el;
 			el=el->prev;
-			return *this;
+			return const_iterator(temp);
 		}
 
 		const T& operator *() const{
@@ -160,26 +166,15 @@ public:
 			return !(*this == i);
 		}
 
-		void operator=(const_iterator tp){
+		const_iterator& operator=(const_iterator& tp){
 			el=tp.get();
-			return;
+			return *this;
 		}
 
 		node* get(){
 			return el;
 		}
 
-		bool Last(){
-			if (el->next==0)
-				return true;
-			return false;
-		}
-
-		bool First (){
-			if (el->prev==0)
-				return true;
-			return false;
-		}
 
 	private:
 		node* el;
@@ -296,11 +291,11 @@ public:
 		return iterator(limit);
 	}
 
-	const_iterator cbegin() const {
+	const_iterator begin() const {
 		return const_iterator(first);
 	}
 
-	const_iterator cend() const {
+	const_iterator end() const {
 		return const_iterator(limit);
 	}
 
@@ -372,6 +367,14 @@ public:
 	}
 
 	T& back () {
+		return last->val;
+	}
+
+	const T& front ()const{
+		return first->val;
+	}
+
+	const T& back () const {
 		return last->val;
 	}
 
@@ -482,8 +485,8 @@ public:
 
 
 void show (const TList<TFoo>& a){
-		TList<TFoo> :: const_iterator pos_tp = a.cbegin();
-		TList<TFoo> :: const_iterator end_tp = a.cend();
+		TList<TFoo> :: const_iterator pos_tp = a.begin();
+		TList<TFoo> :: const_iterator end_tp = a.end();
 		if (!a.empty())
 			for (int i=1; pos_tp != end_tp; ++pos_tp, i++ )
 				cout << "Element "<<i<< " : "<< pos_tp->Value <<endl;
