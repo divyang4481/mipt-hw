@@ -60,6 +60,17 @@ public:
                 tmp.tm_sec = 0;
                 timer = mktime(&tmp);
         }
+
+        /*TTimeSpan(int year, int yday, int h, int m, int s)
+        {
+                tm tmp;
+                tmp.tm_year = year + 70;
+                tmp.tm_yday = yday + 1;
+                tmp.tm_hour = h + 3;
+                tmp.tm_min = 0;
+                tmp.tm_sec = 0;
+                timer = mktime(&tmp);
+        }*/
         TTimeSpan (int h, int m, int s)
         {
                 tm tmp;
@@ -214,20 +225,20 @@ public:
                 s = oth.Second();
                 return *this;
         }
-        TDateTime operator + (const TTimeSpan &delta) //- возвращает дату-время, смещенную на delta
+        TDateTime& operator + (const TTimeSpan &delta) //- возвращает дату-время, смещенную на delta
         {
                 time_t t = GetUnixTimestamp();
                 t += delta.GetUnixTimestamp();
-                TDateTime tmp(t);
-                return tmp;
+                TDateTime* tmp = new TDateTime(t);
+                return *tmp;
         }
 
-        TDateTime operator - (const TTimeSpan &delta) //- возвращает дату-время, смещенную на -delta
+        TDateTime& operator - (const TTimeSpan &delta) //- возвращает дату-время, смещенную на -delta
         {
                 time_t t = GetUnixTimestamp();
                 t -= delta.GetUnixTimestamp();
-                TDateTime tmp(t);
-                return tmp;
+                TDateTime* tmp = new TDateTime(t);
+                return *tmp;
         }
         TTimeSpan operator - (const TDateTime &oth) const //- возвращает временной промежуток между двумя датами
         {
@@ -280,22 +291,21 @@ istream& operator >> (istream& in, TTimeSpan& tts)
 
 int main ()
 {
-        /*
-        TDateTime T1;
+ /*       TDateTime T1;
         cout << "T1: " << T1;
         TDateTime T2(2001, 2, 3, 4, 5, 6);
         cout << "T2: " << T2;
         cout << T2;
-        TTimeSpan S1;
-        cout << "S1: " << S1 << "S1 = T2 - T1" << endl;
+        TTimeSpan S1(0,0,1,0,0);
+        cout << "S1: " << S1 << "S1 = T2 - T1" << S1.GetUnixTimestamp() <<endl;
         S1 = T2 - T1;
         cout << "S1: " << S1;
         cout << "Test cin S2: ";
         TTimeSpan S2;
         cin >> S2;
-        cout << "T1 + S2 = " << T1 + S2;
-        */
+        cout << "T1 + S2 = " << T1 + S2;*/
 
+        
         TDateTime dt1 = TDateTime::Now();
         cout << dt1 << endl;
 
@@ -303,13 +313,14 @@ int main ()
 
         TDateTime dt2 = dt1 + sp;
         dt1 = dt1 + sp;
-        TDateTime dt3 = dt2 - p;
+        TDateTime dt3 = dt2 - sp;
         dt1 = dt1 - sp;
 
         cout << dt1 << endl;
         cout << dt2 << endl;
         cout << dt3 << endl;
 
+        
         return 0;
 }
 
