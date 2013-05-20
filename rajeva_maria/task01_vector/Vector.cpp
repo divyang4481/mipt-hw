@@ -16,18 +16,18 @@ public:
 	   capacity=1;
 	   buf = new T[1];
    }
-   
-   int Size()
+
+   const size_t Size() const
    {
    return size;
    }
-   
-   bool empty()
+
+   const bool Empty() const
    {
    return (size==0);
    }
 
-   void clear()
+   void Clear()
    {
    size=0; 
    }
@@ -37,89 +37,159 @@ public:
 	   delete[] buf;
    }
 
-   int Capacity()
+   const int Capacity() const
    {
    return(capacity); 
    }
-   
-   T popback()
+   T& operator[](int index)
+   {
+	   return buf[index];
+   }
+
+   T Popback()
    {
    T t=buf[size-1];
    size--;
    return(t);
    }
 
-   void pushback(T val)
+   void Pushback(T val)
    {
-	   if (Capacity()==Size()) resize();
-	   buf[size]=val;
-	   size++;
-	 }
+	    if (capacity==size) Reserve(size+1);
+        buf[size]=val;
+		size++;
+    }
 
-
-
-   void resize()
-   {   capacity=2*capacity;
-	   T* newbuf=new T[capacity];
-	   for (int i=0;i<size;i++)
-            newbuf[i]=buf[i];
-	   buf=newbuf;     
+ void Resize(size_t n)
+   { 
+	   if (n>size)
+	   Reserve(n);
+	   size=n;
    }
 
-   void reserve(T&n)
+ void Reserve(size_t n)
    {
-	   while (capacity<n) resize();
+	   while (capacity<n)
+	       capacity=2*capacity;
+	   
+	   T *buf1= new T[capacity];
+	   for(size_t i=0;i<Size();++i)
+	   buf1[i]=buf[i];
+       delete[]buf;
+	   buf=buf1;
+	   
    }
 
-   iterator begin()
+   iterator Begin()
    {
 	   return(buf);
    };
-   iterator end()
+
+   const iterator Begin() const
+   {
+	   return(buf);
+   };
+
+   iterator End()
    {
 	   return (buf+size);
    };
-   T& front()
+
+   const iterator End() const 
+   {
+	   return (buf+size);
+   };
+
+   T& Front()
    {
 	   return(buf[0]);
    };
-   T& back()
+
+   T& Back()
    {
 	   return(buf[size-1]);
    };
-   void swap(TVector &a, TVector &b)
+
+   void Swap(TVector &a)
    {
-       T t=buf[a];
-	   buf[a]=buf[b];
-	   buf[b]=t;
+       swap(buf,a.buf);
+	   swap(size,a.size);
+	   swap(capacity,a.capacity);
    };
-   void insert (iterator iter, T &n)
+
+   void Insert (iterator iter, T &n)
    {
-       reserve(size+1);
+       if (size==capacity) Reserve(size+1);
 	   ++size;
-	   for (iter i=size;i!=iter;--i)
-	   {
-		   *i=*(i-1);
-	   }
-	   *iter=n;
+	   for (iterator i=End(); i!=iter;--i)
+	   *i=*(i-1);
+	    *(iter+1)=n;
    };
-   void erase(iterator iter)
+
+   void Erase(iterator iter)
    {
-	   for (iterator i=iter;i<end();++i) 
+	   for (iterator i=iter;i<End();++i) 
 	   {
 		   *i=*(i+1);
 	   }
 	   --size;
    };
-   };
+
+   TVector<T>&operator =(TVector<T>&cop)
+   {
+	   clear();
+	   for (size_t i=0;i<Cop.size();++i)
+		   push_back(Cop[i]);
+	       return *this;
+   }
+ };
 
  int main () 
- {    TVector <int> A;
-      A.pushback(54); 
-	  cout<<A.popback()<<endl;
-      cout<<A.Size()<<endl;
-	  cout<<A.Capacity()<<endl;
-	  cout<<A.empty()<<endl;
+ {    
+	  TVector <int> A;
+	  cout<<A.Empty()<<endl;
+      A.Resize(10);
+	  cout<<"Capacity: "<<A.Capacity()<<' '<<"Size: "<<A.Size()<<endl;
+	  A[0]=1001;
+	  cout<<"A[0]: "<<A[0]<<endl;
+	  cout<<"Empty: "<<A.Empty()<<endl;
+	  A.Clear();
+	  cout<<"Empty after Clear: "<<A.Empty()<<endl;
+	  for (int i=0;i<10; ++i)
+	       A.Pushback(i);
+	  cout<<"elements:"<<endl;
+      for( TVector<int>::iterator i=A.Begin();i!=A.End();i++)
+	  cout<<*i<<' ';
+      A.Popback();
+	  cout<<endl;
+	  cout <<"elements after Popback: "<<endl;
+	  for( TVector<int>::iterator i=A.Begin();i!=A.End();i++)
+	  cout<<*i<<' ';
+	  cout<<endl;
+      cout<<"Size: "<<A.Size()<<endl;
+	  TVector<int> B=A;
+	  cout<<"Check operator = (B elements ) : "<<endl;
+      for( TVector<int>::iterator i=B.Begin();i!=B.End();i++)
+	  cout<<*i<<' ';
+	  A.Clear();
+	  cout<<endl;
+	  A.Swap(B);
+	  cout<<"A elements after swap: "<<endl;
+	  for( TVector<int>::iterator i=A.Begin();i!=A.End();i++)
+	  cout<<*i<<' ';
+	  cout<<endl<<"Front: "<<A.Front()<<' '<<"Back: "<<A.Back()<<endl;
+	  TVector<int>::iterator i=A.Begin();
+	  int n=105;
+	  A.Insert(i,n);
+	  cout<<"Insert: "<<endl;
+	  for( TVector<int>::iterator i=A.Begin();i!=A.End();i++)
+	  cout<<*i<<' ';
+	  i=A.Begin();
+	  cout<<endl;
+	  A.Erase(i+5);
+	  cout<<"Erase: "<<endl;
+	   for( TVector<int>::iterator i=A.Begin();i!=A.End();i++)
+	  cout<<*i<<' ';
 	  system("pause");
 	  return 0;
  }
