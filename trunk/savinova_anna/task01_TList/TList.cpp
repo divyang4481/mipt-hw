@@ -85,9 +85,9 @@ public:
                         return Node;
                 }
         };
-        class const_iterator
+        /*class const_iterator
         {
-                TNode* Node;
+                const TNode* Node;
         public:
                 const_iterator ()
                 {
@@ -144,7 +144,7 @@ public:
                 {
                         return Node;
                 }
-        };
+        };*/
 private:
         TNode *First;
         TNode *Last;
@@ -204,14 +204,14 @@ public:
                 iterator tmp;
                 return tmp;
         }
-        const_iterator cbegin() const
+        const /*const_*/iterator begin() const
         {
-                const_iterator tmp(First);
+                /*const_*/iterator tmp(First);
                 return tmp;
         }
-        const_iterator cend() const
+        const /*const_*/iterator end() const
         {
-                const_iterator tmp;
+                /*const_*/iterator tmp;
                 return tmp;
         }
         int front() const
@@ -290,14 +290,14 @@ public:
         TList<T>& operator = (const TList<T>& oth)
         {
                 clear();
-                for (const_iterator it = oth.cbegin(); it != oth.cend(); ++it)
+                for (/*const_*/iterator it = oth.begin(); it != oth.end(); ++it)
                         push_back(*it);
                 return *this;
         }
         void PrintStat(char name)
         {
                 cout << name << ": Empty: " << empty() << endl << "Elements: ";
-                for (const_iterator it = cbegin(); it != cend(); ++it)
+                for (/*const_*/iterator it = begin(); it != end(); ++it)
                         cout << *it << " ";
                 cout << endl;
         };
@@ -357,7 +357,7 @@ int main()
         cout << "begin() + 4 = 17" << endl;
         *(i + 4) = 17;
         A.PrintStat('A');        
-        for (TList<int>::const_iterator i = A.cbegin(); i != A.cend(); ++i)
+        for (TList<int>::/*const_*/iterator i = A.begin(); i != A.end(); ++i)
                 cout << *i << " ";
         cout << endl;
         cout << "Test back() = 5" << endl;
