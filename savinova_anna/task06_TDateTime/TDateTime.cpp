@@ -7,14 +7,6 @@ using namespace std;
 class TTimeSpan
 {
         time_t timer;
-        /*bool LeapYear(int year)
-        {
-                if (year % 400 == 0)
-                        return true;
-                if (year % 4 == 0 && year % 100 != 0)
-                        return true;
-                return false;
-        }*/
 public:
         TTimeSpan():timer(0) {}
         TTimeSpan(size_t year, size_t yday, size_t h, size_t m, size_t s)
@@ -127,7 +119,7 @@ public:
                 tm* tmp = localtime(&t);
                 return tmp -> tm_wday;
         }
-        time_t GetUnixTimestamp() const //возвращает unix timestamp
+        time_t GetUnixTimestamp() const
         {
                 time_t tmr;
                 time(&tmr);
@@ -142,7 +134,7 @@ public:
                 time_t timer = mktime(tmp);
                 return timer;
         }
-        static TDateTime Now () //статический метод, возвращающий текущую дату-время
+        static TDateTime Now ()
         {
                 TDateTime tmp;
                 return tmp;
@@ -161,14 +153,14 @@ public:
                 s = oth.Second();
                 return *this;
         }
-        TDateTime& operator + (const TTimeSpan &delta) // возвращает дату-время, смещенную на delta
+        TDateTime& operator + (const TTimeSpan &delta)
         {
                 time_t t = GetUnixTimestamp();
                 t += delta.GetTime();
                 TDateTime* tmp = new TDateTime(t);
                 return *tmp;
         }
-        TDateTime& operator += (const TTimeSpan &delta) // возвращает дату-время, смещенную на delta
+        TDateTime& operator += (const TTimeSpan &delta)
         {
                 time_t t = GetUnixTimestamp();
                 t += delta.GetTime();
@@ -176,15 +168,22 @@ public:
                 *this = tmp;
                 return *this;
         }
-
-        TDateTime& operator - (const TTimeSpan &delta) // возвращает дату-время, смещенную на -delta
+        TDateTime& operator - (const TTimeSpan &delta)
         {
                 time_t t = GetUnixTimestamp();
                 t -= delta.GetTime();
                 TDateTime* tmp = new TDateTime(t);
                 return *tmp;
         }
-        TTimeSpan operator - (const TDateTime &oth) const // возвращает временной промежуток между двумя датами
+        TDateTime& operator -= (const TTimeSpan &delta)
+        {
+                time_t t = GetUnixTimestamp();
+                t += delta.GetTime();
+                TDateTime tmp(t);
+                *this = tmp;
+                return *this;
+        }
+        TTimeSpan operator - (const TDateTime &oth) const
         {
                 time_t timer1 = GetUnixTimestamp(), timer2 = oth.GetUnixTimestamp(), timer;
                 if (timer2 > timer1)
