@@ -137,9 +137,9 @@ public:
 
    TVector<T>&operator =(TVector<T>&cop)
    {
-	   clear();
-	   for (size_t i=0;i<Cop.size();++i)
-		   push_back(Cop[i]);
+	   Ñlear();
+	   for (size_t i=0;i<ñop.size();++i)
+		   push_back(ñop[i]);
 	       return *this;
    }
  };
