@@ -168,6 +168,14 @@ public:
                 TDateTime* tmp = new TDateTime(t);
                 return *tmp;
         }
+        TDateTime& operator += (const TTimeSpan &delta) // возвращает дату-время, смещенную на delta
+        {
+                time_t t = GetUnixTimestamp();
+                t += delta.GetTime();
+                TDateTime tmp(t);
+                *this = tmp;
+                return *this;
+        }
 
         TDateTime& operator - (const TTimeSpan &delta) // возвращает дату-время, смещенную на -delta
         {
@@ -221,9 +229,16 @@ int main ()
         cout << "S1 = T2 - T1" << endl << "T1 + S1: " << T1 + S1 << endl;
         TTimeSpan S2;
         cout << "T1 + S2 = " << T1 + S2 << endl;
+        TTimeSpan S3(1,0,0,0,0);
+        TTimeSpan S4(2,0,0,0,0);
+        TDateTime T3, T4;
+        T3 += S3;
+        T3 += S3;
+        T4 += S4;
+        cout << T3 << endl << T4 << endl;
 
-        
-        TDateTime dt1 = TDateTime::Now();
+
+        /*TDateTime dt1 = TDateTime::Now();
         cout << dt1 << endl;
 
         TTimeSpan sp(1, 1, 1, 1, 1);
@@ -237,7 +252,7 @@ int main ()
         cout << dt2 << endl;
         cout << dt3 << endl;
 
-        
+        */
         return 0;
 }
 
