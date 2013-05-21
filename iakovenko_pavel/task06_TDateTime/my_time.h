@@ -25,6 +25,7 @@ class TTimeSpan{
 	void ToCalendar();
 public:
 	TTimeSpan ();
+	TTimeSpan (const TTimeSpan&);
 	TTimeSpan (int year, int month, int day, int h, int m, int s);
 	TTimeSpan (int year, int month, int day);
 	TTimeSpan (time_t);
@@ -41,7 +42,7 @@ public:
 	int Minute () const;
 	int Second () const;
 	time_t GetUnixTimestamp() const;
-	TTimeSpan& operator= (TTimeSpan& equal);
+	TTimeSpan& operator= (const TTimeSpan& equal);
 	bool operator< (TTimeSpan& compare);
 	//bool operator< (TDateTime& compare);
 };
@@ -52,6 +53,7 @@ class TDateTime{
 	void ToCalendar ();
 public:
 	TDateTime ();
+	TDateTime (const TDateTime&);
 	TDateTime (time_t t);
 	TDateTime (int year, int month, int day, int h, int m, int s);
 	TDateTime (int year, int month, int day);
@@ -66,10 +68,12 @@ public:
 	time_t GetUnixTimestamp() const;
 	static TDateTime Now ();
 	bool operator< (TDateTime& a);
-	TDateTime& operator= (TDateTime& a);
+	TDateTime& operator= (const TDateTime&);
 	TDateTime operator+ (const TTimeSpan& delta);
 	TDateTime operator- (const TTimeSpan& delta);
 	TTimeSpan operator- (const TDateTime& delta);
+	TDateTime operator-= (const TTimeSpan& delta);
+	TDateTime operator+= (const TTimeSpan& delta);
 };
 
 std::ostream& operator<<(std::ostream& out, const TDateTime& date);

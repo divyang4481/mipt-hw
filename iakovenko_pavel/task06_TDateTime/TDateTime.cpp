@@ -28,41 +28,31 @@ int time_zone = 4;
 
 	TTimeSpan:: TTimeSpan (){
 	}
+	TTimeSpan :: TTimeSpan (const TTimeSpan& another){
+		*this = another;
+	}
 	TTimeSpan:: TTimeSpan (time_t period){
 		span_time = period;
 		ToCalendar();
 	}
 	TTimeSpan:: TTimeSpan (int year, int month, int day, int h, int m, int s){
-		struct tm* temp;
-		time_t timer;
-		time (&timer);
-		temp = localtime (&timer);
-		temp->tm_year = year + 70;
-		temp->tm_mon = month;
-		temp->tm_mday = day + 1;
-		temp->tm_hour = h + time_zone;
-		temp->tm_min = m;
-		temp->tm_sec = s;
-		span_time = mktime (temp);
-		span = temp;
+		span.year = year;
+		span.month = month;
+		span.day = day;
+		span.hour = h;
+		span.minute = m;
+		span.second = s;
 	}
 
 
 	TTimeSpan:: TTimeSpan (int year, int month, int day){
-		struct tm* temp;
-		time_t timer;
-		time (&timer);
-		temp = localtime (&timer);
-		temp->tm_year = year + 70;
-		temp->tm_mon = month;
-		temp->tm_mday = day + 1;
-		temp->tm_hour = time_zone;
-		temp->tm_min = 0;
-		temp->tm_sec = 0;
-		span_time = mktime (temp);
+		span.year = year;
+		span.month = month;
+		span.day = day;
 	}
+
 	void TTimeSpan:: ChangeYear (int year){
-		span.year = year + 1970;
+		span.year = year;
 	}
 	void TTimeSpan:: ChangeMonth (int month){
 		span.month = month;
@@ -97,7 +87,7 @@ int time_zone = 4;
 	int TTimeSpan:: Second () const{
 		return span.second;
 	}
-	TTimeSpan& TTimeSpan:: operator= (TTimeSpan& equal){
+	TTimeSpan& TTimeSpan:: operator= (const TTimeSpan& equal){
 		span.year = equal.Year();
 		span.month = equal.Month();
 		span.day = equal.Day();
@@ -128,6 +118,16 @@ int time_zone = 4;
 		timeinfo = temp;
 	}
 
+	TDateTime :: TDateTime (const TDateTime& temp){
+		timeinfo.year = temp.Year();
+		timeinfo.month = temp.Month();
+		timeinfo.day = temp.Day();
+		timeinfo.hour = temp.Hour();
+		timeinfo.minute = temp.Minute();
+		timeinfo.second = temp.Second();
+		timeinfo.wday = temp.DayOfWeek();
+		current_time = temp.GetUnixTimestamp();
+	}
 
 	TDateTime :: TDateTime (time_t t){
 		current_time = t;
@@ -229,7 +229,7 @@ int time_zone = 4;
 		return ( current_time < a.GetUnixTimestamp() );
 	}
 
-	TDateTime& TDateTime :: operator= (TDateTime& temp){
+	TDateTime& TDateTime :: operator= (const TDateTime& temp){
 		timeinfo.year = temp.Year();
 		timeinfo.month = temp.Month();
 		timeinfo.day = temp.Day();
@@ -242,42 +242,60 @@ int time_zone = 4;
 	}
 
 	TDateTime TDateTime :: operator+ (const TTimeSpan& delta){
-		time_t temp_time;
-		temp_time = current_time + delta.GetUnixTimestamp();
-		ToCalendar();
-		return TDateTime ( temp_time);
+		struct tm* temp;
+		time_t timer;
+		time_t current_time;
+		time (&timer);
+		temp = localtime (&timer);
+		temp->tm_year = timeinfo.year + delta.Year() - 1900;
+		temp->tm_mon = timeinfo.month + delta.Month() - 1;
+		temp->tm_mday = timeinfo.day + delta.Day();
+		temp->tm_hour = timeinfo.hour + delta.Hour();
+		temp->tm_min = timeinfo.minute + delta.Minute();
+		temp->tm_sec = timeinfo.second + delta.Second();
+		current_time = mktime (temp);
+		return TDateTime( current_time);
 	}
 
 
 	TDateTime TDateTime :: operator- (const TTimeSpan& delta){
-		time_t temp_time = 0;
-		if ( current_time > delta.GetUnixTimestamp() ){
-			temp_time = current_time - delta.GetUnixTimestamp();
-			ToCalendar();
-		}
-		return TDateTime (temp_time);
+	struct tm* temp;
+		time_t timer;
+		time_t current_time;
+		time (&timer);
+		temp = localtime (&timer);
+		temp->tm_year = timeinfo.year - delta.Year() - 1900;
+		temp->tm_mon = timeinfo.month - delta.Month() - 1;
+		temp->tm_mday = timeinfo.day - delta.Day();
+		temp->tm_hour = timeinfo.hour - delta.Hour();
+		temp->tm_min = timeinfo.minute - delta.Minute();
+		temp->tm_sec = timeinfo.second - delta.Second();
+		current_time = mktime (temp);
+		return TDateTime( current_time);
 	}
 
 	TTimeSpan TDateTime :: operator- (const TDateTime& delta){
-		if ( current_time > delta.GetUnixTimestamp() ){
-			time_t temp_time;
-			temp_time = current_time - delta.GetUnixTimestamp();
-			TTimeSpan a (temp_time);
-			return a;
-		} else {
-			TTimeSpan a;
-			return a;
-		}
+		return TTimeSpan (timeinfo.year - delta.Year(), timeinfo.month - delta.Month(), timeinfo.day - delta.Day(), timeinfo.hour - delta.Hour(), timeinfo.minute - delta.Minute(), timeinfo.second - delta.Second());
+	}
+
+	TDateTime TDateTime:: operator-= (const TTimeSpan& delta){
+		*this = *this - delta;
+		return *this;
+	}
+
+	TDateTime TDateTime:: operator+= (const TTimeSpan& delta){
+		*this = *this + delta;
+		return *this;
 	}
 
 
 	ostream& operator<< (ostream& out, const TDateTime& date){
-		out << "Year: " << date.Year() << endl 
-			<< "Month: " << date.Month()  << endl 
-			<< "Day: " << date.Day()  << endl
-			<< "Hour: " << date.Hour()  << endl
-			<< "Minute: " << date.Minute()  << endl
-			<< "Second: " << date.Second()  << endl;
+		out << date.Hour()<< ":"
+			<< date.Minute()  << ":"
+			<< date.Second()  << " "
+			<< date.Day() << "." 
+			<< date.Month() << "." 
+			<< date.Year()<< endl;
 		return out;
 	}
 
@@ -303,12 +321,12 @@ int time_zone = 4;
 
 
 	ostream& operator<< (ostream& out, const TTimeSpan& date){
-		out << "Year: " << date.Year() - 1970 << endl 
-			<< "Month: " << date.Month() - 1  << endl 
-			<< "Day: " << date.Day() - 1<< endl
-			<< "Hour: " << date.Hour()  - time_zone<< endl
-			<< "Minute: " << date.Minute()  << endl
-			<< "Second: " << date.Second()  << endl;
+		out << date.Hour()<< ":"
+			<< date.Minute()  << ":"
+			<< date.Second()  << " "
+			<< date.Day() << "." 
+			<< date.Month() << "." 
+			<< date.Year()<< endl;
 		return out;
 	}
 
