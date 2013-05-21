@@ -2,6 +2,7 @@
 #include <string>
 #include <set>
 #include <iostream>
+#include <stdlib.h>
 #include "my_set.h"
 
 
