@@ -137,9 +137,9 @@ public:
 
    TVector<T>&operator =(TVector<T>&cop)
    {
-	   Clear();
-	   for (size_t i=0;i<cop.size();++i)
-		   push_back(cop[i]);
+	   Ñlear();
+	   for (size_t i=0;i<ñop.size();++i)
+		   push_back(ñop[i]);
 	       return *this;
    }
  };
@@ -190,6 +190,6 @@ public:
 	  cout<<"Erase: "<<endl;
 	   for( TVector<int>::iterator i=A.Begin();i!=A.End();i++)
 	  cout<<*i<<' ';
-	  //system("pause");
+	  system("pause");
 	  return 0;
  }
