@@ -16,6 +16,14 @@ public:
 	   capacity=1;
 	   buf = new T[1];
    }
+    TVector(TVector<T>&cop)
+	{
+		capacity=cop.capacity;
+		size=0;
+		buf = new T[capacity];
+		for	(size_t i=0;i<cop.size;++i)
+			Pushback(cop[i]);
+	}
 
    const size_t Size() const
    {
