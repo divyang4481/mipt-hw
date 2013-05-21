@@ -22,7 +22,7 @@ class TRBTree {
 			return !(*this == a);
 		}
 
-		TNode& operator= (TNode& a){friend class TRBTree;
+		TNode& operator= (TNode& a){
 			parent = a.parent;
 			left = a.left;
 			right = a.right;
@@ -242,13 +242,18 @@ private:
 public:
 	class iterator{
 		friend class TRBTree;
-		
+
 	public:
 		iterator():el(0), Limit(0){
 		}
 		iterator (TNode* a, TNode* l): el(a), Limit (l){}
+				
+		iterator (const iterator& another){
+			el = another.el;
+			Limit = another.Limit;
+		}
 
-		iterator operator++(){
+		iterator& operator++(){
 			if ( el->right != Limit){
 				el = el->right;
 				while(el->left != Limit)
@@ -266,11 +271,11 @@ public:
 		}
 
 
-		iterator operator--(){
+		iterator& operator--(){
 			if ( el->left != Limit){
 				while(el->right != Limit)
 					el = el->right;
-				return  *this;5
+				return  *this;
 			}
 			for (;el->parent != Limit; el = el->parent){
 				if( el->parent->right == el){
@@ -286,28 +291,85 @@ public:
 			return el->key;
 		}
 
-		bool operator== (iterator& i){
+		bool operator== (const iterator& i){
 			return (el == i.el && Limit == i.Limit);
 		}
 
-		bool operator!= (iterator& i){
+		bool operator!= (const iterator& i){
 			return (el != i.el || Limit != i.Limit);
 		}
-		iterator operator= (iterator& a){
+		iterator& operator= (const iterator& a){
 			el = a.el;
 			Limit = a.Limit;
 			return *this;
 		}
 
-		iterator operator-(int n){
-			for (int i = 0; i < n; ++i)
-				--el;
+	private:
+		TNode* el;
+		TNode* Limit;
+	};
+
+	class const_iterator{
+		friend class TRBTree;
+
+	public:
+		const_iterator():el(0), Limit(0){
+		}
+		const_iterator (TNode* a, TNode* l): el(a), Limit (l){}
+				
+		const_iterator (const const_iterator& another){
+			el = another.el;
+			Limit = another.Limit;
+		}
+
+		const_iterator& operator++(){
+			if ( el->right != Limit){
+				el = el->right;
+				while(el->left != Limit)
+					el = el->left;
+				return *this;;
+			}
+			for (; el->parent != Limit; el = el->parent){
+				if( el->parent->left == el){
+					el = el->parent;
+					return *this;       
+					}
+			}
+			el = Limit;
 			return *this;
 		}
 
-		iterator operator+(int n) {
-			for (int i = 0; i < n; ++i)
-				++*this;
+
+		const_iterator& operator--(){
+			if ( el->left != Limit){
+				while(el->right != Limit)
+					el = el->right;
+				return  *this;
+			}
+			for (;el->parent != Limit; el = el->parent){
+				if( el->parent->right == el){
+					el = el->parent;
+					return *this;
+				}             
+			}
+			el = Limit;
+			return *this;
+		}
+
+		const T& operator*() {
+			return el->key;
+		}
+
+		bool operator== (const const_iterator& i){
+			return (el == i.el && Limit == i.Limit);
+		}
+
+		bool operator!= (const const_iterator& i){
+			return (el != i.el || Limit != i.Limit);
+		}
+		const_iterator& operator= (const const_iterator& a){
+			el = a.el;
+			Limit = a.Limit;
 			return *this;
 		}
 
@@ -334,10 +396,10 @@ public:
 		delete Limit;
 	}
 
-	TRBTree<T> &operator=(const TRBTree<T>& a ){
+	TRBTree<T>& operator=(const TRBTree<T>& a ){
 		destroy(Root);
 		Root = Limit;
-		for (TRBTree<T>::iterator pos = a.begin(); pos != a.end(); ++pos)
+		for (const_iterator pos = a.begin(); pos != a.end(); ++pos)
 			insert (*(pos));
 		return *this;
 	}
@@ -350,14 +412,14 @@ public:
 	iterator begin(){
 		return iterator ( Minimum (Root), Limit );
 	}
-	iterator begin() const {
-		return iterator ( Minimum (Root), Limit );
+	const_iterator begin() const {
+		return const_iterator ( Minimum (Root), Limit );
 	}
 	iterator end(){
 		return iterator ( Limit, Limit );
 	}
-	iterator end() const {
-		return iterator ( Limit, Limit );
+	const_iterator end() const {
+		return const_iterator ( Limit, Limit );
 	}
 	bool empty(){
 		return (Root == Limit);
