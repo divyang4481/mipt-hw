@@ -78,7 +78,7 @@ public:
         if (n>cap)
         {
             T* temp = new T[n];
-            for (int i=0; i<size; ++i)
+            for (size_t i=0; i<size; ++i)
             	temp[i] = buf[i];
             delete [] buf;
             cap = n;
@@ -93,7 +93,9 @@ public:
     }
     void Swap(TVector <T> &other)
     {
-		swap(other, *this);	
+		swap(cap, other.cap);
+		swap(size, other.size);
+		swap(buf, other.buf);
     }
     void Push_back(const T &v)
     {
@@ -140,13 +142,11 @@ public:
 	}
     T& operator [] (size_t n)
     {
-        if (n>=0 && n<=size)
-            return buf[n];
+		return buf[n];
     }
     const T& operator [] (size_t n) const
     {
-        if (n>=0 && n<=size)
-            return buf[n];
+		return buf[n];
     }
 
     iterator begin()
