@@ -9,9 +9,9 @@ class TMatrix
 {
     int row;
     int col;
-    
+    vector <vector<T> > matrix;
     //friend istream& operator>> (istream& in, TMatrix<T> &m);
-public:vector <vector<T>> matrix;
+public:
     TMatrix()
     {
         row = 0;
@@ -31,7 +31,7 @@ public:vector <vector<T>> matrix;
     }
     TMatrix(size_t rowCount, size_t colCount)
     {
-        if (rowCount>=0 && colCount>=0)
+        if (rowCount>0 && colCount>0)
         {
 	        row = rowCount;
         	col = colCount;
@@ -45,11 +45,7 @@ public:vector <vector<T>> matrix;
         }
     }
     ~TMatrix()
-    {
-    	for(int i=0; i<row; i++)
-    		matrix[i].clear();
-        matrix.clear();
-    }
+    {}
     TMatrix& operator= (const TMatrix <T>& other)
     {
     	if (&other!=this)
@@ -130,17 +126,15 @@ public:vector <vector<T>> matrix;
         row = rowCount;
         col = colCount;
         matrix.resize(row);
-        for(int i=0; i<row; i++) 
+        for(size_t i=0; i<row; i++) 
             matrix[i].resize(col);
     }
     const T& At(size_t r, size_t c) const
     {
-	    if (r<row && c<col && r>=0 && c>=0)
 	        return matrix[r][c];
     }
     T& At(size_t r, size_t c)
     {
-	    if (r<row && c<col && r>=0 && c>=0)
 	        return matrix[r][c];
     }
     void Transpose()
@@ -215,9 +209,9 @@ TMatrix<T> ShtrassenMultiply(const TMatrix<T> &A, const TMatrix<T> &B)
         C21 = P2+P4;
         C22 = P1-P2+P3+P6;
 
-        for (int i = 0; i < Ns ; i++)
+        for (size_t i = 0; i < Ns ; i++)
         {
-            for (int j = 0; j < Ns ; j++)
+            for (size_t j = 0; j < Ns ; j++)
             {
                 temp.At(i,j) = C11.At(i,j);
                 if (j+Ns<temp.colCount()) temp.At(i, j+Ns) = C12.At(i,j);
@@ -232,9 +226,9 @@ TMatrix<T> ShtrassenMultiply(const TMatrix<T> &A, const TMatrix<T> &B)
 template <typename T>
 ostream& operator<< (ostream &out, const TMatrix<T> &m) 
 {
-    for (int i=0; i<m.rowCount(); i++)
+    for (size_t i=0; i<m.rowCount(); i++)
     {
-    	for (int j=0; j<m.colCount(); j++) out<<m.At(i,j)<<' ';
+    	for (size_t j=0; j<m.colCount(); j++) out<<m.At(i,j)<<' ';
     	out<<endl;
     }
     return out;

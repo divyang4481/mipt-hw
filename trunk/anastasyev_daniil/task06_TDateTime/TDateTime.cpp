@@ -95,7 +95,15 @@ public:
 		timeptr->tm_mon += mtime.month;
 		timeptr->tm_sec += mtime.sec;
 		timeptr->tm_year += mtime.year;
-		return mktime(timeptr);
+//		return mktime(timeptr);  
+	/*	sp1 (1, 0, 0, 0, 0)
+		sp2 (1, 0, 0, 0, 0)  cur + sp1 + sp2 != cur + sp3     хранить секунды
+		sp3 (2, 0...)
+		
+		
+		
+		operator+=
+		*/
 	}
 	TTimeSpan& operator= (TTimeSpan& other)
 	{
