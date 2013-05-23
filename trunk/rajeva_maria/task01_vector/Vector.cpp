@@ -152,6 +152,18 @@ public:
    }
  };
 
+struct TFoo {
+  static int Created;
+  static int Deleted;
+
+  TFoo() { ++Created; }
+  TFoo(const TFoo&) { ++Created; }
+  ~TFoo() { ++Deleted; }
+};
+
+int TFoo::Created = 0;
+int TFoo::Deleted = 0;
+
  int main () 
  {    
 	  TVector <int> A;
@@ -198,6 +210,14 @@ public:
 	  cout<<"Erase: "<<endl;
 	   for( TVector<int>::iterator i=A.Begin();i!=A.End();i++)
 	  cout<<*i<<' ';
-	  system("pause");
+
+	   {	   TVector<TFoo>C;}
+
+       cout<<endl<<"created: "<<TFoo::Created<<endl;
+	   cout<<"deleted: "<<TFoo::Deleted<<endl;
+	   system("pause");
 	  return 0;
- }
+ } 
+ 
+
+
