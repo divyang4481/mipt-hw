@@ -26,93 +26,58 @@ struct TTime
 
 class TTimeSpan
 {
-	TTime mtime;
+	time_t timer;
 public:
-	TTimeSpan()
+	TTimeSpan(): timer(0)
 	{}
-	TTimeSpan (time_t t)
+	TTimeSpan (time_t t): timer(t)
+	{}
+	TTimeSpan (int year, int day, int h, int m, int s)
 	{
-		time_t t0 = 0;
-		struct tm *timeinfo;
-		timeinfo = gmtime(&t);
-		mtime = timeinfo;
-		struct tm *time0info;
-		time0info = gmtime(&t0);
-		mtime.sec -= time0info->tm_sec;
-		mtime.min -= time0info->tm_min;
-		mtime.hour -= time0info->tm_hour;
-		mtime.day -= time0info->tm_mday;
-		mtime.month -= time0info->tm_mon;
-		mtime.year -= time0info->tm_year;
-	}
-	TTimeSpan (int year, int month, int day, int h, int m, int s)
-	{
-		mtime.day = day;
-		mtime.hour = h;
-		mtime.min = m;
-		mtime.month = month;
-		mtime.sec = s;
-		mtime.year = year;
+		timer = s;
+		timer += m * 60;
+		timer += h * 60 * 60;
+		timer += day * 24 * 60 * 60;
+		timer += year * 365 * 24 * 60 * 60;
 	}
 	TTimeSpan (int h, int m, int s)
 	{
-		mtime.hour = h;
-		mtime.min = m;
-		mtime.sec = s;
+		timer = s;
+		timer += m * 60;
+		timer += h * 60 * 60;
 	}
 	int Year () const
 	{
-		return mtime.year;
-	}
-	int Month () const
-	{
-		return mtime.month;
+		time_t tmp = timer;
+		return (tmp / (24*3600*365));
 	}
 	int Day () const
 	{
-		return mtime.day;
+		time_t tmp = timer;
+		return (tmp / (24*60*60)) % 365;
 	}
 	int Hour () const
 	{
-		return mtime.hour;
+		time_t tmp = timer;
+		return (tmp / (60*60)) % 24;
 	}
 	int Minute () const
 	{
-		return mtime.min;
+		time_t tmp = timer;
+		return (tmp / 60) % 60;
 	}
 	int Second () const
 	{
-		return mtime.sec;
+		time_t tmp = timer;
+		return tmp % 60;
 	}
 	time_t GetUnixTimestamp() const
 	{
-		time_t t = 0;
-		struct tm * timeptr;
-		timeptr = gmtime(&t);
-		timeptr->tm_hour += mtime.hour;
-		timeptr->tm_mday += mtime.day;
-		timeptr->tm_min += mtime.min;
-		timeptr->tm_mon += mtime.month;
-		timeptr->tm_sec += mtime.sec;
-		timeptr->tm_year += mtime.year;
-//		return mktime(timeptr);  
-	/*	sp1 (1, 0, 0, 0, 0)
-		sp2 (1, 0, 0, 0, 0)  cur + sp1 + sp2 != cur + sp3     хранить секунды
-		sp3 (2, 0...)
-		
-		
-		
-		operator+=
-		*/
+		return timer;
 	}
 	TTimeSpan& operator= (TTimeSpan& other)
 	{
-		mtime.day = other.Day();
-		mtime.hour = other.Hour();
-		mtime.min = other.Minute();
-		mtime.month = other.Month();
-		mtime.sec = other.Second();
-		mtime.year = other.Year();
+		timer = other.GetUnixTimestamp();
 		return *this;		
 	}
 	TTimeSpan operator+ (const TTimeSpan &delta)
@@ -132,17 +97,14 @@ public:
 ostream& operator<< (ostream& out, const TTimeSpan& date)
 {
 	out << date.Hour() << ":" << date.Minute() << ":" <<
-		date.Second() << " " << date.Day() << "." <<
-		date.Month() << "." << date.Year();
+		date.Second() << " " << date.Day() << "." << date.Year();
 	return out;
 }
 istream& operator>> (istream& in, TTimeSpan& date)
 {
-	int year, month, day, hour, min, sec;
+	int year, day, hour, min, sec;
 	cout << "Year: ";
 	in >> year;
-	cout << "Month: ";
-	in >> month;
 	cout << "Day: ";
 	in >> day;
 	cout << "Hour: ";
@@ -151,7 +113,7 @@ istream& operator>> (istream& in, TTimeSpan& date)
 	in >> min;
 	cout << "Second: ";
 	in >> sec;
-	TTimeSpan temp (year, month, day, hour, min, sec);
+	TTimeSpan temp (year, day, hour, min, sec);
 	date = temp;
 	return in;
 }
@@ -171,7 +133,7 @@ public:
 	TDateTime (time_t t)
 	{
 		struct tm * timeinfo;
-		timeinfo = gmtime(&t);
+		timeinfo = localtime(&t);
 		mtime = timeinfo;
 	}
 	TDateTime (int year, int month, int day, int h, int m, int s)
@@ -183,7 +145,7 @@ public:
 		mtime.sec = s;
 		mtime.year = year-1900;
 		time_t t = GetUnixTimestamp();
-		struct tm * timeinfo = gmtime(&t);
+		struct tm * timeinfo = localtime(&t);
 		mtime.wday = timeinfo->tm_wday;
 	}
 	TDateTime (int year, int month, int day)
@@ -192,7 +154,7 @@ public:
 		mtime.month = month-1;
 		mtime.year = year-1900;
 		time_t t = GetUnixTimestamp();
-		struct tm * timeinfo = gmtime(&t);
+		struct tm * timeinfo = localtime(&t);
 		mtime.wday = timeinfo->tm_wday;
 	}
 	TDateTime (string s)
@@ -310,7 +272,6 @@ istream& operator>> (istream& in, TDateTime& date)
 
 int main()
 {
-        /*
 	TDateTime time1;
 	cout<<"CurTime:  "<<time1<<endl;
 	TDateTime time2(2000, 12, 01);
@@ -327,17 +288,16 @@ int main()
 	cout<<time1 <<" < "<< time3<<":  " <<(time1 < time3)<<endl;
 	TTimeSpan sptime1(12, 2, 5);
 	cout<<time1<<" + 12:2:5 :  "<<time1 + sptime1<<endl;
-	TTimeSpan sptime2(0, 2, 23, 11, 3, 4);
-	cout<<sptime2<<endl;
-	cout<<time3<<" + 23.02 11:03:04:  "<<time3 + sptime2<<endl;
+	TTimeSpan sptime2(0, 23, 11, 3, 4);
+	cout<<"sptime2(0, 23, 11, 3, 4): "<<sptime2<<endl;
+	cout<<time3<<" + 23 11:03:04:  "<<time3 + sptime2<<endl;
 	cout<<time5<< " - "<< time3 << ":  "<< (time5-time3)<<endl;
 	cout<<sptime2<<" - "<<sptime1<<" :  "<<(sptime2-sptime1)<<endl;
 	cout<<sptime1<<" < "<<sptime2<<" :  "<<(sptime1<sptime2)<<endl;
-        */
         TDateTime dt = TDateTime::Now();
         cout << dt << endl;
 
-        TTimeSpan span(1, 1, 1, 0, 0, 0);
+        TTimeSpan span(1, 31, 0, 0, 0);
         TDateTime dt2 = dt + span;
         cout << dt2 << endl;
 
@@ -348,6 +308,5 @@ int main()
 
         dt = dt - span;
         cout << dt << endl;
-
 	return 0;
 }
