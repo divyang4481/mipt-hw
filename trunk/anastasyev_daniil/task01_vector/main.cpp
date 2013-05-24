@@ -3,6 +3,80 @@
 using namespace std;
 
 template <typename T>
+struct TFoo 
+{
+    T Value;
+    TFoo() : Value(T(0)) { ++Created; }
+	TFoo(T v): Value(v) { ++Created; }
+    TFoo(const TFoo &other) : Value(other.Value) { ++Created; }
+    ~TFoo() { ++Deleted; }
+    bool operator< (const TFoo& other) const
+    {
+        return Value < other.Value;
+    }
+    TFoo& operator= (const TFoo& other)
+    {
+        Value = other.Value;
+		return *this;
+    }
+    TFoo& operator= (T r) 
+    {
+        Value = r;
+		return *this;
+    }
+	void operator += (const TFoo &other)
+	{
+		Value += other.Value;
+	}
+	void operator -= (const TFoo &other)
+	{
+		Value -= other.Value;
+	}
+	void operator *= (const TFoo &other)
+	{
+		Value *= other.Value;
+	}
+	TFoo operator+ (const TFoo &other) const
+	{
+		TFoo temp(*this);
+		temp+=other;
+		return temp;
+	}
+	TFoo operator- (const TFoo &other) const
+	{
+		TFoo temp(*this);
+		temp-=other;
+		return temp;
+	}
+	TFoo operator*(const TFoo &other) const
+	{
+		TFoo temp(*this);
+		temp *= other;
+		return temp;
+	}
+	TFoo operator* (T v) const
+	{
+		TFoo temp(*this);
+		temp.Value*=v;
+		return temp;
+	}
+	bool operator== (const TFoo &a) const
+	{
+		return (Value == a.Value);
+	}
+	static int Created;
+    static int Deleted;
+    static void PrintStats() 
+	{
+        cout << "TFoo::Created = " << Created << endl << "TFoo::Deleted = " << Deleted << endl;
+    }
+};
+
+template<> int TFoo<int>::Created = 0;
+template<> int TFoo<int>::Deleted = 0;
+
+
+template <typename T>
 class TVector
 {
     size_t size;
@@ -11,38 +85,28 @@ class TVector
 public:
     typedef T* iterator;
     typedef const T* const_iterator;
-	static int Created;
-	static int Deleted;
     TVector()
     {
         size = 0;
         cap = 1;
         buf = 0;
-        ++Created;
-        cout << "Creating " << Created << endl;
     }
     TVector(size_t s)
     {
         size = s;
         cap = s;
         buf = new T [s];
-        ++Created;
-        cout << "Creating " << Created << endl;
     }
     TVector(const TVector <T> &other)
     {
         this->buf = NULL;
         *this = other;
-        ++Created;
-        cout << "Creating " << Created << endl;        
     }
     ~TVector()
     {
         size = 0;
         cap = 0;
-        delete [] buf;
-        ++Deleted;
-        cout << "Deleting " << Deleted << endl;        
+        delete [] buf;      
 	}    
 	TVector& operator = (const TVector<T> &other)
     {
@@ -183,9 +247,6 @@ public:
 	}
 };
 
-template<> int TVector<int>::Created=0;
-template<> int TVector<int>::Deleted=0;
-
 int main()
 {
     TVector <int> v(2);
@@ -240,5 +301,13 @@ int main()
 	cout<<"v.front(): "<<v.front()<<endl<<"v.back(): "<<v.back()<<endl;
 	v.Clear();
 	cout<<"v.Clear:"<<endl;
+	cout << "Memory test" << endl;
+	{
+		TVector<TFoo<int> > a;
+		a.Resize(5);
+		a.Reserve(100);
+		a.Resize(1);
+	}
+	TFoo<int>::PrintStats();
     return 0;
 }
