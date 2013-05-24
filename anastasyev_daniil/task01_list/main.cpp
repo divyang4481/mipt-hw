@@ -3,195 +3,229 @@
 using namespace std;
 
 template <typename T>
-struct TNode
+struct TFoo 
 {
-	static int Created, Deleted;
-    T val;
-    TNode <T> *prev, *next;
-    TNode()
+    T Value;
+    TFoo() : Value(T(0)) { ++Created; }
+	TFoo(T v): Value(v) { ++Created; }
+    TFoo(const TFoo &other) : Value(other.Value) { ++Created; }
+    ~TFoo() { ++Deleted; }
+    bool operator< (const TFoo& other) const
     {
-        val = 0;
-        prev = 0;
-        next = 0;
-		++Created;
+        return Value < other.Value;
     }
-    TNode(T v)
+    TFoo& operator= (const TFoo& other)
     {
-        val = v;
-        prev = 0;
-        next = 0;
-		++Created;
+        Value = other.Value;
+		return *this;
     }
-    TNode(T v, TNode *p, TNode *n)
+    TFoo& operator= (T r) 
     {
-        val = v;
-        prev = p;
-        next = n;
-		++Created;
+        Value = r;
+		return *this;
     }
-    ~TNode()
-    {    
-		++Deleted;
+	void operator += (const TFoo &other)
+	{
+		Value += other.Value;
 	}
+	void operator -= (const TFoo &other)
+	{
+		Value -= other.Value;
+	}
+	void operator *= (const TFoo &other)
+	{
+		Value *= other.Value;
+	}
+	TFoo operator+ (const TFoo &other) const
+	{
+		TFoo temp(*this);
+		temp+=other;
+		return temp;
+	}
+	TFoo operator- (const TFoo &other) const
+	{
+		TFoo temp(*this);
+		temp-=other;
+		return temp;
+	}
+	TFoo operator*(const TFoo &other) const
+	{
+		TFoo temp(*this);
+		temp *= other;
+		return temp;
+	}
+	TFoo operator* (T v) const
+	{
+		TFoo temp(*this);
+		temp.Value*=v;
+		return temp;
+	}
+	bool operator== (const TFoo &a) const
+	{
+		return (Value == a.Value);
+	}
+	static int Created;
+    static int Deleted;
+    static void PrintStats() 
+	{
+        cout << "TFoo::Created = " << Created << endl
+            << "TFoo::Deleted = " << Deleted << endl;
+    }
 };
 
-template <typename T>
-class TIterator
-{
-    TNode <T> *node;
-public:
-	TIterator():node(0){}
-	TIterator(TNode <T> *t):node(t){}
-    T& operator *()
-    {
-        return node->val;
-    }
-    TIterator& operator ++()
-    {
-        node = node->next;
-        return *this;
-    }
-    TIterator& operator --()
-    {
-		node = node->prev;
-        return *this;
-    }
-    TIterator operator ++(int)
-    {
-        TIterator it(*this);
-        ++(*this);
-        return it;
-    }
-    TIterator operator --(int)
-    {
-        TIterator it(*this);
-        --(*this);
-        return it;
-    }
-    bool operator ==(const TIterator& other)
-    {   
-        return (node==other.node);
-    }
-    bool operator !=(const TIterator& other)
-    {   
-        return (!(*this==other));
-    }
-	T* operator ->() const
-	{
-		return (&**this);
-	}
-	TNode <T>* nd()
-	{
-		return node;
-	}
-	TIterator operator+ (int n)
-	{
-		if (node->next==0)
-			return *this;
-		for (int i=0; i<n; ++i)
-			++*this;
-		return *this;
-	}
-};
+
+template<> int TFoo<int>::Created = 0;
+template<> int TFoo<int>::Deleted = 0;
+
 
 template <typename T>
 class TList
 {
-    TNode <T> *first, *last;
-public:
 
-	typedef TIterator <T> iterator;
-	typedef TNode <T> Node;
-    TList()
-    {
-        first = 0;
-        last = 0;
-    }
-    TList(TList <T> &lst)
-    {
-        if (lst.first==0) 
-        {
-            TList();
-            return;
-        }
-        Node *p = new Node (lst.first->val);
-        first = p;
-        Node *c = lst.first -> next;
-		for (; c; c = c -> next, p = p -> next)
-        {
-            Node *np = new Node(c->val, p, 0);
-            p -> next = np;
-        }
-        last = p;
-    }
-    ~TList()
-    {
-        while (first)
-        {
-            Node *p=first -> next;
-            delete first;            
-            first = p;
-        }
-    }
-	bool Empty() const
+	struct TNode
 	{
-		return (first);
-	}
-	TIterator <T> Begin()
+	friend class TList;
+		T val;
+		TNode *prev, *next;
+		TNode()
+		{
+			val = 0;
+			prev = 0;
+			next = 0;
+		}
+		TNode(T v)
+		{
+			val = v;
+			prev = 0;
+			next = 0;
+		}
+		TNode(TNode &t)
+		{
+			val = t.val;
+			prev = t.prev;
+			next = t.next;
+		}
+		TNode(T v, TNode *p, TNode *n)
+		{
+			val = v;
+			prev = p;
+			next = n;
+		}
+		~TNode()
+		{}
+	};
+
+public:
+	class iterator
 	{
-		return iterator(first);
-	}
-	TIterator <T> End()
+		TNode  *node;
+	public:
+		friend class TList;
+		iterator(): node(T(0)){}
+		iterator(TNode *t): node(t){}
+		T& operator *()
+		{
+			return node->val;
+		}
+		iterator& operator ++()
+		{
+			node = node->next;
+			return *this;
+		}
+		iterator& operator --()
+		{
+			node = node->prev;
+			return *this;
+		}
+		iterator operator ++(int)
+		{
+			iterator it(*this);
+			++(*this);
+			return it;
+		}
+		iterator operator --(int)
+		{
+			iterator it(*this);
+			--(*this);
+			return it;
+		}
+		bool operator ==(const iterator& other)
+		{   
+			return (node==other.node);
+		}
+		bool operator !=(const iterator& other)
+		{   
+			return (!(*this==other));
+		}
+		T* operator ->() const
+		{
+			return (&(node->val));
+		}
+		TNode* nd()
+		{
+			return node;
+		}
+	};
+
+	class const_iterator
 	{
-		return iterator(last);
-	}
-	void Clear()
-	{
-        while (first)
-        {
-            Node *p=first -> next;
-            delete first;            
-            first = p;
-        }
-		first = 0;
-		last = 0;
-	}
-	void Swap(TList& other)
-	{
-		swap(*this,other);
-	}
-	void Push_back(int val)
+		TNode  *node;
+		TNode* nd()
+		{
+			return node;
+		}
+	public:
+		friend class TList;
+		const_iterator(): node(T(0)){}
+		const_iterator(TNode *t): node(t){}
+		const T& operator *()
+		{
+			return node->val;
+		}
+		const_iterator& operator ++()
+		{
+			node = node->next;
+			return *this;
+		}
+		const_iterator& operator --()
+		{
+			node = node->prev;
+			return *this;
+		}
+		const_iterator operator ++(int)
+		{
+			iterator it(*this);
+			++(*this);
+			return it;
+		}
+		const_iterator operator --(int)
+		{
+			iterator it(*this);
+			--(*this);
+			return it;
+		}
+		bool operator ==(const const_iterator& other)
+		{   
+			return (node==other.node);
+		}
+		bool operator !=(const const_iterator& other)
+		{   
+			return (!(*this==other));
+		}
+		const T* operator ->() const
+		{
+			return (&(node->val));
+		}
+
+	};
+private:
+    TNode *first, *last;
+    void Insert(TNode* where, T val)
     {
-        Node *p = new Node(val);
-        Push_back(p);
-    }
-    void Push_back(Node *node)
-    {
-        node -> prev = last;
-        if (last != 0)
-            last -> next = node;
-        else first = node;
-        last = node;
-    }
-    void Push_front(T val)
-    {
-        Node *p = new Node(val);
-		Push_front(p);
-    }
-    void Push_front(Node *node)
-    {
-        node -> next = first;
-        if (first != 0)
-            first -> prev = node;
-        else last = node;
-        first = node;
-    }
-    void Insert(Node* where, T val)
-    {
-        Node *p = new Node(val);
+        TNode *p = new TNode(val);
         Insert(where, p);
     }
-	void Insert(Node* where, Node* p)
+	void Insert(TNode* where, TNode* p)
 	{
 		if (where==first)
 		{
@@ -206,82 +240,191 @@ public:
 			where->prev = p;
 		}	
 	}
-	void Insert(iterator pos, T val)
+	void Extract(TNode* p)
 	{
-		Insert(pos.nd(), val);
-	}
-	void Insert(iterator pos, iterator first, iterator last)
-	{
-		for (; first!=last; --last, --pos)
-			Insert(pos.nd(), *last);
-	}
-	void Extract(Node* p)
-	{
-		if (p==first && p==last)
+		if (p == first && p == last->prev)
 		{
 			first=0;
-			last=0;
+			delete p;
+			last->prev = 0;
+			last->next = 0;
 			return;
 		}
 		if (p==first)
 			first = p->next;
 		else
 			p->prev->next = p->next;
-		if (p==last)
-			last = p->prev;
-		else
-			p->next->prev = p->prev;
+		p->next->prev = p->prev;
+		delete p;	
 	}
-	void Erase(iterator pos)
+public:
+    TList()
+    {
+        first = 0;
+        last = new TNode;
+		last->next = 0;
+		last->prev = 0;
+    }
+    TList(TList &lst)
+    {
+        if (lst.first==0) 
+        {
+            TList();
+            return;
+        }
+		*this = lst;
+    }
+    ~TList()
+    {
+		Clear();
+		delete last;
+    }
+	bool Empty() const
 	{
-		Extract(pos.nd());
+		return (first == 0);
+	}
+	iterator Begin()
+	{
+		return iterator(first);
+	}
+	iterator End()
+	{
+		return iterator(last);
+	}
+	const_iterator Begin() const 
+	{
+		return iterator(first);
+	}
+	const_iterator End() const 
+	{
+		return iterator(last);
+	}
+	void Clear()
+	{
+        while (first != last && first != 0)
+        {
+            TNode *p=first -> next;
+            delete first;            
+            first = p;
+        }
+		first = 0;
+	}
+	void Swap(TList& other)
+	{
+		swap(first, other.first);
+		swap(last, other.last);
+	}
+	void Push_back(T val)
+    {
+        TNode *node = new TNode(val);
+		node->next = last;
+        if (first == 0)
+		{
+			first = node;
+		}
+        else 
+		{
+			node->prev = last->prev;
+			last->prev->next = node;
+		}
+        last->prev = node;
+    }
+    void Push_front(T val)
+    {
+        TNode *node = new TNode(val);
+		node->next = first;
+        if (first != 0)
+            first->prev = node;
+        else 
+		{	
+			last->prev = node;
+			node->next = last;
+		}
+        first = node;
+    }
+
+	void Insert(iterator pos, T val)
+	{
+		Insert(pos.nd(), val);
+	}
+	void Insert(iterator pos, iterator first, iterator last)
+	{
+		--last;
+		for (; first!=last; --last, --pos)
+			Insert(pos.nd(), *last);
+		Insert(pos.nd(), *last);
 	}
 
-	void Erase(iterator first, iterator last)
+	iterator Erase(iterator pos)
+	{
+		iterator tmp = pos;
+		++pos;
+		Extract(tmp.nd());
+		return pos;
+	}
+
+	iterator Erase(iterator first, iterator last)
 	{ 
-		for ( ; first!=last; ++first) Extract(first.nd());
+		for ( ; first!=last; )
+		{
+			iterator tmp = first;
+			++first;
+			Extract(tmp.nd());
+		}
+		return last;
 	}
 
 	void Splice(iterator pos, TList& x)
 	{
-		iterator it=x.End();
-		for (; it!=x.Begin(); --pos, --it)
-		{
-			Insert(pos,*it);
-			iterator t=it;
-			x.Erase(t);
-		}
-		Insert(pos,*it);
-		x.Erase(it);
+		TNode *tmp = pos.nd()->next;
+		tmp->prev = x.first;
+		pos.nd()->next = x.first;
+		x.first->prev = pos.nd();
+		x.last->prev->next = tmp;
+		x.first = 0;
+		x.last->next = 0;
+		x.last->prev = 0;
 	}
 
 	void Splice (iterator pos, TList& x, iterator it)
 	{
-		Insert(pos,*it);
-		x.Erase(it);
+		TNode *tmp2 = it.nd()->prev;
+		TNode *tmp = pos.nd()->next;
+		tmp->prev = it.nd();
+		pos.nd()->next = it.nd();
+		it.nd()->prev = pos.nd();
+		x.last->prev->next = tmp;
+		tmp->prev = x.last->prev;
+		
+		x.last->prev = tmp2;
+		tmp2->next = x.last;
 	}
 	
 	void Splice (iterator pos, TList& x, iterator first, iterator last)
 	{
-		iterator it = --last;
-		for (; it!=first; --pos, --it)
-		{
-			Insert(pos,*it);
-			iterator t=it;
-			x.Erase(t);
-		}
-		Insert(pos,*it);
-		x.Erase(it);
+		TNode *tmp2 = first.nd()->prev;
+		TNode *tmp3 = last.nd()->next;
+		TNode *tmp = pos.nd()->next;
+		tmp->prev = first.nd();
+		pos.nd()->next = first.nd();
+		it.nd()->prev = pos.nd();
+		last.nd()->prev->next = tmp;
+		tmp->prev = last.nd()->prev;
+
+		tmp2->next = tmp3;
+		tmp3->prev = tmp2;
 	}
-	T pop_back()
+	T Pop_back()
 	{
-		T t = last->val;
-		last = last->prev;
-		delete last->next;
-		last->next = NULL;
+		T t = last->prev->val;
+		TNode *tmp = new TNode (*(last->prev));
+		delete last->prev;
+		last->prev = tmp->prev;
+		tmp->prev->next = last;
+		delete tmp;
 		return t;
 	}
-	T pop_front () 
+	T Pop_front () 
 	{
 		T t = first->val;
 		first = first->next;
@@ -289,11 +432,19 @@ public:
 		first->prev = 0;
 		return t;
 	}
-	T& front ()
+	T& Front ()
 	{
 		return first->val;
 	}
-	T& back () 
+	T& Back () 
+	{
+		return last->prev->val;
+	}
+	const T& Front () const
+	{
+		return first->val;
+	}
+	const T& Back () const
 	{
 		return last->prev->val;
 	}
@@ -301,61 +452,82 @@ public:
 	{
 		if (this!=&other)
 		{
-			Clear();
-			Node *temp = other.first;
-			while (temp!=other.last)
+			if (!Empty())
+				Clear();
+			TNode *p = new TNode (other.first->val);
+			first = p;
+			TNode *c = other.first->next;
+			for (; c; c = c -> next, p = p -> next)
 			{
-				Push_back(temp->val);
-				temp = temp->next;
+				TNode *np = new TNode(c->val, p, 0);
+				p -> next = np;
 			}
-			Push_back(temp->val);
+			last = p;
 		}
 		return *this;
 	}
 
 };
 
-int TNode<int>:: Created=0;
-int TNode<int>:: Deleted=0;
-
-void Print(TList <int> &lst)
+template <typename T>
+ostream& operator<< (ostream &out, const TFoo<T> &t) 
 {
-	TList <int>::iterator it=lst.Begin();
+	out << t.Value;
+    return out;
+};
+
+template <typename T>
+void Print(TList <T> &lst)
+{
+	TList <T>::iterator it=lst.Begin();
     for (; it!=lst.End(); ++it) cout <<' '<<*it;
-	cout <<' '<<*it<<endl;
+	cout<<endl;
 }
 
 int main()
 {
-    TList <int> a;
-    for (int i=0; i<10; i++) a.Push_back(i);
-	cout<<"a: "<<endl;
-	Print(a);
-    TList <int> b;
-    for (int i=0; i<10; i++) b.Push_front(i);
-	cout<<"b: "<<endl;
-	Print(b);
-	a.Swap(b);
-	cout<<"Swap:"<<endl;
-	cout<<"a: "<<endl; Print(a);
-	cout<<"b: "<<endl; Print(b);
-	a.pop_back();
-	cout<<"a.pop_back(): "<<endl; Print(a);
-	a.pop_front();
-	cout<<"a.pop_front(): "<<endl; Print(a);
-	a.Insert(a.Begin(),4);
-	cout<<"a.Insert(a.Begin(),4): "<<endl; Print(a);
-	a.Insert(a.Begin()+5,a.Begin(),a.Begin()+2);
-	cout<<"a.Insert(a.Begin()+5,a.Begin(),a.Begin()+2): "<<endl; Print(a);
-	a.Erase(a.Begin()+5);
-	cout<<"a.Erase(a.Begin()+5): "<<endl; Print(a);
-	a.Erase(a.Begin()+5,a.Begin()+7);
-	cout<<"a.Erase(a.Begin()+5,a.Begin()+7): "<<endl; Print(a);
-	a.Splice(a.Begin()+2,b);
-	cout<<"a.Splice(a.Begin()+2,b): "<<endl; Print(a);
-	b = a;
-	a.Splice(a.Begin()+2,b,b.Begin()+1,b.Begin()+4);
-	cout<<"a.Splice(a.Begin()+2,b,b.Begin()+1,b.Begin()+4): "<<endl; Print(a);
+	{
+		TList <TFoo<int> > a;
+		for (int i=0; i<10; i++) a.Push_back(i);
+		cout<<"a: "<<endl;
+		Print(a);
+		TList <TFoo<int> > b;
+		for (int i=0; i<10; i++) b.Push_front(i);
+		cout<<"b: "<<endl;
+		Print(b);
+		TList <TFoo<int> > c(b);
+		cout<<"c(b): "<<endl;
+		Print(c);
+		a.Swap(b);
+		cout<<"Swap:"<<endl;
+		cout<<"a: "<<endl; Print(a);
+		cout<<"b: "<<endl; Print(b);
+		a.Pop_back();
+		cout<<"a.pop_back(): "<<endl; Print(a);
+		a.Pop_front();
+		cout<<"a.pop_front(): "<<endl; Print(a);
+		a.Insert(++a.Begin(),4);
+		cout<<"a.Insert(++a.Begin(),4): "<<endl; Print(a);
+
+		TList<TFoo<int> >::iterator it = a.Begin();
+		for (int i=0; i<5; ++i, ++it);
+		a.Insert(it, a.Begin(), ++a.Begin());
+		cout<<"a.Insert(a.Begin()+5, a.Begin(), a.Begin()+1): "<<endl; Print(a);
+		it = a.Begin();
+		for (int i=0; i<5; ++i, ++it);
+		it = a.Erase(it);
+		cout<<"a.Erase(a.Begin()+5): "<<endl; Print(a);
+		TList<TFoo<int> >::iterator j = a.End();
+		j--;
+		it = a.Erase(it, j);
+		cout<<"a.Erase(a.Begin()+5, --a.End()): "<<endl; Print(a);
+		a.Splice(a.Begin()++, b);
+		cout<<"a.Splice(a.Begin()+1, b): "<<endl; Print(a);
+		it = c.Begin();
+		++it;
+		a.Splice(a.Begin(), c, it);
+		cout<<"a.Splice(a.Begin(), c, ++c.Begin()): "<<endl; Print(a);
+	}
+	TFoo<int>::PrintStats();
 	return 0;
-    cout <<endl<<TNode<int>::Created<<endl<<TNode<int>::Deleted<<endl;
 }
