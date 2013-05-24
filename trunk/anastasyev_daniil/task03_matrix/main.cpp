@@ -3,6 +3,7 @@
 #include <string>
 #include <cmath>
 #include <time.h>
+#include <stdlib.h>
 using namespace std;
 
 typedef long long i64;
@@ -500,7 +501,7 @@ istream& operator>> (istream& in, TMatrix<T> &m)
 		for(int j=0; j<col; ++j)
 		{
 			T a;
-			cin >> tp;
+			cin >> a;
 			result.At(i,j)=a;
 		}
 	}

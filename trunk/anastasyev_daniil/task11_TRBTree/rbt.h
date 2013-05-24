@@ -9,6 +9,7 @@ class TRBTree
 public:
 	struct TNode
 	{
+    friend class TRBTree;
 		T key;
 		TNode *parent;
 		TNode *left;
@@ -33,7 +34,7 @@ public:
 			parent = a.parent;
 			left = a.left;
 			right = a.right;
-			color = a.color;
+			clr = a.clr;
 			key = a.key;
 		}
 	};
@@ -70,7 +71,7 @@ public:
 				if ( it->parent->left == it)
 				{
 					it = it->parent;
-					return *this;       
+					return *this;
 				}
 			}
 			it = Nil;
@@ -90,12 +91,12 @@ public:
 				{
 					it = it->parent;
 					return *this;
-				}             
+				}
 			}
 			it = Nil;
 			return *this;
 		}
-		T& operator*() 
+		T& operator*()
 		{
 			return it->key;
 		}
@@ -146,7 +147,7 @@ public:
 				if (it->parent->left == it)
 				{
 					it = it->parent;
-					return *this;       
+					return *this;
 				}
 			}
 			it = Nil;
@@ -166,7 +167,7 @@ public:
 				{
 					it = it->parent;
 					return *this;
-				}             
+				}
 			}
 			it = Nil;
 			return *this;
@@ -208,7 +209,7 @@ private:
 			Root = v;
 		else if ( u == u->parent->left )
 			u->parent->left = v;
-		else 
+		else
 			u->parent->right = v;
 		v->parent = u->parent;
 	}
@@ -231,7 +232,7 @@ private:
 		x->parent = y;
 	}
 
-	void LeftRotate (TNode *x) 
+	void LeftRotate (TNode *x)
 	{
 		if ( x->right == Nil )
 			return;
@@ -249,18 +250,18 @@ private:
 		y->left = x;
 		x->parent = y;
 	}
-	const TNode* Minimum(TNode *T) const
+	const TNode* Minimum(TNode *t) const
 	{
-		if (T == 0) return 0;
-		TNode* curr = T;
+		if (t == 0) return 0;
+		TNode* curr = t;
 		while (curr->left != Nil)
 			curr = curr->left;
 		return curr;
 	}
-	const TNode* Maximum(TNode *T) const
+	const TNode* Maximum(TNode *t) const
 	{
-		if (T == 0) return 0;
-		TNode *curr = T;
+		if (t == 0) return 0;
+		TNode *curr = t;
 		while (curr->right != Nil)
 			curr = curr->right;
 		return curr;
@@ -284,11 +285,11 @@ private:
 		return 0;
 	}
 
-	void Insert_Fixup (TNode *node) 
+	void Insert_Fixup (TNode *node)
 	{
 		while ( node->parent->clr == RED )
 		{
-			if (node->parent == node->parent->parent->left) 
+			if (node->parent == node->parent->parent->left)
 			{
 				TNode *y =node->parent->parent->right;
 				if (y->clr == RED)
@@ -300,7 +301,7 @@ private:
 				}
 				else
 				{
-					if (node == node->parent->right) 
+					if (node == node->parent->right)
 					{
 						node = node->parent;
 						LeftRotate (node);
@@ -310,7 +311,7 @@ private:
 					RightRotate (node->parent->parent);
 				}
 			}
-			else 
+			else
 			{
 				TNode *y =node->parent->parent->left;
 				if (y->clr == RED)
@@ -320,9 +321,9 @@ private:
 					node->parent->parent->clr = RED;
 					node = node->parent->parent;
 				}
-				else 
+				else
 				{
-					if (node == node->parent->left) 
+					if (node == node->parent->left)
 					{
 						node = node->parent;
 						RightRotate (node);
@@ -338,12 +339,12 @@ private:
 
 	void Delete_Fixup (TNode *x)
 	{
-		while (x != Root && x->clr == BLACK ) 
+		while (x != Root && x->clr == BLACK )
 		{
 			if (x == x->parent->left )
 			{
 				TNode* w = x->parent->right;
-				if ( w->clr == RED ) 
+				if ( w->clr == RED )
 				{
 					w->clr = BLACK;
 					x->parent->clr = RED;
@@ -354,8 +355,8 @@ private:
 				{
 					w->clr = RED;
 					x = x->parent;
-				} 
-				else 
+				}
+				else
 				{
 					if (w->right->clr == BLACK )
 					{
@@ -369,12 +370,12 @@ private:
 					w->right->clr = BLACK;
 					LeftRotate(x->parent);
 					x = Root;
-				} 
-			} 
-			else 
+				}
+			}
+			else
 			{
 				TNode* w = x->parent->left;
-				if ( w->clr == RED ) 
+				if ( w->clr == RED )
 				{
 					w->clr = BLACK;
 					x->parent->clr = RED;
@@ -385,8 +386,8 @@ private:
 				{
 					w->clr = RED;
 					x = x->parent;
-				} 
-				else 
+				}
+				else
 				{
 					if (w->left->clr == BLACK )
 					{
@@ -417,10 +418,10 @@ public:
 	{
 		*this = a;
 	}
-	~TRBTree () 
+	~TRBTree ()
 	{
 		if (Root != Nil)
-			Destroy(Root); 
+			Destroy(Root);
 		delete Nil;
 	}
 	TRBTree& operator= (const TRBTree<T> &other)
@@ -441,7 +442,7 @@ public:
 	{
 		return iterator(Minimum (Root), Nil);
 	}
-	const_iterator begin() const 
+	const_iterator begin() const
 	{
 		return const_iterator(Minimum (Root), Nil);
 	}
@@ -449,7 +450,7 @@ public:
 	{
 		return iterator(Nil, Nil);
 	}
-	const_iterator end() const 
+	const_iterator end() const
 	{
 		return const_iterator(Nil, Nil);
 	}
@@ -460,13 +461,13 @@ public:
 	void clear()
 	{
 		if (Root != Nil)
-			Destroy (Root); 
+			Destroy (Root);
 		Root = Nil;
 	}
 	iterator find(T k)
 	{
 		TNode *curr = Root;
-		while (curr != Nil) 
+		while (curr != Nil)
 		{
 			if (curr->key == k) return iterator(curr, Nil);
 			curr = (k < curr->key) ? curr->left : curr->right;
@@ -479,10 +480,10 @@ public:
 		TNode *node = new TNode(v);
 		TNode  *y = Nil;
 		TNode  *x = Root;
-		while ( x != Nil) 
+		while ( x != Nil)
 		{
 			y = x;
-			if (node->key < x->key) 
+			if (node->key < x->key)
 				x = x->left;
 			else
 			{
@@ -497,7 +498,7 @@ public:
 				Root = node;
 			else if ( node->key < y->key )
 				y->left = node;
-			else 
+			else
 				y->right = node;
 			node->left = node->right = Nil;
 			node->clr = RED;
@@ -507,31 +508,31 @@ public:
 			delete node;
 		return std::make_pair<TRBTree<T>::iterator, bool> (iterator(node, Nil), has);
 	}
-	iterator erase (iterator a) 
+	iterator erase (iterator a)
 	{
 		TNode* node = a.it;
 		++a;
 		TNode* x;
 		TNode* y = node;
 		int y_original_color = y->clr;
-		if (node->left == Nil) 
+		if (node->left == Nil)
 		{
 			x = node->right;
 			Transplant(node, node->right);
-		} 
+		}
 		else if (node->right == Nil)
 		{
 			x = node->left;
 			Transplant(node, node->left);
 		}
-		else 
+		else
 		{
 			y = const_cast<TNode*>( Minimum(node->right) );
 			y_original_color = y->clr;
 			x = y->right;
 			if ( y->parent == node )
 				x->parent = y;
-			else 
+			else
 			{
 				Transplant(y, y->right);
 				y->right = node->right;
@@ -548,3 +549,4 @@ public:
 		return a;
 	}
 };
+
