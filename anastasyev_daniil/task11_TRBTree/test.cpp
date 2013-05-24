@@ -2,10 +2,11 @@
 #include <string>
 #include <iostream>
 #include "rbt.h"
+#include <stdlib.h>
 using namespace std;
 
 template <typename T>
-struct TFoo 
+struct TFoo
 {
     T Value;
     TFoo() : Value(T(0)) { ++Created; }
@@ -21,7 +22,7 @@ struct TFoo
         Value = other.Value;
 		return *this;
     }
-    TFoo& operator= (T r) 
+    TFoo& operator= (T r)
     {
         Value = r;
 		return *this;
@@ -68,7 +69,7 @@ struct TFoo
 	}
 	static int Created;
     static int Deleted;
-    static void PrintStats() 
+    static void PrintStats()
 	{
         cout << "TFoo::Created = " << Created << endl << "TFoo::Deleted = " << Deleted << endl;
     }
@@ -77,7 +78,7 @@ template<> int TFoo<int>::Created = 0;
 template<> int TFoo<int>::Deleted = 0;
 
 template <typename T>
-ostream& operator<< (ostream &out, const TFoo<T> &t) 
+ostream& operator<< (ostream &out, const TFoo<T> &t)
 {
 	out << t.Value;
     return out;
@@ -89,7 +90,7 @@ int main()
 	{
 		TRBTree<TFoo<int> > set1;
 		cout<<"set1 inserting: ";
-		for (int i=0; i<10; ++i) 
+		for (int i=0; i<10; ++i)
 		{
 			int k = rand()%100;
 			set1.insert(k);
@@ -116,7 +117,7 @@ int main()
 			cout << "Cant find 69 in set1"<<endl;
 		TRBTree<TFoo<int> > set2;
 		cout<<"set2 inserting: ";
-		for (int i=0; i<10; ++i) 
+		for (int i=0; i<10; ++i)
 		{
 			int k = rand()%100;
 			set2.insert(k);
@@ -141,3 +142,4 @@ int main()
 	TFoo<int>::PrintStats();
 	return 0;
 }
+

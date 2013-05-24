@@ -272,6 +272,7 @@ public:
             TList();
             return;
         }
+        first = 0;
 		*this = lst;
     }
     ~TList()
@@ -407,7 +408,7 @@ public:
 		TNode *tmp = pos.nd()->next;
 		tmp->prev = first.nd();
 		pos.nd()->next = first.nd();
-		it.nd()->prev = pos.nd();
+		first.nd()->prev = pos.nd();
 		last.nd()->prev->next = tmp;
 		tmp->prev = last.nd()->prev;
 
@@ -453,7 +454,9 @@ public:
 		if (this!=&other)
 		{
 			if (!Empty())
+			{
 				Clear();
+			}
 			TNode *p = new TNode (other.first->val);
 			first = p;
 			TNode *c = other.first->next;
@@ -479,7 +482,7 @@ ostream& operator<< (ostream &out, const TFoo<T> &t)
 template <typename T>
 void Print(TList <T> &lst)
 {
-	TList <T>::iterator it=lst.Begin();
+	typename TList <T>::iterator it=lst.Begin();
     for (; it!=lst.End(); ++it) cout <<' '<<*it;
 	cout<<endl;
 }

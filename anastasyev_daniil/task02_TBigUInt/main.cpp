@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <time.h>
 #include <string>
+#include <stdlib.h>
 using namespace std;
 
 typedef long long i64;
