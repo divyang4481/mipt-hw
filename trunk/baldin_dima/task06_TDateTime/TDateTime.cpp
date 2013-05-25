@@ -4,7 +4,6 @@
 #include <stdio.h>
 #include <time.h>
 using namespace std;
-const int DIFFERENCE_FROM_GMT = 4;
 class TTimeSpan
 {
 
@@ -13,18 +12,12 @@ public:
 	TTimeSpan():interval(0) {}
 	TTimeSpan(time_t t):interval(t) {}
 	TTimeSpan(const TTimeSpan &a):interval(a.interval){}
-	TTimeSpan(int year, int month, int day, int hh, int mm, int ss)
+	TTimeSpan(int days, int hh, int mm, int ss)
 	{
-		tm temp;
-		temp.tm_year = year + 70;
-		temp.tm_mon = month;
-		temp.tm_mday = day + 1;
-		temp.tm_hour = hh + DIFFERENCE_FROM_GMT;
-		temp.tm_min = mm;
-		temp.tm_sec = ss;
-		interval = mktime(&temp);
+		
+		interval = days*86400 + hh * 3600 + mm * 60 + ss;
 	}
-	TTimeSpan(int year, int yday, int hh, int mm, int ss)
+	/*TTimeSpan(int year, int yday, int hh, int mm, int ss)
 	{
 		int days_in_months[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 		if ((year % 400 == 0) || (year % 4 == 0 && year % 100 != 0) ) ++days_in_months[1];
@@ -45,7 +38,7 @@ public:
 		temp.tm_min = mm;
 		temp.tm_sec = ss;
 		interval = mktime(&temp);
-	}
+	}*/
 	time_t GetUnixTimestamp() const
 	{
 		return interval;
@@ -229,7 +222,7 @@ ostream& operator << (ostream& out, const TTimeSpan& a)
 		<< temp->tm_mday - 1 << '.' << temp->tm_mon << '.' << temp->tm_year - 70;
 	return out;
 }
-istream& operator >> (istream& in, TDateTime& a)
+/*istream& operator >> (istream& in, TDateTime& a)
 {
 	cout << "HH:MM:SS DD.MM.YYYY" << endl;
 	int year, month, day, hour, minute, second;
@@ -246,7 +239,7 @@ istream& operator >> (istream& in, TTimeSpan& a)
 	TTimeSpan temp(year, month, day, hour, minute, second);
 	a = temp;
 	return in;
-}
+}*/
 
 int main()
 {
@@ -260,35 +253,24 @@ int main()
 	
 	
 	
-	/*TDateTime dt1 = TDateTime::Now();
-    cout << dt1 << endl;
+	
 
-    TTimeSpan sp(1, 1, 1, 1, 1);
+	    TDateTime d1 = TDateTime::Now();
+        cout << d1 << endl;
 
-    TDateTime dt2 = dt1 + sp;
-    dt1 = dt1 + sp;
-    TDateTime dt3 = dt2 - sp;
-    dt1 = dt1 - sp;
+        TTimeSpan sp( 366, 1, 1, 1);
+        TDateTime d2 = d1 + sp;
+        TDateTime d3 = d2 - sp;
+        cout << d2 << endl
+            << d3 << endl;
 
-    cout << dt1 << endl;
-    cout << dt2 << endl;
-    cout << dt3 << endl;*/
+        d1 = d1 + sp;
+        cout << d1 << endl;
+        d1 = d1 - sp;
+        cout << d1 << endl;
 
 
-	/*TDateTime dt = TDateTime::Now();
-    cout << dt << endl;
 
-    TTimeSpan span(1, 1, 1, 0, 0, 0);
-    TDateTime dt2 = dt + span;
-    cout << dt2 << endl;
-
-    cout << (dt + span) << endl;
-
-    dt = dt + span;
-    cout << dt << endl;
-
-    dt = dt - span;
-    cout << dt << endl;*/
 	
 	
 	return 0;
