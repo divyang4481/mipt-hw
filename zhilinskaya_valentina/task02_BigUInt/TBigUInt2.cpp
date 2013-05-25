@@ -404,7 +404,7 @@ void test_time()
 {
 	srand(time(NULL));
 	int MAX;
-	int step = 7;
+	int step = 4;
 	for (int j = 0; j < step; ++j)
 	{
 		MAX = (int)pow(10.0, j);
