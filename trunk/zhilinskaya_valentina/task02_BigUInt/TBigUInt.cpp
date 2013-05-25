@@ -110,10 +110,10 @@ public:
 			number.push_back(0);
 		else
 			if (bound2 <= num.number.size())
-				for (int i = bound1; i < bound2; ++i)
+				for (unsigned int i = bound1; i < bound2; ++i)
 					number.push_back(num.number[i]);
 			else 
-				for (int i = bound1; i < num.number.size(); ++i)
+				for (unsigned int i = bound1; i < num.number.size(); ++i)
 					number.push_back(num.number[i]);
 	}
 	TBigUInt(const TBigUInt& other) { number = other.number;}
@@ -329,7 +329,7 @@ public:
 };
 TBigUInt KaratsubaMultiply(const TBigUInt& A, const TBigUInt& B)
 {
-	int stop = 100;
+	unsigned int stop = 100;
 	if ((A.number.size() <  stop) && (B.number.size() <  stop))
 		return (A * B);
 	int digit = max(A.number.size(), B.number.size());
@@ -356,7 +356,7 @@ ostream& operator<< (ostream& stream, const TBigUInt& num)
 			stream << *it;
 		else
 		{
-			sprintf(buf,"%04d", *it);
+			sprintf_s(buf,"%04d", *it);
 			stream << buf;
 		}
 	}
@@ -402,7 +402,6 @@ void simple_tests()
 }
 void test_time()
 {
-	srand(time(NULL));
 	int MAX;
 	int step = 4;
 	for (int j = 0; j < step; ++j)
@@ -439,7 +438,6 @@ void test_time()
 }
 void test_time2()
 {
-	srand(time(NULL));
 	int MAX;
 	int step = 4;
 	for (int j = 0; j < step; ++j)
@@ -474,6 +472,7 @@ void test_time2()
 
 int main()
 {
+	srand((unsigned int)time(NULL));
 	simple_tests();
 	//test_time();
 	test_time2();
