@@ -3,6 +3,7 @@
 #include <deque>
 #include <list>
 #include <limits>
+#include <fstream>
 
 using namespace std;
 
@@ -34,10 +35,9 @@ class TGraph
 {
         vector<vector<bool> > _adj;
         int time;
-
         void DFSVisit(int a, Vertices& vertices, list<int>& list)
         {
-            for (int i=0; i<_adj.size(); ++i)
+            for (size_t i=0; i<_adj.size(); ++i)
             {
                 if (_adj[a][i] && (vertices[i].Color == C_WHITE))
                 {
@@ -60,7 +60,7 @@ class TGraph
             vertices.resize(0);
             vertices.resize( _adj.size() );
             time = 0;
-            for (int i=0; i<_adj.size(); ++i)
+            for (size_t i=0; i<_adj.size(); ++i)
             {
                 if (vertices[i].Color == C_WHITE)
                 {
@@ -96,15 +96,17 @@ void test (const vector< vector<bool> >& _adj, int n) {
 int main() {
     int n,k;
     int x,y;
-    cin>>n>>k;
+	ifstream in1;
+	in1.open("in.txt");
+    in1>>n>>k;
     vector< vector<bool> > matrix(n);
     for(int i=0; i<n; ++i) matrix[i].resize(n);
     for(int i=0; i<k; ++i) {
-        cin>>x>>y;
+        in1>>x>>y;
         matrix[x-1][y-1]=1;
     }
-
     test(matrix, n);
+	in1.close();
 	system ("pause");
     return(0);
 }
