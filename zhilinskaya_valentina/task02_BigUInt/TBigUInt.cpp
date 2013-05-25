@@ -437,10 +437,46 @@ void test_time()
 		tp.Print();
 	}
 }
+void test_time2()
+{
+	srand(time(NULL));
+	int MAX;
+	int step = 4;
+	for (int j = 0; j < step; ++j)
+	{
+		MAX = (int)pow(10.0, j);
+		ofstream on;
+		int n;
+		on.open("in.txt");
+		char* c = 0;
+		n = 1 + rand() %10;
+		on << n;
+		TBigUInt number(n);
+		for (int i = 1; i < MAX; ++i)
+		{
+			n = 0 + rand() %10;
+			number = number*10 + n;
+			on << n;
+		}
+		on.close();
+		cout << "__________________________";
+		cout << "\n" << MAX << " elem: ";
+		cout << "\n simple \n";
+		TTimePrinter tp;
+		number * number;
+		tp.Print();
+		cout << "\n KaratsubaMultiply \n";
+		tp.Reset();
+		KaratsubaMultiply(number, number);
+		tp.Print();
+	}
+}
+
 int main()
 {
-	//simple_tests();
-	test_time();
+	simple_tests();
+	//test_time();
+	test_time2();
 	system("pause");
 	return 0;
 }
