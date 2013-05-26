@@ -408,8 +408,21 @@ int main()
 			bcd.push_front(t);
 		}
 		abc.splice(abc.begin(), bcd);
-		
 	}
-	cout << myint::Created << ' ' << myint::Deleted;
+        {
+            TList<myint> a;
+            for (int i = 0; i < 10; ++i)
+                a.push_back(myint());
+
+            TList<myint> b = a;
+            for (int i = 0; i < 10; ++i)
+                b.push_back(myint());
+
+            TList<myint> c;
+            a = c;
+
+            c.swap(b);
+        }
+	cout << myint::Created << ' ' << myint::Deleted << endl;
 	return 0;
 }
