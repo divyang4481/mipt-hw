@@ -451,7 +451,7 @@ TMatrix<int> FillRandom(size_t n){
 }
 
 void strassentest(){
-	size_t i=6;
+	size_t i=4;
 	long long ck, ck2;
 	TMatrix<int> src1;
 	TMatrix<int> src2;
