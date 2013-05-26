@@ -61,58 +61,13 @@ public:
     }
     explicit TBigUInt(const string& str)
     {
-        if (str.size() < 0)
-        {
-            ulong a = 0;
-            for (unsigned int i = 0; i < str.size();
-            a =a*10 + (str[i] - '0'), ++i);
-            TBigUInt aa(a);
-            *this = aa;
-        }
-        else
-        {
-            vector<unsigned int> help;
-
-			for (unsigned int i = str.size() - 1; i > 0; --i)
-            {
-                help.push_back(str[i] - '0');
-            }
-			help.push_back(str[0] - '0');
-
-			vector<unsigned int> m; bool f = true;
-			for (;  f  ; )
-			{
-			//f = false;
-				unsigned  int n = 0;
-			for (unsigned int i = help.size() - 1; i > 0; --i)
-            {
-                n = n*10 + help[i];
-                if (n >= radix)
-                {
-                    m.push_back(n / radix);
-                    n = n % radix ;
-                }
-				else if (n == 0) m.push_back(n);
-            }
-            n = n*10 +help[0];
-            if (n >= radix)
-            {
-				m.push_back(n / radix);
-                n = (n % radix) ;
-            }
-			else if (n == 0) m.push_back(n);
-			buf.push_back(n);
-			help.clear();
-			if (!m.empty())
-			{
-				for (unsigned int i = m.size()-1; i>0;--i)
-								help.push_back(m[i]);
-				help.push_back(m[0]);
-				m.clear();
-			}
-			else f = false;
-			}
-        }
+       buf.reserve(str.size());
+       size_t decbase = 10;
+       for (size_t i=0; i<str.size(); ++i)
+	   {
+		   TBigUInt help((ulong)(int)str[i] - (int)'0');
+		   *this = ((*this)*decbase +help);
+	   }
     }
 	TBigUInt (const TBigUInt a, unsigned int x, unsigned int y)
 	{
@@ -154,7 +109,7 @@ public:
 		buf = a.buf;
 		return *this;
 	}
-	TBigUInt operator +( TBigUInt& a)
+	TBigUInt operator +( const TBigUInt& a)
 	{
 	    TBigUInt result;
         result.buf.pop_back();
@@ -171,7 +126,7 @@ public:
 				++h;
                 per = 0;
 			}
-			if (h>=(int)radix)
+			if (h>=radix)
 			{
 				per=1;
 				result.buf.push_back(h-radix);
@@ -424,4 +379,5 @@ int main()
     }   
 //	print(c);
 	return 0;
+	
 }
