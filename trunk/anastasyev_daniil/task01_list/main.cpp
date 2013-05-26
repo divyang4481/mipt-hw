@@ -531,6 +531,22 @@ int main()
 		a.Splice(a.Begin(), c, it);
 		cout<<"a.Splice(a.Begin(), c, ++c.Begin()): "<<endl; Print(a);
 	}
+        {
+            typedef TList< TFoo<int> > TListFoo;
+
+            TListFoo a;
+            for (int i = 0; i < 10; ++i)
+                a.Push_back(i);
+
+            TListFoo b = a;
+            for (int i = 0; i < 10; ++i)
+                a.Push_front(i);
+
+            a.Swap(b);
+
+            TListFoo c = a;
+            b = c;
+        }
 	TFoo<int>::PrintStats();
 	return 0;
 }
