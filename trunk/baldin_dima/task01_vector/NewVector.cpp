@@ -32,20 +32,20 @@ public:
 		Capacity = 1;
 		Buf = new T[1];
 	}
-	TVector (TVector& a)
+	TVector (const TVector& a)
 	{
 		Size = 0;
 		Capacity = 1;
 		Buf = new T[1];
 		*this = a;
-		
+
 
 	}
 	~TVector()
 	{
 		delete [] Buf;
 	}
-	size_t size()
+	size_t size() const
 	{
 		return Size;
 	}
@@ -57,18 +57,18 @@ public:
 	{
 		Size = 0;
 	}
-	TVector swap(TVector &a)
+	void swap(TVector &a)
 	{
-		swap(Size, a.Size);
-		swap(Capacity, a.Capacity);
-		swap(Buf, a.Buf);
+		std::swap(Size, a.Size);
+		std::swap(Capacity, a.Capacity);
+		std::swap(Buf, a.Buf);
 	}
 	void push_back(const T& a)
 	{
 		if (Capacity <= Size) reserve(Capacity + 1);
 		Buf[Size] = a;
 		++Size;
-		
+
 	}
 	void resize( size_t n)
 	{
@@ -105,8 +105,8 @@ public:
 	{
 		return Capacity;
 	}
-	
-	T& front() 
+
+	T& front()
 	{
 		return Buf[0];
 	}
@@ -168,7 +168,7 @@ struct myint
         ~myint()
         {
                 ++Deleted;
-        
+
         }
                 myint operator+(myint a)
                 {
@@ -214,9 +214,11 @@ int main()
 			c.push_back(x);
 		}
 		TVector<myint> d(c);
-	}
 
-        {
+	}
+	cout << "Check memory" << endl;
+	cout << myint::Created << ' ' << myint::Deleted << endl;
+	{
             TVector<myint> a;
             for (int i = 0; i < 10; ++i)
                 a.push_back(myint());
@@ -227,8 +229,5 @@ int main()
 
             a.swap(b);
         }
-
-	cout << "Check memory" << endl;
-	cout << myint::Created << ' ' << myint::Deleted << endl;
 	return 0;
 }
