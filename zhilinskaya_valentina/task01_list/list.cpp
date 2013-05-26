@@ -478,7 +478,22 @@ int main()
 		TList<leak> my_list2(9, z);
 		my_list.splice(my_list.begin(), my_list2);
 	}cout << "\n Created: " << leak::Created <<"\n Deleted: "<<leak::Deleted <<"\n\n";
-	
+
+        {
+            TNode<leak> a;
+            for (int i = 0; i < 10; ++i)
+                a.push_back(leak());
+
+            TNode<leak> b = a;
+            for (int = 0; i < 10; ++i)
+                b.push_back(leak());
+
+            a.swap(b);
+
+            TNode<leak> c;
+            a = c;
+        }
+
 	system ("pause");
 	return 0;
 }
