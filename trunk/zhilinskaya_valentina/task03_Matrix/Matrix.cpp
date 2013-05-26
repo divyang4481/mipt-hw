@@ -162,7 +162,7 @@ public:
 };	
 
 template <class T>
-TMatrix<T> ShtrassenMultiply(TMatrix<T> &A, TMatrix<T> &B)
+TMatrix<T> ShtrassenMultiply(const TMatrix<T>& A, const TMatrix<T>& B)
 {
 	if (A.count_row() <= 16) { return A * B;}
 	int row = A.count_row();
