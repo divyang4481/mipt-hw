@@ -2,6 +2,22 @@
 #include <algorithm>
 using namespace std;
 
+class A{
+public:
+	static int creat;
+	A(){
+		++creat;
+	}
+	A(A& other){
+		++creat;
+	}
+	~A(){
+		--creat;
+	}
+};
+
+int A::creat = 0;
+
 template <typename T>
 class TVector{
 	size_t size;
@@ -194,7 +210,22 @@ void Its2amAndImJustSittingHereTesturbating(){
 	system("pause");
 };
 
+void TestDriveUnlimited(){
+	{
+		TVector<A> uber;
+		uber.resize(18);
+		uber.push_back(A());
+		uber.reserve(32);
+		uber.resize(4);
+		uber.pop_back();
+		uber.clear();
+	}
+	cout << A::creat; // if this here is zero, everything's fine
+	system("pause");
+}
+
 int main(){
 	Its2amAndImJustSittingHereTesturbating();
+	TestDriveUnlimited();
 	return 0;
 }
