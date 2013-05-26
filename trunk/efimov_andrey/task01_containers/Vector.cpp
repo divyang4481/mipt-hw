@@ -1,250 +1,200 @@
 #include <iostream>
-
+#include <algorithm>
 using namespace std;
-
-const int DefaultCap=10;
-const int Multiplier=2;
-
-void SizeErrorWarn(int f){
-	switch (f){
-	case 1:
-		cout << "Swap ";
-		break;
-	case 2:
-		cout << "Back ";
-		break;
-	case 3:
-		cout << "Front ";
-		break;
-	case 4: 
-		cout << "Operator [] ";
-		break;
-	default:
-		cout << "Something ";
-	}
-	cout << "not completed: chosen number is out of size range" << endl;
-}
 
 template <typename T>
 class TVector{
+	size_t size;
+	size_t cap;
+	T *buf;
 public:
-	class iter{
-		friend class vector;
-		iter(T *t):target(t){}
-	private:
-		T* target;
-	public:
-		iter():target(0){
-		};
-		void operator++(){
-			target++;
-		}
-		void operator--(){
-			target--;
-		}
-		T& operator *(){
-			return *target;
-		}
-		bool operator == (iter& i){
-			return (target=i.target?true:false);
-		}
-		bool operator != (iter& i){
-			return !(*this=i);
-		}
-		T* content(){
-			return target;
-		}
-		int operator-(iter other){
-			T* c=target;
-			int i=0;
-			for (; t!=target.get(); t++, i++);
-			return i;
-		}
-	};
-	TVector(int custom_cap){
-		vsize=0;
-		vcapacity=custom_cap;
-		cont=new T[vcapacity];
-		setup;
-	}
+	typedef T* Iterator;
+	typedef const T* const_iterator;
 	TVector(){
-		TVector(DefaultCap);
+		size = 0;
+		cap = 1;
+		buf = 0;
 	}
-	TVector(T* a, int original_size){
-		TVector(original_size);
-		vsize=original_size;
-		for (int i=0; i<original_size; ++i){
-			cont[i]=a[i];
-		}
+	TVector(size_t s){
+		size = s;
+		cap = s;
+		buf = new T[s];
+	}
+	TVector(const TVector <T> &other){
+		this->buf = NULL;
+		*this = other;    
 	}
 	~TVector(){
-		delete[] cont;
+		size = 0;
+		cap = 0;
+		delete[] buf;      
+	}    
+	TVector& operator= (const TVector<T> &other){
+		if (this == &other)
+			return *this;
+		if (this->buf != NULL)
+			delete[] buf;
+		size = other.getsize();
+		cap = other.capacity();
+		buf = new T[cap];
+		for (size_t i=0; i<size; ++i)
+			buf[i] = other[i];
+		return *this;
 	}
-	unsigned int size(){
-		return vsize;
+	size_t getsize() const{
+		return size;
 	}
-	unsigned int capacity(){
-		return vcapacity;
+	size_t capacity() const{
+		return cap;
 	}
-	bool empty(){
-		return tsize==0;
-	}
-	iter begin(){
-		return begI;
-	}
-	iter end(){
-		return endI;
-	}
-	void reserve(unsigned int ncapacity){
-		if (ncapacity<vcapacity) return;
-		T* newcont = new T[ncapacity];
-		for (unsigned int i=0; i<vsize; ++i){
-			newcont[i]=cont[i];
-		}
-		delete[] cont;
-		cont=newcont;
-		setup();
-	}
-	int findnum(iter pos){
-		T* tp=cont;
-		unsigned int i=0;
-		for (; tp!=pos.content(); ++i, ++tp);
-		return i;
-	}
-	T& back(){
-		if (vsize!=0)
-			return cont[vsize-1];
-		else ErrorWarn(2);
-	}
-	T& front(){
-		if (vsize!=0)
-			return cont[0];
-		else ErrorWarn(3);
-	}
-	void swap(unsigned int n1, unsigned int n2){
-		if (max(n1, n2)<vsize){
-			T whoop=cont[n1];
-			cont[n1]=cont[n2];
-			cont[n2]=whoop;
-		}
-		else ErrorWarn(1);
+	bool empty() const{
+		return size==0;
 	}
 	void clear(){
-		vsize=0;
-		vcapacity=DefaultCap;
-		delete[] cont;
-		T* cont = new T[vcapacity];
-		return;
+		size = 0;
 	}
-	void insert(iter it, int n, T val){
-		insert(findnum(it), n, val);
-	}
-	void insert(int pos, int n, T val){
-		reserve(vsize+n);
-		vsize+=n;
-		for(int i=vsize-1; i>=(pos+n); i--)
-			cont[i]=cont[i-n];
-		for(int i=pos; i<pos+n; ++i)
-			cont[i]=val;
-		return;
-	}
-	void insert(iter it, iter Sbeg, iter Send){
-		iter pos=findnum(it);
-		iter cur=--Send;
-		for (;cur!=Sbeg; cur--)
-			insert(pos, 1, *cur);
-		insert(pos, 1, *Sbeg);
-		return;
-	}
-	void push_back(T source){
-		made_bigger();
-		cont[vsize]=source;
-		++vsize;
-	}
-	T pop_back(){
-		T temp=cont[--vsize];
-		made_smaller();
-		return temp;
-	}
-	void resize(unsigned int n){
-		if (n==vsize) return;
-		bool f = (vsize<n);
-		vsize=n;
-		if (f) made_bigger();
-		if (!f) made_smaller();
-	}
-	void erase(iter pos){
-		T* temp=cont;
-		unsigned int start;
-		unsigned int cur;
-		start=findnum(pos);
-		vsize--;
-		for(cur=i; cur<vsize; cur++)
-			cont[cur]=cont[cur+1];
-		made_smaller();
-	}
-	void erase(iter Pbeg, iter Pend){
-		T* temp=cont;
-		int start=findnum(Pbeg);
-		int finish=findnum(Pend);
-		unsigned int i=start;
-		int length=finish-start+1;
-		for (;i<vsize-length; ++i){
-			cont[i]=cont[i+length];
-		}
-		vsize-=length;
-		made_smaller();
-	}
-	bool operator = (TVector other){
-		resize(other.vsize)
-		for (unsigned int i=0; i<vsize; ++i)
-			cont[i]=other.cont[i];
-		return true;
-	}
-	T operator [] (unsigned int n){
-		if (n<size) return cont[n];
-		SizeErrorWarn(4);
-		return cont[size];
-	}
-private:
-	T* begT;
-	T* endT;
-	unsigned int vsize;
-	unsigned int vcapacity;
-	T* cont;
-	iterator begI;
-	iterator endI;
-	void made_bigger(){
-		while (vsize>=vcapacity){
-			T* newcont = new T[vcapacity*=Multiplier];
-			for (unsigned int i=0; i<vsize; ++i){
-				newcont[i]=cont[i];
-			}
-			delete[] cont;
-			cont=newcont;
-			setup();
+	void reserve(size_t n){
+		if (n>cap){
+			T* temp = new T[n];
+			for (int i=0; i<size; ++i)
+				temp[i] = buf[i];
+			delete[] buf;
+			cap = n;
+			buf = temp;
 		}
 	}
-	void made_smaller(){
-		while (vsize<vcapacity/(Multiplier*Multiplier)){
-			T* newcont = new T[vcapacity/=Multiplier];
-			for (unsigned int i=0; i<vsize; ++i){
-				newcont[i]=cont[i];
-			}
-			delete[] cont;
-			cont=newcont;
-			setup();
-		}
+	void resize(size_t n){
+		if (n>cap)
+			reserve(n);
+		size=n;
 	}
-	void setup(){
-		begT=cont;
-		endT=cont+capacity;
-		begI=iterator(begT);
-		endI=iterator(endT);
+	void Swap(TVector<T> &other){
+		swap(other, *this);	
+	}
+	void push_back(const T &v){
+		if (cap<= size+1){
+			reserve(cap*2);
+		}
+		*end()=v;
+		size++;
+	}
+	void pop_back(){
+		if (!empty()) size--;
+	}
+	Iterator insert (Iterator pos, const T& v){
+		insert(pos, 1, v);
+		return pos;
+	}
+	void insert (Iterator pos, size_t n, const T& v){
+		T l = pos - begin();
+		while (cap<=size+n)
+			reserve(cap*2);
+		Iterator b = begin();
+		for (Iterator i=end()+n-1; i!=b+l+n-1; --i)
+			*i=*(i-n);
+		for (Iterator i=b+l+n-1; i>=b+l; --i) 
+			*i = v;
+		size+=n;		
+	}
+	Iterator erase(Iterator pos){
+		for (Iterator i=pos; i!=end(); ++i) *i=*(i+1);
+		size--;
+		return pos;
+	}
+	Iterator erase(Iterator first, Iterator last){
+		if (last>=end()) last=end()-1;
+		for (Iterator i = first; i<=last; ++i) *i=*(last-first+i+1);
+		size = size - ((int)(last-first)+1);
+		return first;	
+	}
+	T& operator[] (size_t n){
+		if (n>=0 && n<=size)
+			return buf[n];
+	}
+	const T& operator[] (size_t n) const{
+		if (n>=0 && n<=size)
+			return buf[n];
+	}
+	Iterator begin(){
+		return buf; 
+	}
+	Iterator end(){   
+		return buf+size;
+	}
+	const_iterator begin() const{
+		return buf;
+	}
+	const_iterator end() const{
+		return buf+size;
+	}
+	T& front(){
+		return *buf;
+	}
+	const T& front() const{
+		return *buf;
+	}
+	T& back(){
+		return *(buf+size-1);
+	}
+	const T& back() const{
+		return *(buf+size-1);
 	}
 };
 
+template <typename T>
+void print(TVector<T> v){
+	for(TVector<int>::Iterator it=v.begin(); it!=v.end(); ++it)
+		cout << ' ' << *it;
+	cout << endl;
+};
+
+void Its2amAndImJustSittingHereTesturbating(){
+	TVector<int> a;
+	TVector<int> b;
+	for (int i=0; i<20; ++i){
+		a.push_back(i);
+		b.push_back(20-i);
+	}
+	cout << "a: ";
+	print(a);
+	cout << "b: ";
+	print(b);
+	cout << "Popback for both" << endl;
+	a.pop_back();
+	cout << "a: ";
+	print(a);
+	cout << "b: ";
+	print(b);
+	cout << "Swhap" << endl;
+	a.Swap(b);
+	cout << "a: ";
+	print(a);
+	cout << "b: ";
+	print(b);
+	cout << "INSERTIONNN" << endl;
+	a.insert(a.begin()+2, 9);
+	b.insert(b.begin()+2, 0);
+	cout << "a: ";
+	print(a);
+	cout << "b: ";
+	print(b);
+	cout << "More insertion!" << endl;
+	a.insert(a.begin(), 3, 4);
+	cout << "a: ";
+	print(a);
+	cout << "b: ";
+	print(b);
+	cout << "Destroy the lesser middle nodes!" << endl;
+	a.erase(a.begin()+7);
+	b.erase(b.begin()+6, b.begin()+8);
+	cout << "a: ";
+	print(a);
+	cout << "b: ";
+	print(b);
+	system("pause");
+};
+
 int main(){
-
-
+	Its2amAndImJustSittingHereTesturbating();
+	return 0;
 }
