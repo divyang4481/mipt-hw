@@ -115,10 +115,28 @@ void Test2()
                 tree3.insert(tmp);
         }
 }
+
+static void Test3() {
+    TTree<TFoo> a;
+    for (int i = 0; i < 10; ++i)
+        a.insert(TFoo(i));
+
+    TTree<TFoo> b = a;
+    for (int i = 0; i < 10; ++i)
+        a.insert(TFoo(i));
+
+    TTree<TFoo> c;
+    a = c;
+
+    for (TTree<TFoo>::iterator iter = a.begin(); iter != a.end(); ++iter) {
+        c.insert(*iter);
+    }
+}
+
 int main()
 {
         try{
-        Test2();
+            Test3();
         }catch(const std::exception& xcp)
         {
                 cout << "ERROR!!!! std::exception: " << xcp.what() << endl;
