@@ -3,7 +3,6 @@
 #include <string>
 #include <cmath>
 #include <time.h>
-#include <stdlib.h>
 using namespace std;
 
 typedef long long i64;
@@ -110,7 +109,10 @@ class TMatrix
     size_t row;
     size_t col;
     vector <vector<T> > matrix;
+	template <typename U>
+	friend TMatrix<U> ShtrassenMultiply(const TMatrix<U> &A, const TMatrix<U> &B);
 public:
+
     TMatrix()
     {
         row = 0;
@@ -132,9 +134,7 @@ public:
 		}
     }
     ~TMatrix()
-    {
-
-	}
+    {}
     TMatrix& operator= (const TMatrix <T>& other)
     {
     	if (&other!=this)
@@ -146,7 +146,7 @@ public:
 			for (size_t i = 0; i < row; ++i)
 			{
 				for (size_t j = 0; j < col; ++j)
-					matrix[i][j] = other.At(i,j);
+					matrix[i][j] = other.matrix[i][j];
 			}
 	    }
 	    return *this;
@@ -169,7 +169,7 @@ public:
     {
 	    for (size_t i=0; i<row; i++)
 		    for (size_t j=0; j<col; j++)
-			    matrix[i][j] += m.At(i,j);
+			    matrix[i][j] += m.matrix[i][j];
     }
     TMatrix operator- (const TMatrix &m) const 
     {
@@ -181,23 +181,34 @@ public:
     {
 	    for (size_t i=0; i<row; i++)
 		    for (size_t j=0; j<col; j++)
-			    matrix[i][j] -= m.At(i,j);
+			    matrix[i][j] -= m.matrix[i][j];
     }
     TMatrix operator* (T a) const 
     {
     	TMatrix temp=*this;
     	for(size_t i=0; i<row; i++)
     		for(size_t j=0; j<col; j++)
-	    		temp.At(i,j)=matrix[i][j]*a;
+	    		temp.At(i,j) = matrix[i][j]*a;
     	return temp;
     }
     TMatrix operator* (const TMatrix &m) const 
     {
-	    TMatrix res(row, m.colCount());
-        for(size_t i=0; i<row; i++)
-            for(size_t j=0; j<m.colCount(); j++)
-                for(size_t k=0; k<col; k++)
-                    res.At(i,j) += matrix[i][k]*m.At(k,j);
+	    //TMatrix res(row, m.colCount());
+		vector<vector<T> > mat(row);
+		size_t colm = m.colCount();
+        for (size_t i=0; i<row; i++)
+            for (size_t j=0; j<colm; j++)
+			{
+				T val = 0;
+                for (size_t k=0; k<col; k++)
+                    val += matrix[i][k]*m.matrix[k][j];
+				mat[i].push_back(val);
+				//res.matrix[i][j] = val;
+			}
+		TMatrix res;
+		res.row = row;
+		res.col = colm;
+		res.matrix.swap(mat);
         return res;
     }
     void operator*= (const TMatrix &m)
@@ -242,234 +253,146 @@ public:
     }
 };
 
-template <typename T>
-TMatrix<T> ShtrassenMultiply(const TMatrix<T> &A, const TMatrix<T> &B)
+template <typename U>
+TMatrix<U> ShtrassenMultiply(const TMatrix<U> &A, const TMatrix<U> &B)
 {
-    if (A.rowCount()<=128) return A*B;
-	size_t col = A.colCount();	
-	TMatrix <T> result(col, col);
+	if (A.rowCount()<=128) return A*B;
+
+	size_t col = A.colCount();
+	TMatrix <U> temp;
 	size_t n = (size_t)ceil(col/2.);
-	TMatrix <T> m1(n, n);
-	TMatrix <T> m2(n, n);
-	TMatrix <T> m3(n, n);
-	//S1
-	for (size_t i=0; i<n; ++i)
-		for (size_t j=0; j<n; ++j)
-			if (n+i >= col) m1.At(i,j) = 0;
-			else if (n+j >= col) m1.At(i, j) = A.At(n+i, j);
-			else m1.At(i,j) = A.At(n+i, j) + A.At(n+i, n+j);
-	//S5
-	for (size_t i=0; i<n; ++i)
-		for (size_t j=0; j<n; ++j)
-			if (n+j >= col) m2.At(i,j) -= B.At(i, j);
-			else m2.At(i,j) = B.At(i, j+n) - B.At(i, j);
-	//P5
-	m3 = ShtrassenMultiply(m1, m2);
-	for (size_t i=0; i<n; ++i)
-		for (size_t j=0; j<n; ++j)
+	vector<vector<U> > A11(n), A12(n), A21(n), A22(n), B11(n), B12(n), B21(n), B22(n);
+	vector<vector<U> > S1(n), S2(n), S3(n), S4(n), S5(n), S6(n), S7(n), S8(n);
+	vector<vector<U> > P1(n), P2(n), P3(n), P4(n), P5(n), P6(n), P7(n);
+	vector<vector<U> > T1(n), T2(n);
+	vector<vector<U> > C11(n), C12(n), C21(n), C22(n);
+	TMatrix <U> mA11, mA12, mA21, mA22, mB11, mB12, mB21, mB22;
+	//TMatrix <U> mC11, mC12, mC21, mC22;
+	TMatrix <U> mP1, mP2, mP3, mP4, mP5, mP6, mP7;
+	TMatrix <U> mS1, mS2, mS3, mS4, mS5, mS6, mS7, mS8;
+	//TMatrix <U> mT1, mT2;
+	for (size_t i = 0; i < n; i++)
+	{
+		for (size_t j = 0; j < n; j++)
 		{
-			if (j+n < col)
-			{
-				result.At(i, j+n) = m3.At(i, j);
-				if (i+n < col) result.At(i+n, j+n) = m3.At(i, j);
-			}
+			A11[i].push_back( A.matrix[i][j] );
+			if (j+n < col) A12[i].push_back( A.matrix[i][j+n] );
+			else A12[i].push_back( 0 );
+			if (i+n < col) A21[i].push_back( A.matrix[i+n][j] );
+			else A21[i].push_back( 0 );
+			if (j+n < col && i+n < col) A22[i].push_back( A.matrix[i+n][j+n] );
+			else A22[i].push_back( 0 );
+
+			B11[i].push_back( B.matrix[i][j] );
+			if (j+n < col) B12[i].push_back( B.matrix[i][j+n] );
+			else B12[i].push_back( 0 );
+			if (i+n < col) B21[i].push_back( B.matrix[i+n][j] );
+			else B21[i].push_back( 0 );
+			if (j+n < col && i+n < col) B22[i].push_back( B.matrix[i+n][j+n] );
+			else B22[i].push_back( 0 );
+
+			S1[i].push_back( A21[i][j] + A22[i][j] );
+			S2[i].push_back( S1[i][j] - A11[i][j] );
+			S3[i].push_back( A11[i][j] - A21[i][j] );
+			S4[i].push_back( A12[i][j] - S2[i][j]);
+			S5[i].push_back( B12[i][j] - B11[i][j] );
+			S6[i].push_back( B22[i][j] - S5[i][j]);
+			S7[i].push_back( B22[i][j] - B12[i][j] );
+			S8[i].push_back( S6[i][j] - B21[i][j] );
 		}
-	//S2
-	for (size_t i=0; i<n; ++i)
-		for (size_t j=0; j<n; ++j)
-			m1.At(i,j) -= A.At(i, j);
-	//S6
-	for (size_t i=0; i<n; ++i)
-		for (size_t j=0; j<n; ++j)
-			if (n+i >= col || n+j >= col) m2.At(i,j) -= m2.At(i, j);
-			else m2.At(i,j) = B.At(i+n, j+n) - m2.At(i, j);
-	//P1
-	m3 = ShtrassenMultiply(m1, m2);
-	for (size_t i=0; i<n; ++i)
-		for (size_t j=0; j<n; ++j)
-		{
-			if (n+i < col)
-			{
-				result.At(i+n, j) = m3.At(i, j);
-				if (n+j < col)
-				{
-					result.At(i, j+n) += m3.At(i, j);
-					result.At(i+n, j+n) += m3.At(i, j);
-				}
-			}
-		}
+	}
 
-	//S4
-	for (size_t i=0; i<n; ++i)
-		for (size_t j=0; j<n; ++j)
-			if (j+n >= col) m1.At(i,j) -= m1.At(i, j);
-			else m1.At(i,j) = A.At(i, j+n) - m1.At(i, j);
-	//S8
-	for (size_t i=0; i<n; ++i)
-		for (size_t j=0; j<n; ++j)
-			if (i+n >= col) m2.At(i,j) -= 0;
-			else m2.At(i,j) -= B.At(i+n, j);
-	//B22
-	for (size_t i=0; i<n; ++i)
-		for (size_t j=0; j<n; ++j)
-			if (i+n >= col || j+n >= col) m3.At(i,j) = 0;
-			else m3.At(i,j) = B.At(i+n, j+n);
-	//P6
-	m3 = ShtrassenMultiply(m1, m3);
-	for (size_t i=0; i<n; ++i)
-		for (size_t j=0; j<n; ++j)
-			if (j+n < col)
-				result.At(i, j+n) += m3.At(i, j);
+//  {S}_{1} := ( {A}_{2,1} +  {A}_{2,2}) +
+//  {S}_{2} := ( {S}_{1} -  {A}_{1,1}) 
+//  {S}_{3} := ( {A}_{1,1} -  {A}_{2,1}) +
+//  {S}_{4} := ( {A}_{1,2} -  {S}_{2}) 
+//  {S}_{5} := ( {B}_{1,2} -  {B}_{1,1}) +
+//  {S}_{6} := ( {B}_{2,2} -  {S}_{5}) 
+//  {S}_{7} := ( {B}_{2,2} -  {B}_{1,2}) +
+//  {S}_{8} := ( {S}_{6} -  {B}_{2,1}) 
 
-	//A22
-	for (size_t i=0; i<n; ++i)
-		for (size_t j=0; j<n; ++j)
-			if (i+n >= col || j+n >= col) m3.At(i,j) = 0;
-			else m3.At(i,j) = A.At(i+n, j+n);
-	//P7
-	m3 = ShtrassenMultiply(m2, m3);
-	for (size_t i=0; i<n; ++i)
-		for (size_t j=0; j<n; ++j)
-			if (i+n < col)
-				result.At(i+n, j) -= m3.At(i, j);
+	mA11.matrix.swap(A11);	mA11.col = n;	mA11.row = n;
+	mA12.matrix.swap(A12);	mA12.col = n;	mA12.row = n;
+	mA21.matrix.swap(A21);	mA21.col = n;	mA21.row = n;
+	mA22.matrix.swap(A22);	mA22.col = n;	mA22.row = n;
+	mB11.matrix.swap(B11);	mB11.col = n;	mB11.row = n;
+	mB12.matrix.swap(B12);	mB12.col = n;	mB12.row = n;
+	mB21.matrix.swap(B21);	mB21.col = n;	mB21.row = n;
+	mB22.matrix.swap(B22);	mB22.col = n;	mB22.row = n;
+	
+	mS1.matrix.swap(S1);	mS1.col = n;	mS1.row = n;
+	mS2.matrix.swap(S2);	mS2.col = n;	mS2.row = n;
+	mS3.matrix.swap(S3);	mS3.col = n;	mS3.row = n;
+	mS4.matrix.swap(S4);	mS4.col = n;	mS4.row = n;
+	mS5.matrix.swap(S5);	mS5.col = n;	mS5.row = n;
+	mS6.matrix.swap(S6);	mS6.col = n;	mS6.row = n;
+	mS7.matrix.swap(S7);	mS7.col = n;	mS7.row = n;
+	mS8.matrix.swap(S8);	mS8.col = n;	mS8.row = n;
 
-	//A11
-	for (size_t i=0; i<n; ++i)
-		for (size_t j=0; j<n; ++j)
-			m1.At(i,j) = A.At(i, j);
-	//B11
-	for (size_t i=0; i<n; ++i)
-		for (size_t j=0; j<n; ++j)
-			m2.At(i,j) = B.At(i, j);
-	//P2
-	m3 = ShtrassenMultiply(m1, m2);
-	for (size_t i=0; i<n; ++i)
-		for (size_t j=0; j<n; ++j)
-		{
-			result.At (i, j) = m3.At(i, j);
-			if (n+i < col)
-			{
-				result.At(i+n, j) += m3.At(i, j);
-				if (n+j < col)
-				{
-					result.At(i, j+n) += m3.At(i, j);
-					result.At(i+n, j+n) += m3.At(i, j);
-				}
-			}
-		}
+    mP1 = ShtrassenMultiply(mS2, mS6);
+    mP2 = ShtrassenMultiply(mA11, mB11);
+    mP3 = ShtrassenMultiply(mA12, mB21);
+    mP4 = ShtrassenMultiply(mS3, mS7);
+    mP5 = ShtrassenMultiply(mS1, mS5);
+    mP6 = ShtrassenMultiply(mS4, mB22);
+    mP7 = ShtrassenMultiply(mA22, mS8);
+//  {P}_{1} :=  {S}_{2} * {S}_{6} 
+//  {P}_{2} :=  {A}_{1,1} * {B}_{1,1} 
+//  {P}_{3} :=  {A}_{1,2} * {B}_{2,1} 
+//  {P}_{4} :=  {S}_{3} * {S}_{7} 
+//  {P}_{5} :=  {S}_{1} * {S}_{5} 
+//  {P}_{6} :=  {S}_{4} * {B}_{2,2} 
+//	{P}_{7} :=  {A}_{2,2} * {S}_{8} 
 
-	//A12
-	for (size_t i=0; i<n; ++i)
-		for (size_t j=0; j<n; ++j)
-			if (j+n >= col) m1.At(i,j) = 0;
-			else m1.At(i,j) = A.At(i, j+n);
-	//B21
-	for (size_t i=0; i<n; ++i)
-		for (size_t j=0; j<n; ++j)
-			if (i+n >= col) m2.At(i,j) = 0;
-			else m2.At(i,j) = B.At(i+n, j);
-	//P3
-	m3 = ShtrassenMultiply(m1, m2);
-	for (size_t i=0; i<n; ++i)
-		for (size_t j=0; j<n; ++j)
-			result.At(i, j) += m3.At(i, j);
-
-	//S3
-	for (size_t i=0; i<n; ++i)
-		for (size_t j=0; j<n; ++j)
-			if (i+n >= col) m1.At(i,j) = A.At(i, j);
-			else m1.At(i,j) = A.At(i, j) - A.At(i+n, j);
-	//S7
-	for (size_t i=0; i<n; ++i)
-		for (size_t j=0; j<n; ++j)
-			if (j+n >= col) m2.At(i,j) = 0;
-			else if (i+n >= col) m2.At(i,j) -= B.At(i, j+n);
-			else m2.At(i,j) = B.At(i+n, j+n) - B.At(i, j+n);
-	//P4
-	m3 = ShtrassenMultiply(m1, m2);
-	for (size_t i=0; i<n; ++i)
-		for (size_t j=0; j<n; ++j)
-		{
-			if (i+n < col)
-			{
-				result.At (i+n, j) += m3.At(i, j);
-				if (j+n < col)
-					result.At (i+n, j+n) += m3.At(i, j);
-			}
-		}
-	return result;
-
-    //int N = A.rowCount();
-    //int Ns = ceil(N/2.);
-    //TMatrix <T> temp(N,N);
-    //if (N<=128) temp = A*B;
-    //else
+	vector<vector<U> > matrix(col);
+	for (size_t i = 0; i < col ; i++)
+		matrix[i].resize(col);
+    //for (size_t i = 0; i < n ; i++)
     //{
-    //    TMatrix <T> A11(Ns,Ns);
-    //    TMatrix <T> A12(Ns,Ns);
-    //    TMatrix <T> A21(Ns,Ns);
-    //    TMatrix <T> A22(Ns,Ns);
-    //    TMatrix <T> B11(Ns,Ns);
-    //    TMatrix <T> B12(Ns,Ns);
-    //    TMatrix <T> B21(Ns,Ns);
-    //    TMatrix <T> B22(Ns,Ns);
-    //    TMatrix <T> C11(Ns,Ns);
-    //    TMatrix <T> C12(Ns,Ns);
-    //    TMatrix <T> C21(Ns,Ns);
-    //    TMatrix <T> C22(Ns,Ns);
-    //    TMatrix <T> P1(Ns,Ns);
-    //    TMatrix <T> P2(Ns,Ns);
-    //    TMatrix <T> P3(Ns,Ns);
-    //    TMatrix <T> P4(Ns,Ns);
-    //    TMatrix <T> P5(Ns,Ns);
-    //    TMatrix <T> P6(Ns,Ns);
-    //    TMatrix <T> P7(Ns,Ns);
-
-    //    for (int i = 0; i < Ns; i++)
+    //    for (size_t j = 0; j < n ; j++)
     //    {
-    //        for (int j = 0; j < Ns; j++)
-    //        {
-    //            A11.At(i,j) = A.At(i,j);
-    //            if (j+Ns<A.colCount()) A12.At(i,j) = A.At(i,j+Ns);
-    //            else A12.At(i,j) = 0;
-    //            if (i+Ns<A.colCount()) A21.At(i,j) = A.At(i+Ns,j);
-    //            else A21.At(i,j) = 0;
-    //            if (j+Ns<A.colCount() && i+Ns<A.colCount()) A22.At(i,j) = A.At(i+Ns,j+Ns);
-    //            else A22.At(i,j) = 0;
-
-    //            B11.At(i,j) = B.At(i,j);
-    //            if (j+Ns<B.colCount()) B12.At(i,j) = B.At(i,j+Ns);
-    //            else B12.At(i,j) = 0;
-    //            if (i+Ns<B.colCount()) B21.At(i,j) = B.At(i+Ns,j);
-    //            else B21.At(i,j) = 0;
-    //            if (j+Ns<B.colCount() && i+Ns<B.colCount()) B22.At(i,j) = B.At(i+Ns,j+Ns);
-    //            else B22.At(i,j) = 0;                
-    //        }
-    //    }
-    //    P1 = ShtrassenMultiply(A11+A22, B11+B22);
-    //    P2 = ShtrassenMultiply(A21+A22, B11);
-    //    P3 = ShtrassenMultiply(A11, B12-B22);
-    //    P4 = ShtrassenMultiply(A22, B21-B11);
-    //    P5 = ShtrassenMultiply(A11+A12, B22);
-    //    P6 = ShtrassenMultiply(A21-A11, B11+B12);
-    //    P7 = ShtrassenMultiply(A12-A22, B21+B22);
-    //    C11 = P1+P4-P5+P7;
-    //    C12 = P3+P5;
-    //    C21 = P2+P4;
-    //    C22 = P1-P2+P3+P6;
-
-    //    for (size_t i = 0; i < Ns ; i++)
-    //    {
-    //        for (size_t j = 0; j < Ns ; j++)
-    //        {
-    //            temp.At(i,j) = C11.At(i,j);
-    //            if (j+Ns<temp.colCount()) temp.At(i, j+Ns) = C12.At(i,j);
-    //            if (i+Ns<temp.colCount())temp.At(i+Ns, j) = C21.At(i,j);
-    //            if (j+Ns<temp.colCount() && i+Ns<temp.colCount()) temp.At(i+Ns, j+Ns) = C22.At(i,j);
-    //        }
+    //        matrix[i][j] = mC11.matrix[i][j];
+    //        if (j+n < col) matrix[i][j+n] = mC12.matrix[i][j];
+    //        if (i+n < col) matrix[i+n][j] = mC21.matrix[i][j];
+    //        if (j+n < col && i+n < col) matrix[i+n][j+n] = mC22.matrix[i][j];
     //    }
     //}
-    //return temp;
+	for (size_t i=0; i<n; i++)
+		for (size_t j=0; j<n; j++)
+		{
+			T1[i].push_back( mP1.matrix[i][j] + mP2.matrix[i][j] );
+			T2[i].push_back( T1[i][j] + mP4.matrix[i][j] );
+			C11[i].push_back( mP2.matrix[i][j] + mP3.matrix[i][j] );
+			C12[i].push_back( T1[i][j] + mP5.matrix[i][j] + mP6.matrix[i][j] );
+			C21[i].push_back( T2[i][j] - mP7.matrix[i][j] );
+			C22[i].push_back( T2[i][j] + mP5.matrix[i][j] );
+            
+			matrix[i][j] = C11[i][j];
+            if (j+n < col) matrix[i][j+n] = C12[i][j];
+            if (i+n < col) matrix[i+n][j] = C21[i][j];
+            if (j+n < col && i+n < col) matrix[i+n][j+n] = C22[i][j];
+		}
+	//mT1 = mP1 + mP2;
+	//mT2 = mT1 + mP4;
+
+	//mC11 = mP2 + mP3;
+	//mC12 = mT1 + mP5 + mP6;
+	//mC21 = mT2 - mP7;
+	//mC22 = mT2 + mP5;
+
+//	{T}_{1} := {P}_{1} + {P}_{2}
+//	{T}_{2} := {T}_{1} + {P}_{4}
+//
+//
+//	{C}_{1,1} := {P}_{2} + {P}_{3}
+//	{C}_{1,2} := {T}_{1} + {P}_{5} + {P}_{6}
+//	{C}_{2,1} := {T}_{2} - {P}_{7}
+//	{C}_{2,2} := {T}_{2} + {P}_{5}
+
+	temp.matrix.swap( matrix );
+	temp.col = col;
+	temp.row = col;
+    return temp;
 }
 
 template <typename T>
@@ -501,7 +424,7 @@ istream& operator>> (istream& in, TMatrix<T> &m)
 		for(int j=0; j<col; ++j)
 		{
 			T a;
-			cin >> a;
+			cin >> tp;
 			result.At(i,j)=a;
 		}
 	}
@@ -581,6 +504,13 @@ int main()
 		TMatrix <int> res2 = a*b;
 		time = timer.GetTime();
 		cout << "Usual method: "<< time <<endl;
+		if (res1 == res2)
+			cout << "Matrixs are equal" <<endl;
+		else 
+		{
+			cout << "Not equal" << endl;
+			return 0;
+		}
 	}	
 	return 0;
 }
