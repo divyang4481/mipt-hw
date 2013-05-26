@@ -15,7 +15,7 @@ public:
 		TNode *left;
 		TNode *right;
 		EColor clr;
-		TNode(): key(T(0)), left(0), right(0), parent(0), clr(RED) {}
+		TNode(): key(T(0)), left(NULL), right(NULL), parent(NULL), clr(RED) {}
 		explicit TNode(const TNode *a)
 		{
 			*this = *a;
@@ -506,7 +506,7 @@ public:
 		}
 		else
 			delete node;
-		return std::make_pair<TRBTree<T>::iterator, bool> (iterator(node, Nil), has);
+		return std::make_pair<typename TRBTree<T>::iterator, bool> (iterator(node, Nil), has);
 	}
 	iterator erase (iterator a)
 	{
