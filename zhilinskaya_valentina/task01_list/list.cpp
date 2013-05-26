@@ -65,7 +65,10 @@ public:
 	{
 	private:
 		TNode<T>* node;
+		TNode<T>* getNode () { return node;}
 	public:
+		friend class TIterator;
+		friend class TList;
 		TIterator() { node = NULL;}
 		TIterator(TNode<T>* new_node) { node = new_node;}
 		~TIterator() {}
@@ -88,9 +91,8 @@ public:
 			node = node->prev;
 			return old_node;
 		}
-		TNode<T>* getNode () { return node;}
-		T getVal () { return node->val;}
 		operator TConst_Iterator() { return TConst_Iterator(node);}
+		T getVal () { return node->val;}
 	};
 	TList<T>()
 	{
@@ -159,6 +161,8 @@ public:
 	}
 	TIterator end () { return TIterator(elem);}
 	TConst_Iterator end () const { return TConst_Iterator(elem);}
+    T back () { return last->val;} 
+	T front (){ return first->val;}
 	T back() const { return last->val;}
 	T front() const { return first->val;}
 	void push_back(T new_val)
