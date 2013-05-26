@@ -53,7 +53,7 @@ public:
 			Node = Node->next;
 			return *this;
 		}
-		iterator& operator++(int)
+		iterator operator++(int)
 		{
 			TNode* help;
 			help = help;
@@ -65,7 +65,7 @@ public:
 			Node = Node->prev;
 			return *this;
 		}
-		iterator& operator--(int)
+		iterator operator--(int)
 		{
 			TNode* help;
 			help = help;
@@ -106,7 +106,7 @@ public:
 			Node = Node->next;
 			return *this;
 		}
-		const_iterator& operator++(int)
+		const_iterator operator++(int)
 		{
 			TNode* help;
 			help = help;
@@ -118,7 +118,7 @@ public:
 			Node = Node->prev;
 			return *this;
 		}
-		const_iterator& operator--(int)
+		const_iterator operator--(int)
 		{
 			TNode* help;
 			help = help;
@@ -150,7 +150,8 @@ public:
 	TList():first(0), last(0){}
 	TList(const TList<T>& l)
 	{
-        *this = l;
+        first = last = 0;
+		*this = l;
 	}
 	void clear()
 	{
