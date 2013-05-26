@@ -388,6 +388,9 @@ public:
 	}
 
 	TRBTree<T>( const TRBTree<T>& a ){
+		Limit = new TNode;
+		Limit->color = BLACK;
+		Root = Limit;
 		*this = a;
 	}
 	~TRBTree () {
@@ -397,7 +400,8 @@ public:
 	}
 
 	TRBTree<T>& operator=(const TRBTree<T>& a ){
-		destroy(Root);
+		if ( !empty() )
+			destroy(Root);
 		Root = Limit;
 		for (const_iterator pos = a.begin(); pos != a.end(); ++pos)
 			insert (*(pos));
