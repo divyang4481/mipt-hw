@@ -67,7 +67,6 @@ public:
 		TNode<T>* node;
 		TNode<T>* getNode () { return node;}
 	public:
-		friend class TIterator;
 		friend class TList;
 		TIterator() { node = NULL;}
 		TIterator(TNode<T>* new_node) { node = new_node;}
@@ -478,7 +477,7 @@ int main()
 		TList<leak> my_list2(9, z);
 		my_list.splice(my_list.begin(), my_list2);
 	}cout << "\n Created: " << leak::Created <<"\n Deleted: "<<leak::Deleted <<"\n\n";
-
+	/*
         {
             TNode<leak> a;
             for (int i = 0; i < 10; ++i)
@@ -493,7 +492,7 @@ int main()
             TNode<leak> c;
             a = c;
         }
-
+*/
 	system ("pause");
 	return 0;
 }
