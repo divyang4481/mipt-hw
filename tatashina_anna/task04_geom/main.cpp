@@ -22,7 +22,7 @@ public:
         T GetY() const {
 			return y;
         };
-        TPoint (T newX, T newY) {
+        TPoint (T NewX, T NewY) {
 			x = NewX;
 			y = NewY;
         };
@@ -52,7 +52,7 @@ public:
 		end.x = 0;
 		end.y = 0;
 	};
-	TSegment(TPoint& NewBeg, TPoint& NewEnd) {
+	TSegment(TPoint NewBeg, TPoint NewEnd) {
 		beg = NewBeg;
 		end = NewEnd;
 	};
@@ -131,10 +131,10 @@ public:
 		Polygon[PolygonSize()].y := Polygon[0].y;
 
 		for (int i = 0; i < PolygonSize(); ++i) {
-			TPoint v1.x = Polygon.p[i].x - p.x;
-			TPoint v1.y = Polygon.p[i].y - p.y;
-			TPoint v2.x = Polygon.p[i + 1].x - p.x;
-			TPoint v2.y = Polygon.p[i + 1].y - p.y;
+			TPoint<T> v1.x = Polygon.p[i].x - p.x;
+			TPoint<T> v1.y = Polygon.p[i].y - p.y;
+			TPoint<T> v2.x = Polygon.p[i + 1].x - p.x;
+			TPoint<T> v2.y = Polygon.p[i + 1].y - p.y;
 		
 			double angle = Atan2(VectorProduct(v1.x, v1.y, v2.x, v2.y), ScalarProduct(v1.x, v1.y, v2.x, v2.y));
 			sum = sum + angle;
