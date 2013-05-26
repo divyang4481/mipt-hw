@@ -9,8 +9,8 @@ class TVector
   size_t capacity;
 public:
    typedef T* iterator;
-   typedef const T* const_iterator
-;   TVector()
+   typedef const T* const_iterator;
+   TVector()
    {
 	   size=0;
 	   capacity=1;
@@ -112,8 +112,17 @@ public:
    {
 	   return(buf[0]);
    };
+   const T& Front() const
+   {
+	   return(buf[0]);
+   };
 
    T& Back()
+   {
+	   return(buf[size-1]);
+   };
+
+    const T & Back() const
    {
 	   return(buf[size-1]);
    };
@@ -136,7 +145,7 @@ public:
 
    void Erase(iterator iter)
    {
-	   for (iterator i=iter;i<End();++i) 
+	   for (iterator i=iter;i!=End()-1;++i) 
 	   {
 		   *i=*(i+1);
 	   }
@@ -146,10 +155,11 @@ public:
    TVector<T>&operator =(TVector<T>&cop)
    {
 	   Clear();
-	   for (size_t i=0;i<cop.size();++i)
-		   push_back(cop[i]);
+	   for (size_t i=0;i<cop.Size();++i)
+		   Pushback(cop[i]);
 	       return *this;
    }
+ 
  };
 
 struct TFoo {
@@ -227,12 +237,14 @@ int TFoo::Deleted = 0;
             TVector<TFoo> c;
             a = c;
         }
+		const TVector<int> a (A);
 
+         TVector<int> b(a);
+  
        cout<<endl<<"created: "<<TFoo::Created<<endl;
 	   cout<<"deleted: "<<TFoo::Deleted<<endl;
 	   system("pause");
 	  return 0;
  } 
- 
 
 
