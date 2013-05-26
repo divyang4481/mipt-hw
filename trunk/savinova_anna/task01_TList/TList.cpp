@@ -52,14 +52,14 @@ public:
                         Node = Node -> Prev;
                         return *this;
                 }
-                iterator& operator++(int)
+                iterator operator++(int)
                 {
                         TNode* t = Node;
                         Node = Node -> Next;
                         iterator* tmp = new iterator(t);
                         return *tmp;
                 }
-                iterator& operator--(int)
+                iterator operator--(int)
                 {
                         TNode* t = Node;
                         Node = Node -> Prev;
@@ -123,14 +123,14 @@ public:
                         Node = Node -> Prev;
                         return *this;
                 }
-                const const_iterator& operator++(int)
+                const const_iterator operator++(int)
                 {
                         TNode* t = Node;
                         Node = Node -> Next;
                         const_iterator* tmp = new const_iterator(t);
                         return *tmp;
                 }
-                const const_iterator& operator--(int)
+                const const_iterator operator--(int)
                 {
                         TNode* t = Node;
                         Node = Node -> Prev;
