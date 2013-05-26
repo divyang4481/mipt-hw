@@ -213,6 +213,21 @@ int TFoo::Deleted = 0;
 
 	   {	   TVector<TFoo>C;}
 
+        {
+            TVector<TFoo> a;
+            for (int i = 0; i < 10; ++i)
+                a.Pushback(TFoo());
+
+            TVector<TFoo> b = a;
+            for (int i = 0; i < 10; ++i)
+                b.Pushback(TFoo());
+
+            a.Swap(b);
+
+            TVector<TFoo> c;
+            a = c;
+        }
+
        cout<<endl<<"created: "<<TFoo::Created<<endl;
 	   cout<<"deleted: "<<TFoo::Deleted<<endl;
 	   system("pause");
