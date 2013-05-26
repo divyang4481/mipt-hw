@@ -42,22 +42,29 @@ public:
                         Node = nd;
                         delete nd;
                 }
-                const iterator& operator++()
+                iterator& operator++()
                 {
                         Node = Node -> Next;
                         return *this;
                 }
-                iterator operator + (int n) const
-                {
-                        iterator tmp = *this;
-                        for (int i = 0; i < n; ++i)
-                                ++tmp;
-                        return tmp;
-                }
-                const iterator& operator--()
+                iterator& operator--()
                 {
                         Node = Node -> Prev;
                         return *this;
+                }
+                iterator& operator++(int)
+                {
+                        TNode* t = Node;
+                        Node = Node -> Next;
+                        iterator* tmp = new iterator(t);
+                        return *tmp;
+                }
+                iterator& operator--(int)
+                {
+                        TNode* t = Node;
+                        Node = Node -> Prev;
+                        iterator* tmp = new iterator(t);
+                        return *tmp;
                 }
                 T& operator *()
                 {
@@ -107,17 +114,24 @@ public:
                         Node = Node -> Next;
                         return *this;
                 }
-                const_iterator operator + (int n) const
-                {
-                        const_iterator tmp = *this;
-                        for (int i = 0; i < n; ++i)
-                                ++tmp;
-                        return tmp;
-                }
                 const const_iterator& operator--()
                 {
                         Node = Node -> Prev;
                         return *this;
+                }
+                const const_iterator& operator++(int)
+                {
+                        TNode* t = Node;
+                        Node = Node -> Next;
+                        const_iterator* tmp = new const_iterator(t);
+                        return *tmp;
+                }
+                const const_iterator& operator--(int)
+                {
+                        TNode* t = Node;
+                        Node = Node -> Prev;
+                        const_iterator* tmp = new const_iterator(t);
+                        return *tmp;
                 }
                 const T& operator *() const
                 {
@@ -214,19 +228,19 @@ public:
                 const_iterator tmp;
                 return tmp;
         }
-        int front() const
+        T front() const
         {
                 return First -> Val;
         };
-        int back() const
+        T back() const
         {
                 return Last -> Val;
         };
-        int& front()
+        T& front()
         {
                 return First -> Val;
         };
-        int& back()
+        T& back()
         {
                 return Last -> Val;
         };
@@ -266,7 +280,7 @@ public:
                 delete tmp;
                 return val;
         };
-        void insert(iterator where, T val)
+        void insert(iterator& where, T val)
         {
                 TNode *p = new TNode(val);
                 if (!First)
@@ -280,7 +294,7 @@ public:
                 p -> Next -> Prev = p;
                 where.node() -> Next = p;
         };
-        void erase(iterator iter)
+        void erase(iterator& iter)
         {
 		TNode* tmp = iter.node();
                 iter.node() -> Prev -> Next = iter.node() -> Next;
@@ -311,7 +325,7 @@ struct S
         {
                 ++Created;
         }
-        S(const S& oth)
+        S(S& oth)
         {
                 ++Created;
         }
@@ -354,8 +368,9 @@ int main()
         cout << "Test iterator" << endl;
         TList<int>::iterator i = A.begin();
         cout << *i << endl;
-        cout << "begin() + 4 = 17" << endl;
-        *(i + 4) = 17;
+        cout << "begin() + 1 = 17" << endl;
+        ++i;
+        *i = 17;
         A.PrintStat('A');        
         for (TList<int>::iterator i = A.begin(); i != A.end(); ++i)
                 cout << *i << " ";
@@ -364,31 +379,16 @@ int main()
         A.back() = 5;
         cout << "A.back() = " << A.back() << endl;
         A.PrintStat('A');
-        cout << "Test insert insert(A.begin() + 5, 71)" << endl;
-        A.insert(A.begin() + 5, 71);
+        cout << "Test insert" << endl;
+        TList<int>::iterator it = A.begin();
+        ++it;
+        A.insert(it, 71);
+        it++;
         A.PrintStat('A');
-        cout << "Test erase(A.begin() + 7)" << endl;
-        A.erase(A.begin() + 7);
+        cout << "Test erase" << endl;
+        A.erase(it);
         A.PrintStat('A');
         cout << "Memory test" << endl;
-        {
-            TList<S> a;
-            for (int i = 0; i < 10; ++i)
-                a.push_back(S());
-
-            TList<S> b = a;
-            for (int i = 0; i < 10; ++i)
-                b.push_back(S());
-
-            //for (int i = 0; i < 10; ++i)
-            //    b.pop_front();
-
-            a.swap(b);
-
-            TList<S> c;
-            a = c;
-            b.clear();
-        }
         {
                 TList<S> C;
                 S tmp;
