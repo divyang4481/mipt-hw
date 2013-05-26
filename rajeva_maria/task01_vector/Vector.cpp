@@ -16,7 +16,7 @@ public:
 	   capacity=1;
 	   buf = new T[1];
    }
-    TVector(TVector<T>&cop)
+    TVector(const TVector<T>& cop)
 	{
 		capacity=cop.capacity;
 		size=0;
@@ -49,7 +49,7 @@ public:
    {
    return(capacity); 
    }
-   T& operator[](int index)
+   T& operator[](int index) const
    {
 	   return buf[index];
    }
