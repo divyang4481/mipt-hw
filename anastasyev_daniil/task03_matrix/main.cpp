@@ -275,30 +275,35 @@ TMatrix<U> ShtrassenMultiply(const TMatrix<U> &A, const TMatrix<U> &B)
 	{
 		for (size_t j = 0; j < n; j++)
 		{
-			A11[i].push_back( A.matrix[i][j] );
-			if (j+n < col) A12[i].push_back( A.matrix[i][j+n] );
-			else A12[i].push_back( 0 );
-			if (i+n < col) A21[i].push_back( A.matrix[i+n][j] );
-			else A21[i].push_back( 0 );
-			if (j+n < col && i+n < col) A22[i].push_back( A.matrix[i+n][j+n] );
-			else A22[i].push_back( 0 );
+			A11[i].resize(n); A12[i].resize(n); A21[i].resize(n); A22[i].resize(n);
+			B11[i].resize(n); B12[i].resize(n); B21[i].resize(n); B22[i].resize(n);
+			S1[i].resize(n); S2[i].resize(n); S3[i].resize(n); S4[i].resize(n);
+			S5[i].resize(n); S6[i].resize(n); S7[i].resize(n); S8[i].resize(n);
 
-			B11[i].push_back( B.matrix[i][j] );
-			if (j+n < col) B12[i].push_back( B.matrix[i][j+n] );
-			else B12[i].push_back( 0 );
-			if (i+n < col) B21[i].push_back( B.matrix[i+n][j] );
-			else B21[i].push_back( 0 );
-			if (j+n < col && i+n < col) B22[i].push_back( B.matrix[i+n][j+n] );
-			else B22[i].push_back( 0 );
+			A11[i][j] = A.matrix[i][j];
+			if (j+n < col) A12[i][j] = A.matrix[i][j+n];
+			else A12[i][j] =  0;
+			if (i+n < col) A21[i][j] = A.matrix[i+n][j];
+			else A21[i][j] = 0;
+			if (j+n < col && i+n < col) A22[i][j] = A.matrix[i+n][j+n];
+			else A22[i][j] = 0;
 
-			S1[i].push_back( A21[i][j] + A22[i][j] );
-			S2[i].push_back( S1[i][j] - A11[i][j] );
-			S3[i].push_back( A11[i][j] - A21[i][j] );
-			S4[i].push_back( A12[i][j] - S2[i][j]);
-			S5[i].push_back( B12[i][j] - B11[i][j] );
-			S6[i].push_back( B22[i][j] - S5[i][j]);
-			S7[i].push_back( B22[i][j] - B12[i][j] );
-			S8[i].push_back( S6[i][j] - B21[i][j] );
+			B11[i][j] = B.matrix[i][j];
+			if (j+n < col) B12[i][j] = B.matrix[i][j+n];
+			else B12[i][j] = 0;
+			if (i+n < col) B21[i][j] = B.matrix[i+n][j];
+			else B21[i][j] = 0;
+			if (j+n < col && i+n < col) B22[i][j] = B.matrix[i+n][j+n];
+			else B22[i][j] = 0;
+
+			S1[i][j] = A21[i][j] + A22[i][j];
+			S2[i][j] = S1[i][j] - A11[i][j];
+			S3[i][j] = A11[i][j] - A21[i][j];
+			S4[i][j] = A12[i][j] - S2[i][j];
+			S5[i][j] = B12[i][j] - B11[i][j];
+			S6[i][j] = B22[i][j] - S5[i][j];
+			S7[i][j] = B22[i][j] - B12[i][j];
+			S8[i][j] = S6[i][j] - B21[i][j];
 		}
 	}
 
@@ -360,12 +365,15 @@ TMatrix<U> ShtrassenMultiply(const TMatrix<U> &A, const TMatrix<U> &B)
 	for (size_t i=0; i<n; i++)
 		for (size_t j=0; j<n; j++)
 		{
-			T1[i].push_back( mP1.matrix[i][j] + mP2.matrix[i][j] );
-			T2[i].push_back( T1[i][j] + mP4.matrix[i][j] );
-			C11[i].push_back( mP2.matrix[i][j] + mP3.matrix[i][j] );
-			C12[i].push_back( T1[i][j] + mP5.matrix[i][j] + mP6.matrix[i][j] );
-			C21[i].push_back( T2[i][j] - mP7.matrix[i][j] );
-			C22[i].push_back( T2[i][j] + mP5.matrix[i][j] );
+			T1[i].resize(n); T2[i].resize(n);
+			C11[i].resize(n); C12[i].resize(n); C21[i].resize(n); C22[i].resize(n);
+			
+			T1[i][j] = mP1.matrix[i][j] + mP2.matrix[i][j];
+			T2[i][j] = T1[i][j] + mP4.matrix[i][j];
+			C11[i][j] = mP2.matrix[i][j] + mP3.matrix[i][j];
+			C12[i][j] = T1[i][j] + mP5.matrix[i][j] + mP6.matrix[i][j];
+			C21[i][j] = T2[i][j] - mP7.matrix[i][j];
+			C22[i][j] = T2[i][j] + mP5.matrix[i][j];
             
 			matrix[i][j] = C11[i][j];
             if (j+n < col) matrix[i][j+n] = C12[i][j];
