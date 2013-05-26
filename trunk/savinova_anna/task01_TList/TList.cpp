@@ -311,7 +311,7 @@ struct S
         {
                 ++Created;
         }
-        S(S& oth)
+        S(const S& oth)
         {
                 ++Created;
         }
@@ -371,6 +371,24 @@ int main()
         A.erase(A.begin() + 7);
         A.PrintStat('A');
         cout << "Memory test" << endl;
+        {
+            TList<S> a;
+            for (int i = 0; i < 10; ++i)
+                a.push_back(S());
+
+            TList<S> b = a;
+            for (int i = 0; i < 10; ++i)
+                b.push_back(S());
+
+            //for (int i = 0; i < 10; ++i)
+            //    b.pop_front();
+
+            a.swap(b);
+
+            TList<S> c;
+            a = c;
+            b.clear();
+        }
         {
                 TList<S> C;
                 S tmp;
