@@ -1,3 +1,4 @@
+#include <stdlib.h>
 #include <iostream>
 #include <vector>
 using namespace std;
@@ -52,7 +53,7 @@ public:
 		end.x = 0;
 		end.y = 0;
 	};
-	TSegment(TPoint NewBeg, TPoint NewEnd) {
+	TSegment(TPoint<T> NewBeg, TPoint<T> NewEnd) {
 		beg = NewBeg;
 		end = NewEnd;
 	};
@@ -127,19 +128,17 @@ public:
 	bool HasPoint(const TPoint <T> &p)  const {
 		double sum = 0;
 
-		Polygon[PolygonSize()].x := Polygon[0].x;
-		Polygon[PolygonSize()].y := Polygon[0].y;
+		polygon[PolygonSize() - 1].x = polygon[0].x;
+		polygon[PolygonSize() - 1].y = polygon[0].y;
 
 		for (int i = 0; i < PolygonSize(); ++i) {
-			TPoint<T> v1.x = Polygon.p[i].x - p.x;
-			TPoint<T> v1.y = Polygon.p[i].y - p.y;
-			TPoint<T> v2.x = Polygon.p[i + 1].x - p.x;
-			TPoint<T> v2.y = Polygon.p[i + 1].y - p.y;
+			TPoint<T> v1(polygon[i].x - p.x, polygon[i].y - p.y);
+			TPoint<T> v2(polygon[i + 1].x - p.x, polygon[i + 1].y - p.y);
 		
 			double angle = Atan2(VectorProduct(v1.x, v1.y, v2.x, v2.y), ScalarProduct(v1.x, v1.y, v2.x, v2.y));
 			sum = sum + angle;
 		}		
-		return (abs(sum) > 0);
+		return (sum != 0);
 	};
 
 
