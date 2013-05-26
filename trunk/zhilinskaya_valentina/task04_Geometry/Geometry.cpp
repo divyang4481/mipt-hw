@@ -1,5 +1,6 @@
 #include<iostream>
-
+#include<stdlib.h>
+#include<math.h>
 using namespace std;
 
 template<typename T>
@@ -116,7 +117,7 @@ public :
 template <typename T>
 double distance (segment<T> s)
 {
-	double sq = sqrt((s.getA().getX() - s.getB().getX()) * (s.getA().getX()  s.getB().getX()) + (s.getA().getY() - s.getB().getY()) * (s.getA().getY() - s.getB().getY()));
+	double sq = sqrt((s.getA().getX() - s.getB().getX()) * (s.getA().getX() - s.getB().getX()) + (s.getA().getY() - s.getB().getY()) * (s.getA().getY() - s.getB().getY()));
     return sq;
 }
 
