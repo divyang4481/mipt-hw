@@ -214,8 +214,20 @@ int main()
 			c.push_back(x);
 		}
 		TVector<myint> d(c);
-		
 	}
+
+        {
+            TVector<myint> a;
+            for (int i = 0; i < 10; ++i)
+                a.push_back(myint());
+
+            TVector<myint> b = a;
+            for (int i = 0; i < 10; ++i)
+                b.push_back(myint());
+
+            a.swap(b);
+        }
+
 	cout << "Check memory" << endl;
 	cout << myint::Created << ' ' << myint::Deleted << endl;
 	return 0;
