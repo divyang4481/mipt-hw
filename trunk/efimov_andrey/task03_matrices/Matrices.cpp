@@ -39,24 +39,6 @@ private:
 	vector<vector<T>> val;
 	friend TMatrix<T> StrassenMultiply();
 public:
-	void quater (TMatrix<T>& result, int number_of_quater, int size){
-		int rp=0;
-		int cp=0;
-		if( number_of_quater==1)
-			rp=cp=0;
-		else if (number_of_quater==3)
-			rp=cp=size;
-		else if (number_of_quater==4){
-			rp=0;
-			cp=size;
-		} else if (number_of_quater==2){
-			rp=size;
-			cp=0;
-		}
-		for (int i=0; i<size; ++i)
-				for (int j=0; j<size; ++j)
-					result.At(i, j)=val[i+rp][j+cp];
-	}
 	TMatrix(){
 	}
 	TMatrix(const TMatrix &other){
