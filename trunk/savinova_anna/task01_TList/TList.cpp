@@ -70,6 +70,10 @@ public:
                 {
                         return Node -> Val;
                 }
+                T* operator ->()
+                {
+                        return &(Node -> Val);
+                }
                 bool operator == (const iterator& it)
                 {
                         if (Node == it.Node)
@@ -136,6 +140,10 @@ public:
                 const T& operator *() const
                 {
                         return Node -> Val;
+                }
+                const T* operator ->() const
+                {
+                        return &(Node -> Val);
                 }
                 bool operator == (const const_iterator& it)
                 {
