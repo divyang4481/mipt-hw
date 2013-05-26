@@ -1,56 +1,111 @@
-#include <algorithm>
 #include <iostream>
+#include <algorithm>
 #include <vector>
- 
 using namespace std;
- 
-struct Point {
-        double x, y, a;
-        bool operator < (const Point &v) const {
-                return a < v.a;
+
+class TPoint
+{
+        int x, y, vx, vy;
+public:
+        TPoint()
+        {
+                x = 0;
+                y = 0;
+                vx = 0;
+                vy = 0;
+        };
+        TPoint(int X, int Y)
+        {
+                x = X;
+                y = Y;
+                vx = 0;
+                vy = 0;
+        }
+        int X()
+        {
+                return x;
+        }
+        int Y()
+        {
+                return y;
+        }
+        int& VX()
+        {
+                return vx;
+        }
+        int& VY()
+        {
+                return vy;
+        }
+        TPoint operator = (TPoint &a)
+        {
+                x = a.X();
+                y = a.Y();
+                vx = a.VX();
+                vy = a.VY();
+                return *this;
         }
 };
- 
-double vector_product(Point a, Point b, Point c) {
-        double ax, ay, cx, cy;
-        
-		ax = a.x - b.x;
-		ay = a.y - b.y;
-		cx = c.x - b.x;
-		cy = c.y - b.y;
-		
-		return ax * cy - ay * cx;
+
+int MultV(TPoint a, TPoint b)
+{
+        return a.VX() * b.VY() - a.VY() * b.VX();
 }
- 
-int main() {
 
-        int n;
-		cin >> n;
-        	
-		vector <Point> p(n);
-        vector <Point> s(n);
+int MultP(TPoint a, TPoint b, TPoint c)
+{
+        int x1 = a.X() - b.X();
+        int y1 = a.Y() - b.Y();
+        int x2 = c.X() - b.X();
+        int y2 = c.Y() - b.Y();
+        return x1 * y2 - x2 * y1;
+}
 
-        for (int i = 0; i < n; i++) {
-                cin >> p[i].x >> p[i].y;
-                p[i].a = atan2(p[i].y, p[i].x);
+bool Comp(TPoint a, TPoint b)
+{
+        if (MultV(a, b) > 0) return true;
+        if (MultV(a, b) < 0) return false;
+        return a.X() * a.X() + a.Y() * a.Y() < b.X() * b.X() + b.Y() * b.Y();
+}
+void Graham(vector<TPoint> &p, vector<TPoint> &h)
+{
+        for (size_t i = 1; i < p.size(); ++i)
+        {
+                if ((p[0].Y() > p[i].Y()) || (p[0].Y() == p[i].Y() && p[0].X() > p[i].X()))
+                        swap(p[0], p[i]);
         }
-        
-		sort(p.begin(), p.end());
-   		int sz = 3;
-        
-        for (int i = 0; i < 3; i++)
-                s[i] = p[i];
-        for (int i = 3; i < n; i++) {
-                while ((sz > 1) && (vector_product(p[i], s[sz - 1], s[sz - 2]) < 0))
-                        sz--;
-                s[sz++] = p[i];
+        h.push_back(p[0]);
+        for (size_t i = 1; i < p.size(); ++i)
+        {
+                p[i].VX() = p[i].X() - p[0].X();
+                p[i].VY() = p[i].Y() - p[0].Y();
         }
-      
+        sort(p.begin() + 1, p.end(), &Comp);
+        h.push_back(p[1]);
+        for (size_t i = 2; i < p.size(); ++i)
+        {
+                while (MultP(h[h.size() - 2], h[h.size() - 1], p[i]) > 0)
+                        h.pop_back();
+                h.push_back(p[i]);
+        }
+}
+        
+int main()
+{
+        vector<TPoint> p;
+        vector<TPoint> h;
+        int x = 0, y = 0, N = 0;
+        cin >> N;
+        for (int i = 0; i < N; ++i)
+        {
+                cin >> x >> y;
+                TPoint tmp(x, y);
+                p.push_back(tmp);
+        }
+        Graham(p, h);
+        cout << '\n';
+		for (size_t i = 0; i < h.size(); ++i)
+                cout << h[i].X() << '\t' << h[i].Y() << endl;
 
-        while ((sz > 2) && (vector_product(s[0], s[sz - 1], s[sz - 2]) < 0))
-                sz--;
-        for (int i = 0; i < sz; i++)
-                cout << s[i].x << " " << s[i].y << endl;
-
-        return 0;
+		return 0;
 }
