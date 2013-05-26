@@ -119,6 +119,10 @@ public:
 	class iterator
 	{
 		TNode  *node;
+		TNode* nd()
+		{
+			return node;
+		}
 	public:
 		friend class TList;
 		iterator(): node(T(0)){}
@@ -160,10 +164,6 @@ public:
 		T* operator ->() const
 		{
 			return (&(node->val));
-		}
-		TNode* nd()
-		{
-			return node;
 		}
 	};
 
@@ -265,16 +265,30 @@ public:
 		last->next = 0;
 		last->prev = 0;
     }
-    TList(TList &lst)
+    TList(const TList &lst)
     {
         if (lst.first==0) 
         {
             TList();
             return;
         }
-        first = 0;
+		first = 0;
 		*this = lst;
     }
+	TList (int n)
+	{
+		first = 0;
+		last = new TNode;
+		for (int i=0; i<n; ++i)
+			Push_back( T() );
+	}
+	TList (int n, T val)
+	{
+		first = 0;
+		last = new TNode;
+		for (int i=0; i<n; ++i)
+			Push_back(val);
+	}
     ~TList()
     {
 		Clear();
@@ -408,7 +422,7 @@ public:
 		TNode *tmp = pos.nd()->next;
 		tmp->prev = first.nd();
 		pos.nd()->next = first.nd();
-		first.nd()->prev = pos.nd();
+		it.nd()->prev = pos.nd();
 		last.nd()->prev->next = tmp;
 		tmp->prev = last.nd()->prev;
 
@@ -449,13 +463,14 @@ public:
 	{
 		return last->prev->val;
 	}
-	TList& operator= (TList& other)
+	TList& operator= (const TList& other)
 	{
 		if (this!=&other)
 		{
 			if (!Empty())
 			{
 				Clear();
+				delete last;
 			}
 			TNode *p = new TNode (other.first->val);
 			first = p;
@@ -482,7 +497,7 @@ ostream& operator<< (ostream &out, const TFoo<T> &t)
 template <typename T>
 void Print(TList <T> &lst)
 {
-	typename TList <T>::iterator it=lst.Begin();
+	TList <T>::iterator it=lst.Begin();
     for (; it!=lst.End(); ++it) cout <<' '<<*it;
 	cout<<endl;
 }
@@ -532,6 +547,9 @@ int main()
 		cout<<"a.Splice(a.Begin(), c, ++c.Begin()): "<<endl; Print(a);
 	}
         {
+			const TList<int> const_a(10);
+			TList<int> cb(const_a);
+
             typedef TList< TFoo<int> > TListFoo;
 
             TListFoo a;
