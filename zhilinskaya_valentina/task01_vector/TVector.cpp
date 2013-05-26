@@ -259,6 +259,25 @@ public:
     }
 };
 
+
+static void Test() {
+    TVector<leak> a;
+    for (int i = 0; i < 10; ++i)
+        a.push_back(leak());
+
+    TVector<leak> b = a;
+    for (int i = 0; i < 10; ++i)
+        b.push_back(leak());
+
+    a.swap(b);
+
+    TVector<leak> c;
+    a = c;
+
+    const TVector<leak> d(a);
+    const leak& lk = d.front();
+}
+
 int main()
 {
 /*    TVector<int> array1;
@@ -302,6 +321,7 @@ int main()
 	cout << "\n second\n";
 	for (int i = 0; i<array2.size(); ++i) cout<<array2[i]<<" ";*/
 	//---------------------------------------------------------------------------------------------------------LEAK
+        /*
 	{	
 		cout << "\n push_back + def.constr.";
 		TVector<leak> array3;
@@ -376,7 +396,10 @@ int main()
 		TVector<leak> array3(z, 5);
 		TVector<leak> array4(z, 9);
 		array4 = array3;
-	}cout << "\n Created: " << leak::Created <<"\n Deleted: "<<leak::Deleted <<"\n\n";
+	}
+        */
+        Test();
+        cout << "\n Created: " << leak::Created <<"\n Deleted: "<<leak::Deleted <<"\n\n";
 	system("pause");
 	return 0;
 }
