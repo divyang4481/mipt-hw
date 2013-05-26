@@ -12,6 +12,7 @@ using namespace std;
 struct TFoo {
     int Value;
     TFoo() : Value(0) { ++Created; }
+    explicit TFoo(int value) : Value(value) { ++Created; }
     TFoo(const TFoo &other) : Value(other.Value) { ++Created; }
     ~TFoo() { ++Deleted; }
     bool operator< (const TFoo& other)
@@ -105,8 +106,23 @@ static void Test3 (){
 		cout << (*pos).Value << endl;
 }
 
+static void Test4() {
+    typedef TRBTree<TFoo> TTreeFoo;
+
+    TTreeFoo a;
+    for (int i = 0; i < 100; ++i)
+        a.insert(TFoo(i));
+
+    for (int i = 0; i < 100; ++i)
+        TTreeFoo::iterator iter = a.find(TFoo(i));
+
+    TTreeFoo b = a;
+
+    a.swap(b);
+}
+
 int main() {
-    Test3();
+    Test4();
     TFoo::PrintStats();
     return 0;
 }
