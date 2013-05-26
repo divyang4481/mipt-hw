@@ -235,6 +235,18 @@ istream& operator >> (istream& in, TMatrix<T>& m)
         return in;
 }
 
+template <typename T>
+bool Check(TMatrix<T>& a, TMatrix<T>& b)
+{
+        bool tmp = true;
+        for (size_t i = 0; i < a.Row(); ++i)
+                for (size_t j = 0; j < a.Col(); ++j)
+                {
+                        if (a.At(i,j) != b.At(i,j))
+                                tmp = false;
+                }
+        return tmp;
+}
 int main()
 {
         /*cout << "Creating Matrix M1" << endl;
@@ -339,7 +351,8 @@ int main()
         time(&timer1);
         res1 = A.ShtrassenMultiply(B);
         time(&timer2);
-        cout << "Finish Shtrassen" << endl;
+        bool tmp = Check(res1, res2);
+        cout << "Finish Shtrassen, check: " << tmp << endl;
         cout << "Shtrassen time: " << (timer2 - timer1) << endl << endl;
         return 0;
 }
