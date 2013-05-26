@@ -171,7 +171,7 @@ public:
 				++h;
                 per = 0;
 			}
-			if (h>=radix)
+			if (h>=(int)radix)
 			{
 				per=1;
 				result.buf.push_back(h-radix);
