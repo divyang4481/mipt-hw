@@ -267,6 +267,10 @@ public:
 	}
 
 	TList ( TList<T>& another){
+		limit = new node;
+		limit->next = 0;
+		limit-> prev = 0;
+		first = last = 0;
 		*this = another;
 	}
 
@@ -305,7 +309,7 @@ public:
 	}
 
 	void clear (){
-		while( first != 0 && *first != *limit ){
+		while( first != 0 && first != limit ){
 			last=first->next;
 			delete first;
 			first=last;
@@ -557,12 +561,14 @@ int main(){
             TListFoo a;
             for (int i = 0; i < 10; ++i)
                 a.push_back(TFoo(i));
-
+			show(a);
             TListFoo b = a;
             for (int i = 0; i < 10; ++i)
                 b.push_front(TFoo(i));
-
+			show(b);
             a.swap(b);
+			show(a);
+			show(b);
         }
         }
 	TFoo :: PrintStats();
