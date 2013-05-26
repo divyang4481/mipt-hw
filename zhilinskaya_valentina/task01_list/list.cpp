@@ -1,5 +1,5 @@
 # include <iostream>
-
+# include <stdlib.h>
 using namespace std;
 
 template <class T>
@@ -35,7 +35,7 @@ public:
 		const T& operator* () { return node->val;}
 		bool operator== (const TConst_Iterator& other) { return node == other.node;}
 		bool operator!= (const TConst_Iterator& other) { return node != other.node;}
-		TConst_Iterator& operator= (TConst_Iterator& rhs) { node = other.node; return *this;}
+		TConst_Iterator& operator= (TConst_Iterator& other) { node = other.node; return *this;}
 		TConst_Iterator& operator++ () {node = node->next; return *this;}
 		const TConst_Iterator operator++ (int) 
 		{
@@ -101,7 +101,7 @@ public:
 		first = NULL;
 		last = NULL;
 		elem = new TNode<T>;
-		for (TList<T>::TConst_Iterator it = other.begin(); it != other.end(); ++it)
+		for (typename TList<T>::TConst_Iterator it = other.begin(); it!= other.end(); ++it)
 			push_back(*it);
 	}
 	~TList<T>()
@@ -259,7 +259,7 @@ public:
 			this->pop_back();
 			return pos;
 		}
-		TList<T>::TIterator it = pos;
+		typename TList<T>::TIterator it = pos;
 		++it;
 		TNode<T>* from = pos.getNode()->prev;
 		TNode<T>* to = pos.getNode()->next;
@@ -296,7 +296,7 @@ public:
 	TList<T>& operator= (TList<T>& other)
 	{
 		this->clear();
-		for (TList<T>::TIterator it=other.begin(); it!=other.end(); ++it)
+		for (typename TList<T>::TIterator it=other.begin(); it!=other.end(); ++it)
 		{
 			this->push_back(*it);
 		}
@@ -312,6 +312,7 @@ void print (TList<T> list){
 }
 int main()
 {
+
 	TList<int> my_list;
 	cout << "TList<int> my_list;                    my_list empty?"; (my_list.empty())? cout << " yes\n": cout<<"no\n";
 	TList<int> my_list2(5, 3);
