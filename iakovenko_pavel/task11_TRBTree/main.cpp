@@ -106,6 +106,7 @@ static void Test3 (){
 		cout << (*pos).Value << endl;
 }
 
+
 static void Test4() {
     typedef TRBTree<TFoo> TTreeFoo;
 
@@ -122,6 +123,7 @@ static void Test4() {
 }
 
 int main() {
+	Test3();
     Test4();
     TFoo::PrintStats();
     return 0;
