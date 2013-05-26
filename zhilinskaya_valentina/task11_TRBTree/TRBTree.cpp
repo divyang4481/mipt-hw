@@ -33,8 +33,8 @@ class TRBTree
 {
 private:          
 	TNode<T>* root;
-	int size;
 	TCompare cmp;
+	int size;
 
 	void left_Rotate (TNode<T>* x) 
 	{
@@ -276,7 +276,7 @@ public:
 		TIterator& operator++ (){elem = tree->Tree_Successor(elem); return *this;}
 		const TIterator operator++ (int){ TIterator it(*this); ++*this; return it;}
 		TIterator& operator-- (){elem = tree->Tree_Predecessor(elem); return *this;}
-		const TIterator operator-- (int){TIterator it(*this); --*this; return itr;}
+		const TIterator operator-- (int){TIterator it(*this); --*this; return it;}
 		bool operator== (const TIterator& it){ return ((elem == it.elem) && (tree == it.tree));}
 		bool operator!= (const TIterator& it){ return ((elem != it.elem) || (tree != it.tree));}
 
@@ -303,14 +303,14 @@ public:
 	TRBTree (): root(NULL), cmp(), size(0) {}
 	TRBTree (const TRBTree<T>& tree) : root(NULL), cmp(tree.cmp), size(0)
 	{ 
-		for (TRBTree<T>::TCIterator it = tree.begin(); it != tree.end(); ++it)
+		for (typename TRBTree<T>::TCIterator it = tree.begin(); it != tree.end(); ++it)
 			this->insert(*it);
 	}
 	~TRBTree () { clear();}
 	TRBTree& operator= (const TRBTree<T>& tree)
 	{
 		clear();
-		for (TRBTree<T>::TCIterator it = tree.begin(); it != tree.end(); ++it)
+		for (typename TRBTree<T>::TCIterator it = tree.begin(); it != tree.end(); ++it)
 			insert(*it);
 		return *this;
 	}
