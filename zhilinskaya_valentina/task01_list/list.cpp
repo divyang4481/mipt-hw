@@ -2,17 +2,27 @@
 # include <stdlib.h>
 using namespace std;
 
+struct leak {
+	static int Created;
+	static int Deleted;
+	leak() {++Created;}
+	leak (const leak&) {++Created;}
+	~leak() {++Deleted;}
+};
+
+int leak :: Created = 0;
+int leak :: Deleted = 0;
 template <class T>
 class TNode {
 public:
         TNode<T>* next;
         TNode<T>* prev;
         T val;
-        TNode(TNode<T>* new_next = NULL, TNode<T>* new_prev = NULL, T new_val = 0) 
+        TNode(TNode<T>* new_next = NULL, TNode<T>* new_prev = NULL, T new_val = T()) 
 		{
-			next=new_next;
-			prev=new_prev;
-			val=new_val;
+			next = new_next;
+			prev = new_prev;
+			val = new_val;
 		}
 		~TNode() {}
 };
@@ -133,9 +143,9 @@ public:
 	}
 	void swap(TList<T>& other)
 	{
-		swap(first, other.first);
-		swap(last, other.last);
-		swap(elem, other.elem);
+		std::swap(first, other.first);
+		std::swap(last, other.last);
+		std::swap(elem, other.elem);
 	}
 	TIterator begin()
 	{
@@ -312,7 +322,7 @@ void print (TList<T> list){
 }
 int main()
 {
-
+	/*
 	TList<int> my_list;
 	cout << "TList<int> my_list;                    my_list empty?"; (my_list.empty())? cout << " yes\n": cout<<"no\n";
 	TList<int> my_list2(5, 3);
@@ -385,7 +395,86 @@ int main()
 	my_iter = my_list.splice(my_list.begin(), my_list2, my_list2.begin(), ++++my_list2.begin());
 	cout << " my_list.splice(my_list.begin(), my_list2, my_list2.begin(), ++++my_list2.begin()): \n";
 	cout << "my_list:  "; print(my_list);
-	cout << "my_list2: "; print(my_list2);
+	cout << "my_list2: "; print(my_list2);*/
+
+	//_____________________________________________________________LEAK
+	{	
+		cout << "\n push_back + def.constr.";
+		TList<leak> my_list;
+		leak z;
+		for (int i = 0; i< 5; ++i)
+			my_list.push_back(z);
+	}cout << "\n Created: " << leak::Created <<"\n Deleted: "<<leak::Deleted <<"\n\n";
+	{	
+		cout << "\n push_back + pop_back + def.constr.";
+		TList<leak> my_list;
+		leak z;
+		for (int i = 0; i < 10; ++i)
+			my_list.push_back(z);
+		for (int i = 0; i< 6; ++i)
+			my_list.pop_back();
+	}cout << "\n Created: " << leak::Created <<"\n Deleted: "<<leak::Deleted <<"\n\n";
+	{	
+		cout << "\n push_front + pop_front+ def.constr.";
+		TList<leak> my_list;
+		leak z;
+		for (int i = 0; i < 10; ++i)
+			my_list.push_front(z);
+		for (int i = 0; i< 6; ++i)
+			my_list.pop_front();
+	}cout << "\n Created: " << leak::Created <<"\n Deleted: "<<leak::Deleted <<"\n\n";
+	{	
+		cout << "\n constr.  + empty  + back + front + end + begin (dont change (except constr.))";
+		leak z;
+		TList<leak> my_list(10, z);
+		my_list.empty();
+		z = my_list.back();
+		z = my_list.front();
+		my_list.end(); my_list.begin();
+	}cout << "\n Created: " << leak::Created <<"\n Deleted: "<<leak::Deleted <<"\n\n";
+	{
+		cout << "\n constr.cop. + swap";
+		leak z;
+		TList<leak> my_list(5, z);
+		TList<leak> my_list2(my_list);
+		my_list.swap(my_list2);
+	}cout << "\n Created: " << leak::Created <<"\n Deleted: "<<leak::Deleted <<"\n\n";
+	{
+		cout << "\n constr. + clear";
+		leak z;
+		TList<leak> my_list(5, z);
+		my_list.clear();
+	}cout << "\n Created: " << leak::Created <<"\n Deleted: "<<leak::Deleted <<"\n\n";
+	{
+		cout << "\n constr. + insert";
+		leak z;
+		TList<leak> my_list(6, z);
+		my_list.insert(my_list.begin(), z);
+		my_list.insert(my_list.begin(), z);
+		my_list.insert(my_list.begin(), z);
+	}cout << "\n Created: " << leak::Created <<"\n Deleted: "<<leak::Deleted <<"\n\n";
+	{
+		cout << "\n constr. + erase";
+		leak z;
+		TList<leak> my_list(10, z);
+		my_list.erase(my_list.begin());
+		my_list.erase(my_list.begin());
+	}cout << "\n Created: " << leak::Created <<"\n Deleted: "<<leak::Deleted <<"\n\n";
+	{
+		cout << "\n constr. + op=";
+		leak z;
+		TList<leak> my_list(5, z);
+		TList<leak> my_list2(9, z);
+		my_list2 = my_list;
+	}cout << "\n Created: " << leak::Created <<"\n Deleted: "<<leak::Deleted <<"\n\n";
+	{
+		cout << "\n constr. + splice";
+		leak z;
+		TList<leak> my_list(5, z);
+		TList<leak> my_list2(9, z);
+		my_list.splice(my_list.begin(), my_list2);
+	}cout << "\n Created: " << leak::Created <<"\n Deleted: "<<leak::Deleted <<"\n\n";
+	
 	system ("pause");
 	return 0;
 }
