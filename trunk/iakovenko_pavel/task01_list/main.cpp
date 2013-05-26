@@ -5,6 +5,7 @@ using namespace std;
 
 struct TFoo {
     int Value;
+    explicit TFoo(int value) : Value(value) { ++Created; }
     TFoo() : Value(0) { ++Created; }
     TFoo(const TFoo &other) : Value(other.Value) { ++Created; }
     ~TFoo() { ++Deleted; }
@@ -549,7 +550,21 @@ int main(){
 	show(a);
 	b.splice(b.begin(), a, a.begin(), a.end());
 	show(b);
-	show(a);}
+	show(a);
+
+        {
+            typedef TList<TFoo> TListFoo;
+            TListFoo a;
+            for (int i = 0; i < 10; ++i)
+                a.push_back(TFoo(i));
+
+            TListFoo b = a;
+            for (int i = 0; i < 10; ++i)
+                b.push_front(TFoo(i));
+
+            a.swap(b);
+        }
+        }
 	TFoo :: PrintStats();
 	return 0;
 }
