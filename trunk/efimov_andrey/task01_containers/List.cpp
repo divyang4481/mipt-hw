@@ -1,242 +1,250 @@
 #include <iostream>
 #include <list>
-
 using namespace std;
 
 template <typename T>
-	struct TNode{
-		T val;
-		TNode<T> *prev, *next;
-		TNode(){
-			prev=0;
-			next=0;
-			val=0;
-		}
-		TNode(T n){
-			prev=0;
-			next=0;
-			val=n;
-		}
-		TNode(T n, TNode* prev, TNode* next){
-			val=n;
-			prev=prev;
-			next=next;
-		}
-	};
+struct TNode{
+	static int Created, Deleted;
+	T val;
+	TNode <T> *prev, *next;
+	TNode(){
+		val = 0;
+		prev = 0;
+		next = 0;
+		++Created;
+	}
+	TNode(T v){
+		val = v;
+		prev = 0;
+	next = 0;
+	++Created;
+	}
+	TNode(T v, TNode *p, TNode *n){
+		val = v;
+		prev = p;
+		next = n;
+		++Created;
+	}
+    ~TNode(){
+		++Deleted;
+	}
+};
+
 template <typename T>
-	class TIter{
-		TNode<T>* node;
-	public:
-		TIter():node(0){}
-		TIter(TNode <T> *t):node(t){}
-	T& operator *(){
-		return node->val;
-		}
-	TIter operator ++(){
-		node = node->next;
-		return this;
-	}
-	TIter operator --(){
+class TIterator{
+    TNode<T>* node;
+public:
+	TIterator():node(0){}
+	TIterator(TNode <T> *t):node(t){}
+    T& operator* (){
+        return node->val;
+    }
+    TIterator& operator++ (){
+        node = node->next;
+        return *this;
+    }
+    TIterator& operator-- (){
 		node = node->prev;
-		return this;
+		return *this;
 	}
-	TIter operator ++(int){
-		TIter it(*this);
+	TIterator operator++ (int){
+        TIterator it(*this);
 		++(*this);
 		return it;
-    }
-    TIter operator --(int){
+	}
+    TIterator operator-- (int){
 		TIterator it(*this);
 		--(*this);
 		return it;
-    }
-    bool operator ==(const TIter& other){
+	}
+	bool operator== (const TIterator& other){   
 		return (node==other.node);
 	}
-	bool operator !=(const TIter& other){   
+	bool operator!= (const TIterator& other){   
 		return (!(*this==other));
-	}
-	T* operator ->() const{
+    }
+	T* operator->() const{
 		return (&**this);
 	}
-	TNode <T>* GetNode(){
+	TNode<T>* nd(){
 		return node;
 	}
-	TIter operator+ (int n){
-		for (int i=0; i<n; ++i){
-			if (node->next==0)
-				return this;
-			++this;
-		}
-		return this;
+	TIterator operator+ (int n){
+		if (node->next==0)
+			return *this;
+		for (int i=0; i<n; ++i)
+			++*this;
+		return *this;
 	}
 };
 
 template <typename T>
 class TList{
-	typedef TNode<T> node;
-	typedef TIter<T> iterator;
-private:
-	node* first;
-	node* last;
+	TNode <T> *first, *last;
 public:
-	TList(){
-			first=0;
-			last=0;
-		}
-	TList(node* left, node* right){
-			first=l;
-			last=r;
-		}
-	TList(const TList<T> &a){
-			if (a.first !=0){
-				TNode* pre=new TNode(a.first->val);
-				first=pre;
-				TNode* cur=a.first->next;
-				for(; cur; cur=cur->next, pre=prev->next){
-					TNode *newn=new TNode (cur->val, p, 0);
-					pre->next=newn;
-				}
-				last=pre;
-			}
-			else{
-				TList();
-				return;
-			}
-		}
-	~TList(){
-			node* cur;
-			for (;first;first=cur){
-				cur=first->next;
-				delete first;
-			}
-		}
-	bool empty(){
-			return (first==0)?1:0;
-		}
-	void clear(){
-			TNode* cur;
-			for (;first;first=cur){
-				cur=first->next;
-				delete first;
-			}
-			first=0;
-			last=0;
-		}
-	void swap(TList<T>& other){
-			swap(*this,other);
-		}
-	iterator begin(){
-			return iterator(first);
-		}
-	iterator end(){
-			return iterator(last);
-		}
-	T& front (){
-			return first->val;
-		}
-	T& back (){
-			return last->prev->val;
-		}	
-	node* push_front(int v){
-		TNode *p;
-		p=insert (first, v);
-		return p;
+	typedef TIterator<T> Iterator;
+	typedef TNode<T> Node;
+    TList(){
+		first=0;
+		last=0;
 	}
-	void push_front(node* p){
-		insert (first, p);
-	}
-	node* push_back (int v){
-		TNode *p = new TNode(v);
-		Pushback (p);
-		return p;
-	}
-	void push_back (node* p){
-		p->prev = last;
-		if (last!=0){
-			last->next = p;
-		}
-		else{
-			first=p;
-		}
-		last=p;
-	}
-	T pop_front(){
-		T v = first->val;
-		first=first->next;
-		delete first->prev;
-		first->prev=0;
-	}
-	T pop_back(){
-		T v = last->val;
-		last=last->prev;
-		delete last->next;
-		last->next=0;
-	}
-	node* insert(node* pos, int v){
-		TNode* p = new TNode(v);
-		Insert (pos, p);
-		return p;
-	}
-	void insert(node* pos, node* what){
-		if (first==0){
-			first=what;
-			last= what;
+    TList(TList<T> &lst){
+		if (lst.first==0){
+			TList();
 			return;
 		}
-		if (first==pos){
-			first = what;
+		Node *p = new Node (lst.first->val);
+		first=p;
+		Node *c = lst.first -> next;
+		for (; c; c = c->next, p = p->next){
+			Node *np = new Node(c->val, p, 0);
+			p->next = np;
+		}
+		last = p;
+	}
+    ~TList(){
+		while (first){
+			Node *p=first->next;
+			delete first;            
+			first=p;
+        }
+    }
+	bool Empty() const{
+		return (first);
+	}
+	TIterator<T> Begin(){
+		return Iterator(first);
+	}
+	TIterator<T> End(){
+		return Iterator(last);
+	}
+	void Clear(){
+		while (first){
+		Node *p=first -> next;
+			delete first;            
+			first=p;
+		}
+		first=0;
+		last=0;
+	}
+	void Swap(TList& other){
+		swap(*this, other);
+	}
+	void push_back(int val){
+		Node *p = new Node(val);
+		push_back(p);
+	}
+    void push_back(Node *node){
+		node->prev = last;
+		if (last!=0)
+		last->next = node;
+	else first=node;
+		last=node;
+	}
+    void push_front(T val){
+		Node *p = new Node(val);
+		push_front(p);
+	}
+    void push_front(Node *node){
+		node->next = first;
+		if (first!=0)
+			first->prev = node;
+		else last=node;
+        first=node;
+    }
+    void Insert(Node* where, T val){
+        Node *p = new Node(val);
+        Insert(where, p);
+	}
+	void Insert(Node* where, Node* p){
+		if (where==first){
+			push_front(p->val);
+			delete p;
 		}
 		else{
-			what->prev = pos->prev;
-			what->prev->next = what;
+			p->prev = where->prev;
+			p->next = where;
+			where->prev->next = p;
+			where->prev = p;
+		}	
+	}
+	void Insert(Iterator pos, T val){
+		Insert(pos.nd(), val);
+	}
+	void Insert(Iterator pos, Iterator first, Iterator last){
+		for (; first!=last; --last, --pos)
+			Insert(pos.nd(), *last);
+	}
+	void Extract(Node* p){
+		if (p==first && p==last){
+			first=0;
+			last=0;
+			return;
 		}
-		what->next = pos;
-		pos->prev = what;
-		return;
+		if (p==first)
+			first = p->next;
+		else
+			p->prev->next = p->next;
+		if (p==last)
+			last = p->prev;
+		else
+			p->next->prev = p->prev;
 	}
-	void insert(iterator pos, T val){
-		Insert(pos.GetNode(), val);
+	void Erase(Iterator pos){
+		Extract(pos.nd());
 	}
-	void insert(iterator pos, iterator start, iterator finish){
-		for (; start!=finish; --finish, --pos)
-			Insert(pos.GetNode(), *finish);
+	void Erase(Iterator first, Iterator last){ 
+		for ( ; first!=last; ++first) Extract(first.nd());
 	}
-	void splice(iterator pos, TList& that){
-		iterator it=that.end();
-		for (; it!=that.begin(); --pos, --it)
-		{
-			insert(pos,*it);
-			that.erase(it);
+	void Splice(Iterator pos, TList& x){
+		Iterator it=x.End();
+		for (; it!=x.Begin(); --pos, --it){
+			Insert(pos,*it);
+			Iterator t=it;
+			x.Erase(t);
 		}
-		insert(pos,*that.begin);
-		that.Erase(that.begin);
+		Insert(pos,*it);
+		x.Erase(it);
 	}
-	void splice (iterator pos, TList& that, iterator it){
-		insert(pos,*it);
-		that.erase(it);
+	void Splice(Iterator pos, TList& x, Iterator it){
+		Insert(pos,*it);
+		x.Erase(it);
 	}
-	void splice (iterator pos, TList& that, iterator start, iterator finish){
-		for (iterator cur=finish, cur!=start; cur--)
-			splice(pos, that, cur);
-	}
-	void erase (iterator it){
-			n=it.GetNode();
-			if (n->prev!=0) n->prev->next=n->next;
-			if (n->next!=0) n->next->prev=n->prev;
-			if (n==first) first=n->next;
-			if (n==last) last=n->prev;
+	void Splice(Iterator pos, TList& x, Iterator first, Iterator last){
+		Iterator it = --last;
+		for (; it!=first; --pos, --it){
+			Insert(pos,*it);
+			Iterator t=it;
+			x.Erase(t);
 		}
-	void erase (iterator il, iterator ir){
-			for (;il!=ir; il++) erase(il);
-		}
-	bool operator= (TList& other){
-		if (this!=&other)
-		{
-			clear();
-			node *temp = other.first;
-			while (temp!=other.last)
-			{
+		Insert(pos,*it);
+		x.Erase(it);
+	}
+	T pop_back(){
+		T t = last->val;
+		last = last->prev;
+		delete last->next;
+		last->next = NULL;
+		return t;
+	}
+	T pop_front(){
+		T t = first->val;
+		first = first->next;
+		delete first->prev;
+		first->prev = 0;
+		return t;
+	}
+	T& front(){
+		return first->val;
+	}
+	T& back() {
+		return last->prev->val;
+	}
+	TList& operator= (TList& other){
+		if (this!=&other){
+			Clear();
+			Node *temp = other.first;
+			while (temp!=other.last){
 				push_back(temp->val);
 				temp = temp->next;
 			}
@@ -246,5 +254,77 @@ public:
 	}
 };
 
+int TNode<int>:: Created=0;
+int TNode<int>:: Deleted=0;
+
+void Print(TList <int> &lst){
+	TList <int>::Iterator it=lst.Begin();
+	for (; it!=lst.End(); ++it) cout << ' ' << *it;
+	cout << ' ' << *it << endl;
+}
+
+void MoreTestingRequired(){
+	TList<int> a;
+	TList<int> b;
+	for (int i=0; i<10; ++i){
+		a.push_back(i);
+		b.push_front(i);
+	}
+	cout << "a: ";
+	Print(a);
+	cout << "b: ";
+	Print(b);
+	cout << "Popback for both" << endl;
+	a.pop_back();
+	b.pop_back();
+	cout << "a: ";
+	Print(a);
+	cout << "b: ";
+	Print(b);
+	cout << "Now for the front" << endl;
+	a.pop_front();
+	b.pop_front();
+	cout << "a: ";
+	Print(a);
+	cout << "b: ";
+	Print(b);
+	cout << "Swhap" << endl;
+	a.Swap(b);
+	cout << "a: ";
+	Print(a);
+	cout << "b: ";
+	Print(b);
+	cout << "INSERTIONNN" << endl;
+	a.Insert(a.Begin()+2, 9);
+	a.Insert(b.Begin()+2, 0);
+	cout << "a: ";
+	Print(a);
+	cout << "b: ";
+	Print(b);
+	cout << "More insertion!" << endl;
+	a.Insert(a.Begin()+2, b.Begin()+5, b.Begin()+8);
+	b.Insert(b.Begin()+2, a.Begin()+8, a.Begin()+11);
+	cout << "a: ";
+	Print(a);
+	cout << "b: ";
+	Print(b);
+	cout << "Destroy the lesser middle nodes!" << endl;
+	a.Erase(a.Begin()+7);
+	b.Erase(b.Begin()+6, b.Begin()+8);
+	cout << "a: ";
+	Print(a);
+	cout << "b: ";
+	Print(b);
+	cout << "Tear it up!" << endl;
+	a.Splice(a.Begin()+2, b, b.Begin()+3, b.Begin()+7);
+	cout << "a: ";
+	Print(a);
+	cout << "b: ";
+	Print(b);
+	system("pause");
+}
+
 int main(){
-};
+	MoreTestingRequired();
+	return 0;
+}
