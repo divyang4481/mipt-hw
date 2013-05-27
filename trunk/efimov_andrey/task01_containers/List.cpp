@@ -182,49 +182,67 @@ public:
 			Insert(pos.nd(), *last);
 	}
 	void Extract(Node* p){
-		if (p==first && p==last){
+		if (p == first && p == last->prev)
+		{
 			first=0;
-			last=0;
+			delete p;
+			last->prev = 0;
+			last->next = 0;
 			return;
 		}
 		if (p==first)
 			first = p->next;
 		else
 			p->prev->next = p->next;
-		if (p==last)
-			last = p->prev;
-		else
-			p->next->prev = p->prev;
+		p->next->prev = p->prev;
+		delete p;       
 	}
-	void Erase(Iterator pos){
-		Extract(pos.nd());
+	Iterator Erase(Iterator pos){
+		Iterator tmp = pos;
+		++pos;
+		Extract(tmp.nd());
+		return pos;
 	}
-	void Erase(Iterator first, Iterator last){ 
-		for ( ; first!=last; ++first) Extract(first.nd());
+	Iterator Erase(Iterator first, Iterator last){ 
+		for ( ; first!=last; ){
+			Iterator tmp = first;
+			++first;
+			Extract(tmp.nd());
+		}
+		return last;
 	}
 	void Splice(Iterator pos, TList& x){
-		Iterator it=x.End();
-		for (; it!=x.Begin(); --pos, --it){
-			Insert(pos,*it);
-			Iterator t=it;
-			x.Erase(t);
-		}
-		Insert(pos,*it);
-		x.Erase(it);
+		Node *tmp = pos.nd()->next;
+		tmp->prev = x.first;
+		pos.nd()->next = x.first;
+		x.first->prev = pos.nd();
+		x.last->next = tmp;
+		x.first = 0;
+		x.last->next = 0;
+		x.last->prev = 0;
 	}
-	void Splice(Iterator pos, TList& x, Iterator it){
-		Insert(pos,*it);
-		x.Erase(it);
+	void Splice (Iterator pos, TList& x, Iterator it){
+		Node *tmp2 = it.nd()->prev;
+		Node *tmp = pos.nd()->next;
+		tmp->prev = it.nd();
+		pos.nd()->next = it.nd();
+		it.nd()->prev = pos.nd();
+		x.last->prev->next = tmp;
+		tmp->prev = x.last->prev;
+		x.last->prev = tmp2;
+		tmp2->next = x.last;
 	}
-	void Splice(Iterator pos, TList& x, Iterator first, Iterator last){
-		Iterator it = --last;
-		for (; it!=first; --pos, --it){
-			Insert(pos,*it);
-			Iterator t=it;
-			x.Erase(t);
-		}
-		Insert(pos,*it);
-		x.Erase(it);
+	void Splice (Iterator pos, TList& x, Iterator first, Iterator last){
+		Node *tmp2 = first.nd()->prev;
+		Node *tmp3 = last.nd()->next;
+		Node *tmp = pos.nd()->next;
+		tmp->prev = first.nd();
+		pos.nd()->next = first.nd();
+		first.nd()->prev = pos.nd();
+		last.nd()->next = tmp;
+		tmp->prev = last.nd()->prev;
+		tmp2->next = tmp3;
+		tmp3->prev = tmp2;
 	}
 	T pop_back(){
 		T t = last->val;
@@ -260,8 +278,7 @@ public:
 	}
 };
 
-int TNode<int>:: Created=0;
-int TNode<int>:: Deleted=0;
+
 
 void Print(TList <int> &lst){
 	TList <int>::Iterator it=lst.Begin();
@@ -269,65 +286,72 @@ void Print(TList <int> &lst){
 	cout << ' ' << *it << endl;
 }
 
+template <>
+int TNode<int>:: Created=0;
+int	TNode<int>:: Deleted=0;
+
 void MoreTestingRequired(){
 	TList<int> a;
 	TList<int> b;
-	for (int i=0; i<10; ++i){
+	for (int i=0; i<40; ++i){
 		a.push_back(i);
 		b.push_front(i);
 	}
-	cout << "a: ";
-	Print(a);
-	cout << "b: ";
-	Print(b);
-	cout << "Popback for both" << endl;
-	a.pop_back();
-	b.pop_back();
-	cout << "a: ";
-	Print(a);
-	cout << "b: ";
-	Print(b);
-	cout << "Now for the front" << endl;
-	a.pop_front();
-	b.pop_front();
-	cout << "a: ";
-	Print(a);
-	cout << "b: ";
-	Print(b);
-	cout << "Swhap" << endl;
-	a.swap(b);
-	cout << "a: ";
-	Print(a);
-	cout << "b: ";
-	Print(b);
-	cout << "INSERTIONNN" << endl;
-	a.Insert(a.Begin()+2, 9);
-	a.Insert(b.Begin()+2, 0);
-	cout << "a: ";
-	Print(a);
-	cout << "b: ";
-	Print(b);
-	cout << "More insertion!" << endl;
-	a.Insert(a.Begin()+2, b.Begin()+5, b.Begin()+8);
-	b.Insert(b.Begin()+2, a.Begin()+8, a.Begin()+11);
-	cout << "a: ";
-	Print(a);
-	cout << "b: ";
-	Print(b);
-	cout << "Destroy the lesser middle nodes!" << endl;
-	a.Erase(a.Begin()+7);
-	b.Erase(b.Begin()+6, b.Begin()+8);
-	cout << "a: ";
-	Print(a);
-	cout << "b: ";
-	Print(b);
-	cout << "Tear it up!" << endl;
-	a.Splice(a.Begin()+2, b, b.Begin()+3, b.Begin()+7);
-	cout << "a: ";
-	Print(a);
-	cout << "b: ";
-	Print(b);
-	cout << ((TNode::Created-TNode::Deleted==0)?"All Fine":"Red Alert");
+	{
+		cout << "a: ";
+		Print(a);
+		cout << "b: ";
+		Print(b);
+		cout << "Popback for both" << endl;
+		a.pop_back();
+		b.pop_back();
+		cout << "a: ";
+		Print(a);
+		cout << "b: ";
+		Print(b);
+		cout << "Now for the front" << endl;
+		a.pop_front();
+		b.pop_front();
+		cout << "a: ";
+		Print(a);
+		cout << "b: ";
+		Print(b);
+		cout << "Swhap" << endl;
+		a.swap(b);
+		cout << "a: ";
+		Print(a);
+		cout << "b: ";
+		Print(b);
+		cout << "INSERTIONNN" << endl;
+		a.Insert(a.Begin()+2, 9);
+		b.Insert(b.Begin()+2, 0);
+		cout << "a: ";
+		Print(a);
+		cout << "b: ";
+		Print(b);
+		cout << "More insertion!" << endl;
+		a.Insert(a.Begin()+2, b.Begin()+5, b.Begin()+8);
+		b.Insert(b.Begin()+2, a.Begin()+8, a.Begin()+11);
+		cout << "a: ";
+		Print(a);
+		cout << "b: ";
+		Print(b);
+		cout << "Destroy the lesser middle nodes!" << endl;
+		a.Erase(a.Begin()+7);
+		b.Erase(b.Begin()+6, b.Begin()+8);
+		cout << "a: ";
+		Print(a);
+		cout << "b: ";
+		Print(b);
+		cout << "Tear it up!" << endl;
+		a.Splice(a.Begin()+2, b, b.Begin()+4, b.Begin()+7);
+		cout << "a: ";
+		Print(a);
+		cout << "b: ";
+		Print(b);
+		system("pause");
+	}
+	cout << ((TNode<int>::Created-TNode<int>::Deleted==0)?"All Fine":"Red Alert");
 	system("pause");
 }
 
