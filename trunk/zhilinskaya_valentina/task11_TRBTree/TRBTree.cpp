@@ -9,7 +9,36 @@ all ways(root->list): the same number of black vertex
 
 using namespace std;
 
-enum TColor //values ​​are assigned in the order (starting from zero)
+struct leak
+{
+	int k;
+	static int Created;
+	static int Deleted;
+	struct cmp 
+	{
+		bool operator() (const int& x, const int& y) const {return x < y;}
+	};
+	leak (int k1 = 0) : k(k1) {++Created;}
+	leak (const leak& l2) {k = l2.k; ++Created;}
+	~leak() {++Deleted;}
+	bool operator< (const leak& other) const { return k < other.k;}
+/*	leak& operator= (const leak& other) {  k = other.k; return *this;}
+	leak& operator= (int r) { k = r; return *this;}
+	void operator += (const leak &other) { k += other.k;}
+	void operator -= (const leak &other) { k -= other.k;}
+	void operator *= (const leak &other) { k *= other.k;}
+	leak operator+ (const leak &other) const { leak temp(*this); temp+=other; return temp;}
+	leak operator- (const leak &other) const { leak temp(*this); temp-=other; return temp;}
+	leak operator*(const leak &other) const { leak temp(*this); temp *= other; return temp;}
+	leak operator* (int v) const { leak temp(*this); temp.k*=v; return temp;}
+	bool operator== (const leak &a) const { return (k == a.k);}*/
+};
+int leak::Created = 0;
+int leak::Deleted = 0;
+
+using namespace std;
+
+enum TColor //ks ​​are assigned in the order (starting from zero)
 {
 	BLACK, 
 	RED
@@ -445,7 +474,7 @@ void about_tree(TRBTree<T> tree, int n = -1)
 }
 
 int main()
-{
+{/*
 	TRBTree<int> tree;
 	tree.insert(1); 
 	tree.insert(2); 
@@ -483,7 +512,63 @@ int main()
 	for (int i = 0; i < 10; ++i)
 		tree.erase(i);
 	if (tree.empty()) cout << "(after erase)empty\n";
-	else cout << "(after erase)isnt empty\n";
+	else cout << "(after erase)isnt empty\n";*/
+	//_________________________________________________________LEAK
+	{	
+		cout << "\n insert + def.constr.";
+		TRBTree<leak> my_tree;
+		leak z;
+		for (int i = 0; i < 5; ++i)
+		{
+			leak z(i);
+			my_tree.insert(z);
+		}
+	}cout << "\n Created: " << leak::Created <<"\n Deleted: "<<leak::Deleted <<"\n\n";
+	{	
+		cout << "\n insert + find + end + def.constr.";
+		TRBTree<leak> my_tree;
+		for (int i = 0; i < 5; ++i)
+		{
+			leak z(i);
+			my_tree.insert(z);
+		}
+		if (my_tree.find(3) != my_tree.end()) {cout << "\n ye";}
+		if (my_tree.find(7) == my_tree.end()) {cout << "\n no";}
+	}cout << "\n Created: " << leak::Created <<"\n Deleted: "<<leak::Deleted <<"\n\n";
+	{	
+		cout << "\n insert + erase + clear + empty + def.constr.";
+		TRBTree<leak> my_tree;
+		for (int i = 0; i < 5; ++i)
+		{
+			leak z(i);
+			my_tree.insert(z);
+		}
+		for (int i = 0; i < 5; ++i)
+		{
+			leak z(i);
+			my_tree.erase(z);
+		}
+		my_tree.clear();
+		if (my_tree.empty()) cout << "\n empty";
+	}cout << "\n Created: " << leak::Created <<"\n Deleted: "<<leak::Deleted <<"\n\n";
+	{
+		cout << "\n insert + swap + op= + begin + constr.(2)";
+		TRBTree<leak> my_tree;
+		for (int i = 0; i < 5; ++i)
+		{
+			leak z(i);
+			my_tree.insert(z);
+		}
+		TRBTree<leak> my_tree2(my_tree);
+		leak z(9);
+		my_tree2.insert(z);
+		my_tree = my_tree2;
+		my_tree2.swap(my_tree);
+		my_tree.begin();
+	}cout << "\n Created: " << leak::Created <<"\n Deleted: "<<leak::Deleted <<"\n\n";
+
+
 	system("pause");
 	return 0;
 }
+
