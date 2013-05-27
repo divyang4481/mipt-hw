@@ -6,29 +6,34 @@ using namespace std;
 template <typename T>
 
 class TVector {
-public:
     int size;
     int capacity;
     T *buf;
-    
+public:    
     typedef T* iterator;
     typedef const T* const_iterator;
         
         TVector() {
                 size = 0;
-                capacity = 1;
+                capacity = 8;
                 buf = new T[capacity];
         }
-        TVector(TVector<T> & oth) {
+
+		void Push_back(T val) {
+                if (size == capacity)
+                        Reserve(size + 1);
+                buf[size] = val;
+                ++size;
+        }
+
+		TVector(TVector<T> & oth) {
                 capacity = oth.capacity;        
                 size = 0;
                 buf = new T[capacity];
-                for (size_t i = 0; i < oth.Size; ++i)
-                push_back(oth[i]);
+                for (int i = 0; i < oth.Size(); ++i)
+					Push_back(oth[i]);
         }
         ~TVector() {
-                size = 0;
-                capacity = 0;
                 delete[] buf;
         }
 
@@ -37,8 +42,8 @@ public:
         }
 
         bool Empty() const {
-        return(size == 0);
-    }
+			return(size == 0);
+		}
 
         void Clear() {
                 size = 0;
@@ -51,19 +56,22 @@ public:
         }
 
         void Resize(int n) {
-                while (capacity < n) 
+                if (size < n) 
                      Reserve(n);    
-
+				size = n;
         }
 
         void Reserve(int n) { 
-                capacity *= 2;
-                T* buf_new = new T[capacity];
-                for (int i = 0; i < size - 1; ++i) {
-                        buf_new[i] = buf[i];
+                while (capacity < n)
+                {           
+                        capacity *= 2;
+                        T* buf_tmp = new T[capacity];
+                        for (int i = 0; i < size; ++i)
+                                buf_tmp[i] = buf[i];
+
+						delete[] buf;
+                        buf = buf_tmp;
                 }
-                delete buf;
-                buf = buf_new;    
         }
         
         int Capacity() const {
@@ -82,11 +90,11 @@ public:
         const_iterator end() const{
                 return (buf + size);
         }
-        T& operator[](int n) {
-                if (n <= size && n >= 0 )
-                        return(buf[n]);
-                else
-                        cout << "wrong index" << endl;
+        T& operator [](int index){ 
+				return buf[index];
+        }
+        const T& operator [](int index) const{   
+				return buf[index];
         }
         
         T& Front() const {
@@ -97,11 +105,7 @@ public:
                 return(buf[size - 1]);
         }
 
-        void Push_back(T n) {
-                size++;
-                Reserve(size);
-                buf[size - 1] = n;
-        }
+
 
         void Pop_back() {
                 size--;
@@ -137,8 +141,8 @@ public:
 struct S
 {
         int val;
-        static size_t Created;
-        static size_t Deleted;
+        static int Created;
+        static int Deleted;
         S()
         {
                 val = 0;
@@ -155,8 +159,8 @@ struct S
         }
 };
 
-size_t S::Created = 0;
-size_t S::Deleted = 0;
+int S::Created = 0;
+int S::Deleted = 0;
 
 int main() {
         
@@ -174,20 +178,7 @@ int main() {
         cout << "Empty? " << V1.Empty() << " Size: " << V1.Size() << " Capacity: " << V1.Capacity() << endl;
         cout << "First element: " << V1.Front() << " Last element: " << V1.Back() << endl;
 
-        ////for swap
-        //TVector<int> V2;
-        //for (int i = 9; i >= 0; --i) {
-        //      V2.Push_back(i);
-        //}     
-        //cout << "V2: " << endl;
-        //for (int i = 0; i < 10; ++i) {
-        //    cout << V2[i] << endl;
-        //}
 
-//      V1.Pop_back();
-//      for (int i = 0; i < V1.Size(); ++i) {
-//          cout << V1[i] << endl;
-//      }
 
         V1.Insert(V1.Begin(), 11);
         cout << "V1: " << endl; 
@@ -201,9 +192,23 @@ int main() {
             cout << V1[i] << endl;
         }
         
-                {TVector <S> kekeke;}
-                cout << S::Created << " " << S::Deleted; 
+        {TVector <S> memtest;}
+        cout << S::Created << " " << S::Deleted << "\n"; 
+		if (S::Created == S::Deleted)
+			cout << "NO memory leaks" << "\n";
+		else
+			cout << "ERROR! Have memory leaks" << "\n";
 
-        return 0;
+        {TVector <S> memtest1;
+		 TVector <S> memtest2(memtest1);
+     	}
+        cout << S::Created << " " << S::Deleted << "\n"; 
+		if (S::Created == S::Deleted)
+			cout << "NO memory leaks" << "\n";
+		else
+			cout << "ERROR! Have memory leaks" << "\n";
+			
+
+
+		return 0;
 }
-
