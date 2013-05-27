@@ -224,14 +224,17 @@ void TestsOfTheRevolutionWillNotFallSilent(){
 void TestDriveUnlimited(){
 	{
 		TVector<A> uber;
+		A a;
+		A b(a);
 		uber.resize(18);
-		uber.push_back(A());
+		uber.push_back(a);
 		uber.reserve(32);
 		uber.resize(4);
+		uber.push_back(b);
 		uber.pop_back();
 		uber.clear();
 	}
-	cout << ((A::creat==0)?"All fine":"Red alert") ; // if this here is zero, everything's fine
+	cout << ((A::creat==0)?"All fine":"Red alert") << endl;
 	system("pause");
 }
 
