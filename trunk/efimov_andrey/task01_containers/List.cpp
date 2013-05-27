@@ -127,8 +127,14 @@ public:
 		first=0;
 		last=0;
 	}
-	void Swap(TList& other){
-		swap(*this, other);
+	void swap(TList& other){
+		TNode<T>* temp;
+		temp=this->first;
+		this->first=other.first;
+		other.first=temp;
+		temp=this->last;
+		this->last=other.last;
+		other.last=temp;
 	}
 	void push_back(int val){
 		Node *p = new Node(val);
@@ -289,7 +295,7 @@ void MoreTestingRequired(){
 	cout << "b: ";
 	Print(b);
 	cout << "Swhap" << endl;
-	a.Swap(b);
+	a.swap(b);
 	cout << "a: ";
 	Print(a);
 	cout << "b: ";
