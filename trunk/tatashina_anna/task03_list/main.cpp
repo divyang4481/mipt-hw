@@ -65,7 +65,7 @@ public:
                         return (Node == it.Node);
                 }
                 bool operator != (const iterator& it)  {
-                        return (!(*this == it))
+                        return (!(*this == it));
                 }
                 iterator& operator = (const iterator& it){
                         *Node = *(it.Node);
@@ -155,7 +155,7 @@ public:
                 clear();
         }
         bool empty() const {
-                return (first) 
+                return first;
         };
         void clear() {
                 for (;last;) {
