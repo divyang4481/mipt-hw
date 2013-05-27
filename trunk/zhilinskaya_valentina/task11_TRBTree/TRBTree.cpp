@@ -14,24 +14,10 @@ struct leak
 	int k;
 	static int Created;
 	static int Deleted;
-	struct cmp 
-	{
-		bool operator() (const int& x, const int& y) const {return x < y;}
-	};
 	leak (int k1 = 0) : k(k1) {++Created;}
 	leak (const leak& l2) {k = l2.k; ++Created;}
 	~leak() {++Deleted;}
 	bool operator< (const leak& other) const { return k < other.k;}
-/*	leak& operator= (const leak& other) {  k = other.k; return *this;}
-	leak& operator= (int r) { k = r; return *this;}
-	void operator += (const leak &other) { k += other.k;}
-	void operator -= (const leak &other) { k -= other.k;}
-	void operator *= (const leak &other) { k *= other.k;}
-	leak operator+ (const leak &other) const { leak temp(*this); temp+=other; return temp;}
-	leak operator- (const leak &other) const { leak temp(*this); temp-=other; return temp;}
-	leak operator*(const leak &other) const { leak temp(*this); temp *= other; return temp;}
-	leak operator* (int v) const { leak temp(*this); temp.k*=v; return temp;}
-	bool operator== (const leak &a) const { return (k == a.k);}*/
 };
 int leak::Created = 0;
 int leak::Deleted = 0;
