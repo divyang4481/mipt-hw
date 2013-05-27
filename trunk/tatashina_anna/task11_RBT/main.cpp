@@ -26,9 +26,13 @@ struct TFoo {
         bool operator > (TFoo &other) {
 			return Value > other.Value;
         }
-        TFoo operator = (TFoo oth) {
+        TFoo& operator = (const TFoo &oth) {
 			Value = oth.Value;
 			return *this;
+        }
+
+        bool operator==(const TFoo& other) {
+            return Value == other.Value;
         }
 };
 
@@ -70,13 +74,13 @@ static void Test3() {
         a.insert(TFoo(i));
 
     TTreeFoo b = a;
-    for (int i = 0; i < 100; ++i)
-        b.insert(TFoo(i));
+    //for (int i = 0; i < 100; ++i)
+    //    b.insert(TFoo(i));
 
-    a.swap(b);
+    //a.swap(b);
 
-    for (TTreeFoo::iterator iter = a.begin(); iter != a.end(); ++iter)
-        cout << *iter << endl;
+    //for (TTreeFoo::iterator iter = a.begin(); iter != a.end(); ++iter)
+    //    cout << *iter << endl;
 }
 
 int main() {
