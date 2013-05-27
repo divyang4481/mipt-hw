@@ -214,7 +214,6 @@ public:
 			Nil = it.Nil;
 		}
 		iterator& operator++(){ //follower
-			if(node!=Nil){
 				if (node->right != Nil){
 					node = node->right;
 					while(node->left != Nil)
@@ -230,34 +229,27 @@ public:
 					}
 				}
 				node = Nil;
-			}
-			return *this;
 		}
-		iterator& operator++(int){ //follower
-			if (node!=Nil){
-				iterator temp = *this;
-				if (node->right != Nil){
-					node = node->right;
-					while(node->left != Nil)
-						node = node->left;
-					return temp;
-				}
-				for (; node->parent != Nil; node = node->parent)
-				{
-					if(node->parent->left == node)
-					{
-						node = node->parent;
-						return temp;       
-					}
-				}
-				node = Nil;
-
+		iterator operator++(int){ //follower
+			iterator temp = *this;
+			if (node->right != Nil){
+				node = node->right;
+				while(node->left != Nil)
+					node = node->left;
 				return temp;
 			}
-			return *this;
+			for (; node->parent != Nil; node = node->parent)
+			{
+				if(node->parent->left == node)
+				{
+					node = node->parent;
+					return temp;       
+				}
+			}
+			node = Nil;
+			return temp;
 		}
 		iterator& operator--(){ //predecessor, prefix
-			if (node!=Nil){
 				if (node->left != Nil){
 					for(; node->right != Nil; node = node->right);
 					return *this;
@@ -269,26 +261,21 @@ public:
 					}             
 				}
 				node = Nil;
-			}
-			return *this;
 		}
-		iterator& operator--(int){ //predecessor, postfix
-			if (node!=Nil){
-				iterator temp = *this;
-				if (node->left != Nil){
-					for(; node->right != Nil; node = node->right);
-					return temp;
-				}
-				for (;node->parent != Nil; node = node->parent){
-					if(node->parent->right == node){
-						node = node->parent;
-						return temp;
-					}             
-				}
-				node = Nil;
+		iterator operator--(int){ //predecessor, postfix
+			iterator temp = *this;
+			if (node->left != Nil){
+				for(; node->right != Nil; node = node->right);
 				return temp;
 			}
-			return *this;
+			for (;node->parent != Nil; node = node->parent){
+				if(node->parent->right == node){
+					node = node->parent;
+					return temp;
+				}             
+			}
+			node = Nil;
+			return temp;
 		}
 		T operator*(){
 			return node->key;
