@@ -72,7 +72,7 @@ public:
 	void reserve(size_t n){
 		if (n>cap){
 			T* temp = new T[n];
-			for (int i=0; i<size; ++i)
+			for (size_t i=0; i<size; ++i)
 				temp[i] = buf[i];
 			delete[] buf;
 			cap = n;
@@ -85,7 +85,16 @@ public:
 		size=n;
 	}
 	void Swap(TVector<T> &other){
-		swap(other, *this);	
+		size_t temp1, temp2;
+		temp1=this->size;
+		temp2=this->cap;
+		this->cap=other.cap;
+		this->size=other.size;
+		other.cap=temp2;
+		other.size=temp1;
+		T* temp3 = other.buf;
+		other.buf = this->buf;
+		this->buf=temp3;
 	}
 	void push_back(const T &v){
 		if (cap<= size+1){
@@ -126,10 +135,12 @@ public:
 	T& operator[] (size_t n){
 		if (n>=0 && n<=size)
 			return buf[n];
+		return buf[0];
 	}
 	const T& operator[] (size_t n) const{
-		if (n>=0 && n<=size)
+		if (n>=0 && n<size)
 			return buf[n];
+		return buf[0];
 	}
 	Iterator begin(){
 		return buf; 
@@ -164,7 +175,7 @@ void print(TVector<T> v){
 	cout << endl;
 };
 
-void Its2amAndImJustSittingHereTesturbating(){
+void TestsOfTheRevolutionWillNotFallSilent(){
 	TVector<int> a;
 	TVector<int> b;
 	for (int i=0; i<20; ++i){
@@ -220,12 +231,12 @@ void TestDriveUnlimited(){
 		uber.pop_back();
 		uber.clear();
 	}
-	cout << A::creat; // if this here is zero, everything's fine
+	cout << ((A::creat==0)?"All fine":"Red alert") ; // if this here is zero, everything's fine
 	system("pause");
 }
 
 int main(){
-	Its2amAndImJustSittingHereTesturbating();
+	TestsOfTheRevolutionWillNotFallSilent();
 	TestDriveUnlimited();
 	return 0;
 }
