@@ -124,6 +124,23 @@ void ATestfulObservation(){
 	system("pause");
 }
 
+static void Test() {
+    typedef TRBTree<TFoo> TTreeFoo;
+
+    TTreeFoo a;
+    for (int i = 0; i < 100; ++i)
+        a.insert(TFoo(i));
+
+    TTreeFoo b = a;
+    for (int i = 0; i < 100; ++i)
+        b.insert(TFoo(i));
+
+    a.swap(b);
+
+    for (TTreeFoo::iterator iter = a.begin(); iter != a.end(); ++iter)
+        cout << *iter << endl;
+}
+
 int main(){
 	ATestlessInnuendo();
 	ATestfulObservation();
