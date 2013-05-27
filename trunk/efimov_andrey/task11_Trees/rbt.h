@@ -214,70 +214,81 @@ public:
 			Nil = it.Nil;
 		}
 		iterator& operator++(){ //follower
-			if (node->right != Nil){
-				node = node->right;
-				while(node->left != Nil)
-					node = node->left;
-				return *this;
-			}
-			for (; node->parent != Nil; node = node->parent)
-			{
-				if(node->parent->left == node)
-				{
-					node = node->parent;
-					return *this;       
+			if(node!=Nil){
+				if (node->right != Nil){
+					node = node->right;
+					while(node->left != Nil)
+						node = node->left;
+					return *this;
 				}
+				for (; node->parent != Nil; node = node->parent)
+				{
+					if(node->parent->left == node)
+					{
+						node = node->parent;
+						return *this;       
+					}
+				}
+				node = Nil;
 			}
-			node = Nil;
 			return *this;
 		}
 		iterator& operator++(int){ //follower
-			iterator temp = *this;
-			if (node->right != Nil){
-				node = node->right;
-				while(node->left != Nil)
-					node = node->left;
+			if (node!=Nil){
+				iterator temp = *this;
+				if (node->right != Nil){
+					node = node->right;
+					while(node->left != Nil)
+						node = node->left;
+					return temp;
+				}
+				for (; node->parent != Nil; node = node->parent)
+				{
+					if(node->parent->left == node)
+					{
+						node = node->parent;
+						return temp;       
+					}
+				}
+				node = Nil;
+
 				return temp;
 			}
-			for (; node->parent != Nil; node = node->parent)
-			{
-				if(node->parent->left == node)
-				{
-					node = node->parent;
-					return temp;       
-				}
-			}
-			node = Nil;
-			return temp;
+			return *this;
 		}
 		iterator& operator--(){ //predecessor, prefix
-			if (node->left != Nil){
-				for(; node->right != Nil; node = node->right);
-				return *this;
-			}
-			for (;node->parent != Nil; node = node->parent){
-				if(node->parent->right == node){
-					node = node->parent;
+			if (node!=Nil){
+				if (node->left != Nil){
+					for(; node->right != Nil; node = node->right);
 					return *this;
-				}             
+				}
+				for (;node->parent != Nil; node = node->parent){
+					if(node->parent->right == node){
+						node = node->parent;
+						return *this;
+					}             
+				}
+				node = Nil;
 			}
-			node = Nil;
 			return *this;
 		}
 		iterator& operator--(int){ //predecessor, postfix
-			iterator temp = *this;
-			if (node->left != Nil){
-				for(; node->right != Nil; node = node->right);
+			if (node!=Nil){
+				iterator temp = *this;
+				if (node->left != Nil){
+					for(; node->right != Nil; node = node->right);
+					return temp;
+				}
+				for (;node->parent != Nil; node = node->parent){
+					if(node->parent->right == node){
+						node = node->parent;
+						return temp;
+					}             
+				}
+				node = Nil;
 				return temp;
 			}
-			for (;node->parent != Nil; node = node->parent){
-				if(node->parent->right == node){
-					node = node->parent;
-					return temp;
-				}             
-			}
-			node = Nil;
-			return temp;
+			return *this;
 		}
 		T operator*(){
 			return node->key;
@@ -316,66 +327,76 @@ public:
 			Nil = it.Nil;
 		}
 		const_iterator& operator++(){
-			if (node->right != Nil){
-				node = node->right;
-				while(node->left != Nil)
-					node = node->left;
-				return *this;
-			}
-			for (; node->parent != Nil; node = node->parent){
-				if(node->parent->left == node){
-					node = node -> parent;
-					return *this;       
+			if(node!=Nil){
+				if (node->right != Nil){
+					node = node->right;
+					while(node->left != Nil)
+						node = node->left;
+					return *this;
 				}
+				for (; node->parent != Nil; node = node->parent){
+					if(node->parent->left == node){
+						node = node->parent;
+						return *this;       
+					}
+				}
+				node = Nil;
 			}
-			node = Nil;
 			return *this;
 		}
 		const_iterator& operator++(int){ //follower
-			const_iterator temp = *this;
-			if (node->right != Nil){
-				node = node->right;
-				while(node->left != Nil)
-					node = node->left;
+			if (node!=Nil){
+				const_iterator temp = *this;
+				if (node->right != Nil){
+					node = node->right;
+					while(node->left != Nil)
+						node = node->left;
+					return temp;
+				}
+				for (; node->parent != Nil; node = node->parent){
+					if(node->parent->left == node){
+						node = node->parent;
+						return temp;       
+					}
+				}
+				node = Nil;
 				return temp;
 			}
-			for (; node->parent != Nil; node = node->parent){
-				if(node->parent->left == node){
-					node = node->parent;
-					return temp;       
-				}
-			}
-			node = Nil;
-			return temp;
+			return *this;
 		}
-		const_iterator& operator--(){
-			if (node->left != Nil){
-				for(;node->right != Nil; node = node->right);
-				return *this;
-			}
-			for (;node->parent != Nil; node = node->parent){
-				if(node->parent->right == node){
-					node = node->parent;
+		const_iterator& operator--(){ //predecessor, prefix
+			if (node!=Nil){
+				if (node->left != Nil){
+					for(; node->right != Nil; node = node->right);
 					return *this;
-				}             
+				}
+				for (;node->parent != Nil; node = node->parent){
+					if(node->parent->right == node){
+						node = node->parent;
+						return *this;
+					}             
+				}
+				node = Nil;
 			}
-			node = Nil;
 			return *this;
 		}
 		const_iterator& operator--(int){ //predecessor, postfix
-			const_iterator temp = *this;
-			if (node->left != Nil){
-				for(; node->right != Nil; node = node->right);
+			if (node!=Nil){
+				const_iterator temp = *this;
+				if (node->left != Nil){
+					for(; node->right != Nil; node = node->right);
+					return temp;
+				}
+				for (;node->parent != Nil; node = node->parent){
+					if(node->parent->right == node){
+						node = node->parent;
+						return temp;
+					}             
+				}
+				node = Nil;
 				return temp;
 			}
-			for (;node->parent != Nil; node = node->parent){
-				if(node->parent->right == node){
-					node = node->parent;
-					return temp;
-				}             
-			}
-			node = Nil;
-			return temp;
+			return *this;
 		}
 		const T& operator*(){
 			return node -> key;

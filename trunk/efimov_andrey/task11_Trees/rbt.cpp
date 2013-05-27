@@ -144,9 +144,16 @@ static void Test() {
         cout << *iter << endl;
 }
 
+void Test2(){
+	TTree<int>::iterator it;
+	TTree<int>::iterator it2=it++;
+	++it2;
+}
+
 int main(){
-	ATestlessInnuendo();
-	ATestfulObservation();
+//	ATestlessInnuendo();
+	//ATestfulObservation();
 	//Test();
+	Test2();
 	return 0;
 }
