@@ -213,6 +213,26 @@ public:
 			Nil = it.Nil;
 		}
 		iterator& operator++(){ //follower
+			iterator temp=*this;
+			if (node->right != Nil)
+			{
+				node = node->right;
+				while(node->left != Nil)
+					node = node->left;
+				return *this;
+			}
+			for (; node->parent != Nil; node = node->parent)
+			{
+				if(node->parent->left == node)
+				{
+					node = node->parent;
+					return temp;       
+				}
+			}
+			node = Nil;
+			return temp;
+		}
+		iterator& operator++(int){ //follower
 			if (node->right != Nil)
 			{
 				node = node->right;
@@ -231,7 +251,22 @@ public:
 			node = Nil;
 			return *this;
 		}
-		iterator& operator--(){ //predecessor
+		iterator& operator--(){ //predecessor, prefix
+			iterator temp=*this;
+			if (node->left != Nil){
+				for(; node->right != Nil; node = node->right);
+				return temp;
+			}
+			for (;node->parent != Nil; node = node->parent){
+				if(node->parent->right == node){
+					node = node->parent;
+					return temp;
+				}             
+			}
+			node = Nil;
+			return *this;
+		}
+		iterator& operator--(int){ //predecessor, postfix
 			if (node->left != Nil){
 				for(; node->right != Nil; node = node->right);
 				return *this;
