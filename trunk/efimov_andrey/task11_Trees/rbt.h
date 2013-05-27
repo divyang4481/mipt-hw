@@ -229,7 +229,7 @@ public:
 					}
 				}
 				node = Nil;
-				return *this
+				return *this;
 		}
 		iterator operator++(int){ //follower
 			iterator temp = *this;
