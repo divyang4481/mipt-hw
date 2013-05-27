@@ -327,6 +327,7 @@ void MoreTestingRequired(){
 	Print(a);
 	cout << "b: ";
 	Print(b);
+	cout << ((TNode::Created-TNode::Deleted==0)?"All Fine":"Red Alert");
 	system("pause");
 }
 
