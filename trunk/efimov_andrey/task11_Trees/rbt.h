@@ -200,6 +200,7 @@ public:
 		TNode* node;
 		TNode* Nil;
 	public:
+		friend class TTree<T>;
 		iterator(TNode* snode, TNode* nil){
 			node = snode;
 			Nil = nil;
@@ -213,28 +214,7 @@ public:
 			Nil = it.Nil;
 		}
 		iterator& operator++(){ //follower
-			iterator temp=*this;
-			if (node->right != Nil)
-			{
-				node = node->right;
-				while(node->left != Nil)
-					node = node->left;
-				return *this;
-			}
-			for (; node->parent != Nil; node = node->parent)
-			{
-				if(node->parent->left == node)
-				{
-					node = node->parent;
-					return temp;       
-				}
-			}
-			node = Nil;
-			return temp;
-		}
-		iterator& operator++(int){ //follower
-			if (node->right != Nil)
-			{
+			if (node->right != Nil){
 				node = node->right;
 				while(node->left != Nil)
 					node = node->left;
@@ -251,22 +231,26 @@ public:
 			node = Nil;
 			return *this;
 		}
-		iterator& operator--(){ //predecessor, prefix
-			iterator temp=*this;
-			if (node->left != Nil){
-				for(; node->right != Nil; node = node->right);
+		iterator& operator++(int){ //follower
+			iterator temp = *this;
+			if (node->right != Nil){
+				node = node->right;
+				while(node->left != Nil)
+					node = node->left;
 				return temp;
 			}
-			for (;node->parent != Nil; node = node->parent){
-				if(node->parent->right == node){
+			for (; node->parent != Nil; node = node->parent)
+			{
+				if(node->parent->left == node)
+				{
 					node = node->parent;
-					return temp;
-				}             
+					return temp;       
+				}
 			}
 			node = Nil;
-			return *this;
+			return temp;
 		}
-		iterator& operator--(int){ //predecessor, postfix
+		iterator& operator--(){ //predecessor, prefix
 			if (node->left != Nil){
 				for(; node->right != Nil; node = node->right);
 				return *this;
@@ -280,7 +264,22 @@ public:
 			node = Nil;
 			return *this;
 		}
-		T& operator*(){
+		iterator& operator--(int){ //predecessor, postfix
+			iterator temp = *this;
+			if (node->left != Nil){
+				for(; node->right != Nil; node = node->right);
+				return temp;
+			}
+			for (;node->parent != Nil; node = node->parent){
+				if(node->parent->right == node){
+					node = node->parent;
+					return temp;
+				}             
+			}
+			node = Nil;
+			return temp;
+		}
+		T operator*(){
 			return node->key;
 		}
 		bool operator== (const iterator& it){
@@ -298,15 +297,12 @@ public:
 			Nil = it.Nil;
 			return *this;
 		}
-		TNode* inode(){
-			return node;
-		}
 	};
-	class const_iterator
-	{
+	class const_iterator{
 		TNode* node;
 		TNode* Nil;
 	public:
+		friend class TTree<T>;
 		const_iterator(TNode* snode, TNode* nil){
 			node = snode;
 			Nil = nil;
@@ -335,6 +331,23 @@ public:
 			node = Nil;
 			return *this;
 		}
+		const_iterator& operator++(int){ //follower
+			const_iterator temp = *this;
+			if (node->right != Nil){
+				node = node->right;
+				while(node->left != Nil)
+					node = node->left;
+				return temp;
+			}
+			for (; node->parent != Nil; node = node->parent){
+				if(node->parent->left == node){
+					node = node->parent;
+					return temp;       
+				}
+			}
+			node = Nil;
+			return temp;
+		}
 		const_iterator& operator--(){
 			if (node->left != Nil){
 				for(;node->right != Nil; node = node->right);
@@ -348,6 +361,21 @@ public:
 			}
 			node = Nil;
 			return *this;
+		}
+		const_iterator& operator--(int){ //predecessor, postfix
+			const_iterator temp = *this;
+			if (node->left != Nil){
+				for(; node->right != Nil; node = node->right);
+				return temp;
+			}
+			for (;node->parent != Nil; node = node->parent){
+				if(node->parent->right == node){
+					node = node->parent;
+					return temp;
+				}             
+			}
+			node = Nil;
+			return temp;
 		}
 		const T& operator*(){
 			return node -> key;
@@ -366,9 +394,6 @@ public:
 			node = it.node;
 			Nil = it.Nil;
 			return *this;
-		}
-		TNode* inode() const{
-			return node;
 		}
 	};
 private:
@@ -495,7 +520,7 @@ public:
 		Root = Nil;
 	}
 	void erase(iterator it){
-		Delete(it.inode());
+		Delete(it.node);
 	}
 	iterator find(const T& val){
 		TNode* tmp = Find(val);
