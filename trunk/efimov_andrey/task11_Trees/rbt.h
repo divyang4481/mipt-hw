@@ -229,6 +229,7 @@ public:
 					}
 				}
 				node = Nil;
+				return *this
 		}
 		iterator operator++(int){ //follower
 			iterator temp = *this;
@@ -261,6 +262,7 @@ public:
 					}             
 				}
 				node = Nil;
+				return *this;
 		}
 		iterator operator--(int){ //predecessor, postfix
 			iterator temp = *this;
