@@ -125,6 +125,7 @@ void ATestfulObservation(){
 }
 
 static void Test() {
+    typedef Tester TFoo;
     typedef TRBTree<TFoo> TTreeFoo;
 
     TTreeFoo a;
