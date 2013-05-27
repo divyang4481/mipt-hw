@@ -33,6 +33,11 @@ struct Tester{
 	}
 };
 
+ostream& operator<< (ostream& out, Tester c){
+	out << "K ";
+	return out;
+}
+
 int Tester::Created = 0;
 int Tester::Deleted = 0;
 
@@ -124,26 +129,24 @@ void ATestfulObservation(){
 	system("pause");
 }
 
-static void Test() {
-    typedef Tester TFoo;
-    typedef TRBTree<TFoo> TTreeFoo;
 
-    TTreeFoo a;
+static void Test() {
+	typedef Tester TFoo;
+    typedef TTree<TFoo> TTreeFoo;
+	TTreeFoo a;
     for (int i = 0; i < 100; ++i)
         a.insert(TFoo(i));
-
     TTreeFoo b = a;
     for (int i = 0; i < 100; ++i)
         b.insert(TFoo(i));
-
     a.swap(b);
-
-    for (TTreeFoo::iterator iter = a.begin(); iter != a.end(); ++iter)
+	for (TTreeFoo::iterator iter = a.begin(); iter != a.end(); ++iter)
         cout << *iter << endl;
 }
 
 int main(){
-	ATestlessInnuendo();
-	ATestfulObservation();
+	//ATestlessInnuendo();
+	//ATestfulObservation();
+	Test();
 	return 0;
 }
