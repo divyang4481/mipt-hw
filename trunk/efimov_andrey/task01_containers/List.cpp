@@ -288,6 +288,7 @@ void Print(TList <int> &lst){
 
 template <>
 int TNode<int>:: Created=0;
+template <>
 int	TNode<int>:: Deleted=0;
 
 void MoreTestingRequired(){
