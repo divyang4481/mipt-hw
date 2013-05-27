@@ -145,8 +145,8 @@ static void Test() {
 }
 
 int main(){
-	//ATestlessInnuendo();
-	//ATestfulObservation();
-	Test();
+	ATestlessInnuendo();
+	ATestfulObservation();
+	//Test();
 	return 0;
 }
