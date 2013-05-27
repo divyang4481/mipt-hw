@@ -1,261 +1,270 @@
 #include <iostream>
-#include <vector>
-#include <list>
 using namespace std;
 
 template <typename T>
-class TNode {
-public: 
-        T value;
-        TNode<T>* prev;
-        TNode<T>* next;
-        TNode(TNode<T>* next1=NULL,TNode<T>* prev1=NULL,T val1=0) {
-            next=next1;
-            prev=prev1;
-            val=val1;
-        }
-        ~TNode() {
-        }
-};
-
-template <class T>
 class TList {
-private:
-        int size;
-        TNode<T>* first;
-        TNode<T>* last;
+        struct TNode {
+                T value;
+                TNode *prev, *next;
+                explicit TNode():value(0), prev(0), next(0){};
+                TNode(T val1): value(val1), prev(0), next(0){};
+                TNode(T val1, TNode* prev, TNode* next): value(val1), prev(prev), next(next){};
+                ~TNode(){}
+                TNode& operator = (TNode& other) {
+                        value = other.value;
+                        prev = other.prev;
+                        next = other.next;
+                        return *this;
+                }
+        };
 public:
-       class TIterator {
-                TNode<T>* targ;
+        class iterator {
+                TNode* Node;
         public:
-                TIterator() {
-                        targ = NULL;
+                iterator () {
+
                 }
-                TIterator(TNode<T>* arg) {
-                        targ = arg;
+                iterator (TNode* nd) {
+                        Node = nd;
                 }
-                ~TIterator() {
+                iterator (const iterator& other) {
+                        TNode* nd = new TNode;
+                        nd -> value = other.Node -> value;
+                        nd -> prev = other.Node -> prev;
+                        nd -> next = other.Node -> next;
+                        Node = nd;
+                        delete nd;
                 }
-                TIterator& operator ++ () {
-                        targ = targ->next;
+                iterator& operator++() {
+                        Node = Node -> next;
                         return *this;
                 }
-                const TIterator operator ++ (int) {
-                        TIterator a = *this;
-                        targ = targ->next;
-                        return a;
-                }
-                TIterator& operator -- () {
-                        targ = targ->prev;
+                iterator& operator--() {
+                        Node = Node -> prev;
                         return *this;
                 }
-                const TIterator operator -- (int) {
-                        TIterator a = *this;
-                        targ = targ->prev;
-                        return a;
+                iterator operator++(int) {
+                        TNode* t = Node;
+                        Node = Node -> next;
+                        iterator* temp = new iterator(t);
+                        return *temp;
                 }
-                T& operator * () {
-                        return targ->val;
+                iterator operator--(int) {
+                        TNode* t = Node;
+                        Node = Node -> prev;
+                        iterator* tmp = new iterator(t);
+                        return *tmp;
+                }
+                T& operator *() {
+                        return Node -> value;
                 }
                 T* operator ->() {
-                        return &(targ -> Val);
+                        return &(Node -> value);
                 }
-                bool operator == (const TIterator& other) {
-                        return (targ == other.targ);
+                bool operator == (const iterator& it) {
+                        return (Node == it.Node);
                 }
-                bool operator != (const TIterator& other) {
-                        return (targ != other.targ);
+                bool operator != (const iterator& it)  {
+                        return (!(*this == it))
                 }
-                TIterator& operator = (const TIterator& other) {
-                        targ = other.targ;
+                iterator& operator = (const iterator& it){
+                        *Node = *(it.Node);
                         return *this;
                 }
-                TNode<T>* _myNode () {
-                        return targ;
+                TNode* node() {
+                        return Node;
                 }
-
         };
-	   class TConst_Iterator {
-                const TNode<T>* targ;
+        class const_iterator
+        {
+                TNode* Node;
         public:
-                TConst_Iterator() {
-                        targ = NULL;
+                const_iterator () {
+                        Node = NULL;
                 }
-                TConst_Iterator(const TNode<T>* arg) {
-                        targ = arg;
+                const_iterator (TNode* nd) {
+                        TNode* temp = nd;
+                        Node = temp;
                 }
-                ~TConst_Iterator() {
+                const_iterator (const const_iterator& it) {
+                        *Node = *(it.Node);
                 }
-                TConst_Iterator& operator ++ () {
-                        targ = targ->next;
+                const const_iterator& operator++() {
+                        Node = Node -> next;
                         return *this;
                 }
-                const TConst_Iterator operator ++ (int) {
-                        TConst_Iterator a = *this;
-                        targ = targ->next;
-                        return a;
-                }
-                TConst_Iterator& operator -- () {
-                        targ=targ->prev;
+                const const_iterator& operator--() {
+                        Node = Node -> prev;
                         return *this;
-				}
-                const TConst_Iterator operator -- (int) {
-                        TConst_Iterator a = *this;
-                        targ=targ->prev;
-                        return a;
                 }
-                const T& operator * () const {
-                        return targ->val;
+                const const_iterator operator++(int) {
+                        TNode* t = Node;
+                        Node = Node -> next;
+                        const_iterator* tmp = new const_iterator(t);
+                        return *tmp;
+                }
+                const const_iterator operator--(int) {
+                        TNode* t = Node;
+                        Node = Node -> prev;
+                        const_iterator* tmp = new const_iterator(t);
+                        return *tmp;
+                }
+                const T& operator *() const {
+                        return Node -> value;
                 }
                 const T* operator ->() const {
-                        return &(Node -> Val);
+                        return &(Node -> value);
                 }
-                bool operator == (const TConst_Iterator& other) {
-                        return targ == other.targ;
+                bool operator == (const const_iterator& it) {
+                        return (Node == it.Node);
                 }
-                bool operator != (const TConst_Iterator& other) {
-                        return targ != other.targ;
+                bool operator != (const const_iterator& it) {
+                        return (!(*this == it));
                 }
-                TConst_Iterator& operator = (TConst_Iterator& other) {
-                        targ = other.targ;
+                const_iterator& operator = (const const_iterator& it) {
+                        *Node = *(it.Node);
                         return *this;
                 }
-
+                TNode& node() const {
+                        return Node;
+                }
         };
- 	
-		TList<T> () {
-            size = 0;
-            first = NULL;
-            last = NULL;
+private:
+        TNode *first;
+        TNode *last;
+public:
+        TList<T> () {
+                first = NULL;
+                last = NULL;
         }
-        TList<T> (const TList<T>& other) {
-                if (first == NULL) {
+        TList<T> (const TList &lst) {
+                if (lst.first == NULL) {
                         first = NULL;
                         last = NULL;
-                } else {
-					size = 0;
-					first = NULL;
-					last = NULL;
-					const TNode* node = other.FirstNode();
-					while (node != NULL) {
-							PushBack(node->value);
-							node = node->next;
-					}
                 }
-        }
-        ~TList<T> () {
-			clear();
-        }
-        bool Empty () const {
-                return first==NULL;
-        }
-        void clear() {
-            for (; last;) {
-                TNode *p = last -> prev;
-                delete last;
+                TNode *p = new TNode(lst.first -> value);
+                first = p; 
+                TNode *curp = lst.first -> next;
+                for (; curp; curp = curp -> next, p = p -> next) {
+                        TNode* np = new TNode(curp -> value, p, 0);
+                        p -> next = np;
+                }
                 last = p;
-            }
-            first = NULL;
         }
-        void Push_Back (T val) {
-                TNode* node = new TNode;
-                node->value = val;
-                node->next = NULL;
-                node->prev = last;
-                if (last == NULL)
-                        first = node;
-                else
-                        last->next = node;
-                last = node;
-                size++;
+        ~TList() {
+                clear();
         }
-        void Push_Front (T val) {
-                TNode* node = new TNode;
-                node->value = val;
-                node->next = first;
-                node->prev = NULL;
-
-                if (first == NULL) 
-                        last = node;
-                else 
-                        first->prev = node;
-                first = node;
-                size++;
+        bool empty() const {
+                return (first) 
+        };
+        void clear() {
+                for (;last;) {
+                        TNode *p = last -> prev;
+                        delete last;
+                        last = p;
+                }
+                first = NULL;
         }
-        T pop_front() {
-            int val = first -> val;
-            TNode* tmp = first;
-            first = first -> next;
-            first -> prev = NULL;
-            delete tmp;
-            return val;
-        }
-        T pop_back() {
-            int val = last -> val;
-            TNode* tmp = last;
-            last = last -> prev;
-            last -> next = NULL;
-            delete tmp;
-            return val;
-        }
-		void Swap(TList<T>& other) {
+        void swap(TList& other) {
                 swap(first, other.first);
                 swap(last, other.last);
         }
         iterator begin() {
-                return iterator tmp(First);
+                iterator tmp(first);
+                return tmp;
         }
-        iterator end()
-        {
+        iterator end() {
                 iterator tmp;
                 return tmp;
         }
-        T front() const
-        {
-                return first -> val;
+        const_iterator begin() const {
+                const_iterator tmp(first);
+                return tmp;
         }
-        T back() const
-        {
-                return last -> val;
+        const_iterator end() const {
+                const_iterator tmp;
+                return tmp;
         }
-        T& front()
-        {
-                return first -> val;
+        T front() const {
+                return first -> value;
         }
-        T& back()
-        {
-                return last -> val;
+        T back() const {
+                return last -> value;
+        }
+        T& front() {
+                return first -> value;
+        }
+        T& back() {
+                return last -> value;
+        }
+        void push_back(T val1) {
+                TNode *p = new TNode(val1);
+                p -> prev = last;
+                if (last != NULL)
+                        last -> next = p;
+                else first = p;
+                last = p;
+        }
+        void push_front(T val1) {
+                TNode *p = new TNode(val1);
+                p -> next = first;
+                if (first != NULL)
+                        first -> prev = p;
+                else last = p;
+                first = p;
+        }
+        int pop_back() {
+                int val1 = last -> value;
+                TNode* tmp = last;
+                last = last -> prev;
+                last -> next = NULL;
+                delete tmp;
+                return val1;
+        }
+        int pop_front() {
+                int val1 = first -> value;
+                TNode* tmp = first;
+                first = first -> next;
+                first -> prev = NULL;
+                delete tmp;
+                return val1;
+        }
+        void insert(iterator& where, T val1) {
+                TNode *p = new TNode(val1);
+                if (!first) {
+                        first=p;
+                        last=p;
+                        return;
+                }
+                p -> prev = where.node();
+                p -> next = where.node() -> next;
+                p -> next -> prev = p;
+                where.node() -> next = p;
         }
         void erase(iterator& iter) {
-            TNode* tmp = iter.node();
-            iter.node() -> prev -> next = iter.node() -> next;
-            iter.node() -> next -> prev = iter.node() -> prev;
-            delete tmp;
+                TNode* tmp = iter.node();
+                iter.node() -> prev -> next = iter.node() -> next;
+                iter.node() -> next -> prev = iter.node() -> prev;
+                delete tmp;
+        }
+        TList<T>& operator = (const TList<T>& other) {
+                clear();
+                for (const_iterator it = other.begin(); it != other.end(); ++it)
+                        push_back(*it);
+                return *this;
+        }
+        void PrintStat(char name) const {
+                cout << name << ": empty: " << empty() << endl << "elements: ";
+                for (const_iterator it = begin(); it != end(); ++it)
+                        cout << *it << " ";
+                cout << endl;
         };
-        TList<T>& operator = (const TList<T>& oth) {
-            clear();
-            for (const_iterator it = oth.begin(); it != oth.end(); ++it)
-                    push_back(*it);
-            return *this;
-        }
-        void insert(iterator& where, T val) {
-            TNode *p = new TNode(val);
-            if (!first) {
-                    first = p;
-                    last = p;
-                    return;
-            }
-            p -> prev = where.node();
-            p -> next = where.node() -> next;
-            p -> next -> prev = p;
-            where.node() -> next = p;
-        }
-
 };
+
+
 
 int main()
 {
-        
-   
+
         return 0;
 }
