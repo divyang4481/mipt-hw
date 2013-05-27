@@ -19,10 +19,10 @@ public:
                 capacity = 1;
                 buf = new T[capacity];
         }
-		TVector(TVector<T> & oth){
-                Capacity = oth.Capacity;        
-                Size = 0;
-                Buf = new T[Capacity];
+        TVector(TVector<T> & oth) {
+                capacity = oth.capacity;        
+                size = 0;
+                buf = new T[capacity];
                 for (size_t i = 0; i < oth.Size; ++i)
                 push_back(oth[i]);
         }
@@ -50,14 +50,14 @@ public:
                 swap(*this.buf, other.buf);
         }
 
-        void Resize() {
-				while (capacity < n) 
-                        Reserve(n);    
+        void Resize(int n) {
+                while (capacity < n) 
+                     Reserve(n);    
 
         }
 
         void Reserve(int n) { 
-			capacity *= 2;
+                capacity *= 2;
                 T* buf_new = new T[capacity];
                 for (int i = 0; i < size - 1; ++i) {
                         buf_new[i] = buf[i];
@@ -74,14 +74,14 @@ public:
                 return(buf);
         }
         const_iterator begin() const{
-                return Buf;
-		}
+                return buf;
+                }
         iterator End() {
                 return(buf + size);
         }
         const_iterator end() const{
-                return (Buf + Size);
-		}
+                return (buf + size);
+        }
         T& operator[](int n) {
                 if (n <= size && n >= 0 )
                         return(buf[n]);
@@ -161,7 +161,7 @@ size_t S::Deleted = 0;
 int main() {
         
 
-	//freopen("output.txt", "w", stdout);
+        //freopen("output.txt", "w", stdout);
 
         TVector<int> V1;
 
@@ -201,8 +201,9 @@ int main() {
             cout << V1[i] << endl;
         }
         
-		{TVector <S> kekeke;}
-		cout << S::Created << " " << S::Deleted; 
+                {TVector <S> kekeke;}
+                cout << S::Created << " " << S::Deleted; 
 
         return 0;
 }
+
