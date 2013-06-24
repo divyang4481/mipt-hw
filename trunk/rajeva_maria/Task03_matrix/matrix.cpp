@@ -5,7 +5,8 @@ using namespace std;
 
 template <typename T>
 class TMatrix
-{public:
+{
+public:
 	vector <vector<T> > matrix;
 	TMatrix()
 	{};
@@ -50,7 +51,8 @@ class TMatrix
 		return(matrix[1].size()-1);
 	}
 	TMatrix(size_t rowCount,size_t colCount)
-	{				
+	{	
+		
 		//cout<<rowCount<<' '<<colCount<<endl;
 		matrix.resize(rowCount+1);
 		for (int i=1;i<rowCount+1;i++)
@@ -61,16 +63,22 @@ class TMatrix
 	{
 		Resize(matr.Row()+1, matr.Col()+1);
 		for (int i=1;i<matr.Row()+1;i++)
-			for (int j=1;j<matr.Col();j++)
+			for (int j=1;j<matr.Col()+1;j++)
 				matrix[i][j]=matr.At(i,j);
 				return *this;
 	}
 	TMatrix<T> operator + (const TMatrix<T>&matr)
-	{
+	{ 
+
 		TMatrix<T> m(*this);
-		for (size_t i=1;i<matr.Row()+1;i++)
-			for(size_t j=1;j<matr.Col()+1;j++)
+		//cout<<m.Col()<<' '<<m.Row()<<endl;
+		//cout<<matr.Col()<<' '<<matr.Row()<<endl;
+		for (size_t i=1;i<m.Row()+1;i++)
+			for(size_t j=1;j<m.Col()+1;j++)
 				m.At(i,j)=m.At(i,j)+matr.At(i,j);
+		//cout<<m.At(i,j)<<' '<<i<<' '<<j<<endl;};
+		//cout<<m.Col()<<' '<<m.Row()<<endl;
+		//cout<<m<<endl;
 		return m;
 	}
 	TMatrix<T> operator - (const TMatrix<T>&matr)
@@ -169,21 +177,24 @@ TMatrix<int> M1(3,3);
 for (int i=1;i<4;i++)
 for (int j=1;j<4;j++)
 	M1.At(i,j)=i;
-
+cout<<M1<<endl;
 TMatrix<int>M2(M1);
+cout<<M2<<endl;
 //cout<<M2;
 //M2=M1;
 TMatrix<int>M3(3,3);
-
-M3=M1+M2;
-cout<<M3;
+cout<<M3<<endl;
+//cout<<M3<<endl;
+M3=M1+M1;
+cout<<M3<<endl;
+//for (int i=1;i<4;i++)
+//for (int j=1;j<4;j++)
+//cout<<M3.At(i,j)<<' ';
 //cout<<M3.Col()<<' '<<M3.Row()<<endl;
 M1*=M2;
 M3*=4;
 //M3-=M3;
-//for (int i=1;i<4;i++)
-//for (int j=1;j<4;j++)
-//	cout<<M3.At(i,j)<<' ';
+
 //cout<<M3.Col()<<' '<<M3.Row()<<endl;
 M3.Transpose();
 //cout<<M3.Col()<<' '<<M3.Row()<<endl;
