@@ -174,7 +174,9 @@ TMatrix<int>M2(M1);
 //cout<<M2;
 //M2=M1;
 TMatrix<int>M3(3,3);
+
 M3=M1+M2;
+cout<<M3;
 //cout<<M3.Col()<<' '<<M3.Row()<<endl;
 M1*=M2;
 M3*=4;
