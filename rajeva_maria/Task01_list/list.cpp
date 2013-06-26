@@ -1,97 +1,6 @@
 #include <iostream>
 using namespace std;
-//template <typename T>
-  /*struct TNode
-        {
-                T val;
-                TNode<T> *prev;
-                TNode<T> *next;
-        public:
-                TNode()
-                {
-                        val=0;
-                        prev=0;
-                        next=0;
-                }
-                TNode(T v)
-                {
-                        val=v;
-                        prev=0;
-                        next=0;
-                }
-                TNode(T v, TNode<T> *p, TNode<T> *n)
-                {
-                        val=v;
-                        prev=p;
-                        next=n;
-                }
-                ~TNode()
-               // {cout << "lalala" << endl;}
-				{
 
-				};
-                TNode& operator=(TNode&cop)
-                {
-                        val=cop.val;
-                        next=cop.next;
-                        prev=cop.prev;
-                        return *this;
-                }
-        };*/
-  //template <typename T>
-  /*class TIterator
-  {
-                TNode<T> *node;
-                private:
-                TNode<T>* anode()
-                        {
-                                return node;
-                        }
-                public:
-                        TIterator()
-                        {
-                                node=0;
-                        }
-                        explicit TIterator(TNode<T>* n)
-                        {
-                                node=n;
-                        }
-                        TIterator& operator ++()
-                        {
-                                node=node->next;
-                                return *this;
-                        }
-                        TIterator& operator --()
-                        {
-                                node=node->prev;
-                                return *this;
-                        }
-                        TIterator operator+(int n)
-                        {
-                                TIterator sum=*this;
-                                for (int i=0; i<n;++i)
-                                        ++sum;
-                                return sum;
-                        }
-                        T& operator*()
-                        {
-                                return node->val;
-                        }
-                        bool operator == (const TIterator& iter )
-                        {
-                                return (node==iter.node);
-                        }
-                        bool operator != (const TIterator& iter)
-                        {
-                                return(!(node==iter.node));
-                        }
-                        TIterator& operator = (const TIterator& iter)
-                        {
-                                *node=*(iter.node);
-                                return *this;
-                        }
-                       
-  };*/
 template <typename T>
         class TList
 {
@@ -120,7 +29,7 @@ template <typename T>
                         next=n;
                 }
                 ~TNode()
-               // {cout << "lalala" << endl;}
+              
 				{
 
 				};
@@ -202,12 +111,12 @@ template <typename T>
                                 first=0;
                                 last=0;
                         }
-                        TNode<T> *p=new TNode<T>(lst.first->val);
+                        TNode *p=new TNode(lst.first->val);
                         first=p;
-                        TNode<T> *nd=lst.first->next;
+                        TNode *nd=lst.first->next;
                         for(;nd;nd=nd->next,p=p->next)
                         {
-                                TNode<T>* np=new TNode<T>(nd->val,p,0);
+                                TNode* np=new TNode(nd->val,p,0);
                                 p->next=np;
                         }
                         last=p;
@@ -325,10 +234,9 @@ template <typename T>
                         t->next=pos.anode()->next;
                         t->next->prev=t;
 						t->prev->next=t;
-                        //pos.anode()->next=t;
-                }                                            // void insert(TIterator pos, T val)
-                                                                                                        // template<TOtherIter
-                                                                                                        // void insert(TIterator pos, TOtherIter srcBeg, TOtherIter srcEndl)
+                      
+                }                                           
+                                                                                                        
                
                 void erase(TIterator& it)
                 {
@@ -340,7 +248,7 @@ template <typename T>
                 TList& operator=(TList& cop)
                 {
                         clear();
-                        for (TIterator<T> it=cop.begin();it!=cop.end();++it)
+                        for (iterator it=cop.begin();it!=cop.end();++it)
                                 push_back(*it);
                         return* this;
  
@@ -351,7 +259,7 @@ template <typename T>
          {
                
                 for (TList<T>::iterator iter=list.begin();iter!=list.end();++iter)
-                        cout<<*iter;
+                        cout<<*iter<<' ';
                 cout<<endl;
          };
        
@@ -361,44 +269,42 @@ int main()
 {      
  
         TList<int> List;
-        for (int i=0;i<10; i++)
+		cout<<"empty: "<<List.empty()<<endl;
+		for (int i=0;i<10; i++)
                 {
                         List.push_back(i);
                 };
-		 TList<int>::iterator tt=List.begin()+2;
-		 List.insert(tt,1);
-        TPrint(List);
-        //TIterator<int> iter=List.begin();
-        //cout<<List.empty();
-        List.clear();
-		cout<<List.empty()<<endl;
-		for (int i=0;i<10; i++)
-                {
-                        List.push_front(i);
-                };
-		 TPrint(List);
-		 cout<<List.empty()<<endl;
-		 for (int i=0;i<9; i++)
-			 cout << List.pop_back() << " ";
-		 cout << endl;
-		 List.pop_front();
-		 cout<<List.empty();
-		 TList<int>::iterator t=List.begin();//+2;
-		 //List.insert(tt,1);
-		// int a = *tt;
-		 //cout << a;
-		 //TList<int> A(List);
-
-        /*const TList<int> A(List);
-        TList<int>B=A;
-        B.clear();
-        B.swap(List);
-       
-        List.push_back(1);
-        List.push_back(1);
-        ///cout<<endl;
-        cout<<*List.begin();
-        TPrint(List);*/
-        system("pause");
+		cout<<"elements: "<<endl;
+		TPrint(List);
+		cout<<"empty: "<<List.empty()<<endl;
+		TList <int> List1 (List);
+		List1.clear();
+		cout<<"empty after clear: ";
+		cout<<List1.empty()<<endl;
+		List.swap(List1);
+		cout<<"elements after swap: "<<endl;
+		TPrint(List1);
+		cout<<"front: "<<List1.front()<<endl;
+		cout<<"back: "<<List1.back()<<endl;
+		List1.push_back(10);
+		cout<<"elements after pushback: ";
+		TPrint(List1);
+		List1.push_front(-1);
+		cout<<"elements after pushfront:";
+		TPrint(List1);
+		List1.pop_back();
+		cout<<"elements after popback: ";
+		TPrint(List1);
+		List1.pop_front();
+		cout<<"elements after pushfront:";
+		TPrint(List1);
+		TList<int>::iterator it=List1.begin()+4;
+		List1.insert(it,100);
+		cout<<"elements after insert: ";
+		TPrint(List1);
+		List=List1;
+		cout<<"elements after operator = ";
+		TPrint(List);
+		system("pause");
         return 0;
 }
