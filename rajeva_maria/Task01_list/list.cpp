@@ -120,7 +120,11 @@ template <typename T>
                                 p->next=np;
                         }
                         last=p;
-                }      
+                }   
+				~TList()
+				{
+					clear();
+				}
 				bool empty() const
                 {
                         return((last==0)&&(first==0));
@@ -262,6 +266,18 @@ template <typename T>
                         cout<<*iter<<' ';
                 cout<<endl;
          };
+
+		 struct TFoo {
+  static int Created;
+  static int Deleted;
+
+  TFoo() { ++Created; }
+  TFoo(const TFoo&) { ++Created; }
+  ~TFoo() { ++Deleted; }
+};
+
+int TFoo::Created = 0;
+int TFoo::Deleted = 0;
        
  
  
@@ -305,6 +321,22 @@ int main()
 		List=List1;
 		cout<<"elements after operator = ";
 		TPrint(List);
+		{
+            TList<TFoo> a;
+            for (int i = 0; i < 10; ++i)
+                a.push_back(TFoo());
+
+           TList<TFoo> b = a;
+           for (int i = 0; i < 10; ++i)
+               b.push_back(TFoo());
+
+            a.swap(b);
+
+            TList<TFoo> c;
+            a = c;
+        }
+       cout<<endl<<"created: "<<TFoo::Created<<endl;
+	   cout<<"deleted: "<<TFoo::Deleted<<endl;
 		system("pause");
         return 0;
 }
