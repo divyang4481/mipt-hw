@@ -99,7 +99,7 @@ public:
 	}
 	TMatrix<T> operator * (const TMatrix<T>&matr)
 	{
-		TMatrix<T>m(Row()+1,matr.Col()+1);
+		TMatrix<T>m(Row(),matr.Col());
 		for (int i=1;i<Row()+1;i++)
 			for(int j=1;j<matr.Col()+1;j++)
 				for (int p=1;p<Col()+1;p++)
@@ -150,12 +150,14 @@ template<typename T>
 	{
 		//out<<m.Row()<<' '<<m.Col();
 		for (size_t i=1;i<m.Row()+1;++i)
+			{
 			for (size_t j=1;j<m.Col()+1;++j)
 			{
 				out<<m.At(i,j)<<' ';
 			}
 			out<<endl;
-		return out;
+		}
+			return out;
 	} 
 template<typename T>
 istream& operator >> (ostream&out, const TMatrix<T>&m)
@@ -174,34 +176,31 @@ istream& operator >> (ostream&out, const TMatrix<T>&m)
 int main()
 {
 TMatrix<int> M1(3,3);
+
 for (int i=1;i<4;i++)
 for (int j=1;j<4;j++)
 	M1.At(i,j)=i;
-cout<<M1<<endl;
+cout<<"M1:"<<endl<<M1;
 TMatrix<int>M2(M1);
-cout<<M2<<endl;
-//cout<<M2;
-//M2=M1;
-TMatrix<int>M3(3,3);
-cout<<M3<<endl;
-//cout<<M3<<endl;
-M3=M1+M1;
-cout<<M3<<endl;
-//for (int i=1;i<4;i++)
-//for (int j=1;j<4;j++)
-//cout<<M3.At(i,j)<<' ';
-//cout<<M3.Col()<<' '<<M3.Row()<<endl;
+cout<<"M2:"<<endl<<M2;
+TMatrix<int>M3=M2+M1;
+cout<<"M3=M2+M1:"<<endl<<M3;
+TMatrix<int>M4=M2-M1;
+cout<<"M4=M2+M1:"<<endl<<M4;
+TMatrix<int>M5=M1*3;
+cout<<"M5=M1*3:"<<endl<<M5;
+TMatrix<int>M6=M1*M2;
+cout<<"M6=M1*M2:"<<endl<<M6;
+M1+=M2;
+cout<<"M1+=M2:"<<endl<<M1;
+M1-=M2;
+cout<<"M1-=M2:"<<endl<<M1;
 M1*=M2;
-M3*=4;
-//M3-=M3;
-
-//cout<<M3.Col()<<' '<<M3.Row()<<endl;
-M3.Transpose();
-//cout<<M3.Col()<<' '<<M3.Row()<<endl;
-//for (int i=1;i<4;i++)
-//for (int j=1;j<4;j++)
-	//cout<<M3.At(i,j)<<' ';
-//cout<<M3<<' ';
+cout<<"M1*=M2:"<<endl<<M1;
+M1*=2;
+cout<<"M1*=2:"<<endl<<M1;
+M2.Transpose();
+cout<<"M2T:"<<endl<<M2;
 system("pause");
 return 0;
 }
