@@ -252,28 +252,47 @@ bool BoundingBox(T a, T b, T c, T d)
 }
 	
 int main()
-{
-	
-	TPoint<int> P(0,0);
-	TPoint<int> P1(2,0);
-	TPoint<int>P2(2,2);
-	TPoint<int>P3(0,2);
-	TPoint<int>P4(1,1);
-	TPoint<int>P5(1,-1);
-	TSegment<int>S1(P4,P5);
-	TSegment<int>S2(P2,P3);
-	//cout<<P.HasPoint(P1)<<endl;
-	//cout<<S1.Dlina()<<endl;
-	//cout<<S1.HasPoint(P2)<<endl;
-	//cout<<S1.Intersects(S2)<<endl;
-	TCircle<int> C1(1,P);
-	vector<TPoint<int>>V(4);
-	V[1]=P1;
-	V[2]=P2;
-	V[3]=P3;
-	V[0]=P;
-	TPolygon<int>PG1(V);
-	cout<<PG1.HasPoint(P4)<<endl;
+{	
+	TPoint<int>P0(1,1);
+	TPoint<int>P1(1,1);
+	TPoint<int>P2(1,0);
+	TPoint<int>P3(2,0);
+	TPoint<int>P4(2,2);
+	TPoint<int>P5(2,1);
+	TPoint<int>P6(3,1);
+	TPoint<int>P7(1,2);
+	TPoint<int>P8(0,0);
+	TPoint<int>P9(0,2);
+	TPoint<int>P10(-1,0);
+	TPoint<int>P11(1,0);
+	TPoint<int>P12(1,-1);
+	TPoint<int>P13(3,-1);
+	vector<TPoint<int>>V;
+	V.push_back(P8);
+	V.push_back(P3);
+	V.push_back(P4);
+	V.push_back(P9);
+	TSegment<int>S1(P3,P4);
+	TSegment<int>S2(P1,P6);
+	TSegment<int>S3(P2,P7);
+	TSegment<int>S4(P10,P11);
+	TSegment<int>S5(P12,P13);
+	TCircle<int>C1(1,P8);
+	TPolygon<int>Q1(V);
+	cout<<"P0(1,1) has point P1(1,1): "<<P0.HasPoint(P1)<<endl;
+	cout<<"P1(1,1) has point P2(1,0): "<<P1.HasPoint(P2)<<endl;
+	cout<<"P5(2,1) intersects S1((2,0),(2,2)): "<<P5.Intersects(S1)<<endl;
+	cout<<"P2(1,0) intersects S1((2,0),(2,2)): "<<P2.Intersects(S1)<<endl;
+	cout<<"S1((2,0),(2,2)) intersects S2((1,1),(3,1)): "<<S2.Intersects(S1)<<endl;
+	cout<<"S1((2,0),(2,2)) intersects S3((1,0),(1,2)): "<<S1.Intersects(S3)<<endl;
+	cout<<"C1(1,(0,0)) has point P2(1,0): "<<C1.HasPoint(P2)<<endl;
+	cout<<"C1(1,(0,0)) has point P1(1,1): "<<C1.HasPoint(P1)<<endl;
+	cout<<"C1(1,(0,0)) intersects S4((-1,0),(1,0)): "<<C1.Intersects(S4)<<endl;
+	cout<<"C1(1,(0,0)) intersects S1((2,0),(2,2)): "<<C1.Intersects(S1)<<endl;
+	cout<<"Q1((0,0),(2,0),(2,2),(2,0)) has point P1(1,1): "<<Q1.HasPoint(P1)<<endl;
+	cout<<"Q1((0,0),(2,0),(2,2),(2,0)) has point P6(3,1): "<<Q1.HasPoint(P6)<<endl;
+	cout<<"Q1((0,0),(2,0),(2,2),(2,0)) intersects S2((1,1),(3,1)): "<<Q1.Intersects(S2)<<endl;
+	cout<<"Q1((0,0),(2,0),(2,2),(2,0)) intersects S5((1,-1),(3,-1)): "<<Q1.Intersects(S5)<<endl;
 	system("pause");
 	return 0;
 }
